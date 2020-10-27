@@ -25,7 +25,7 @@ class StringBuffer extends AtBuffer<String> {
   bool isEnd() => message.endsWith(terminatingChar);
 
   @override
-  bool isFull() => message?.length >= capacity;
+  bool isFull() => message != null && (message.length >= capacity);
 
   @override
   void clear() => message = '';

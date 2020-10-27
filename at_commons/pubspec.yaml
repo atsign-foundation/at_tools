@@ -1,7 +1,7 @@
 name: at_commons
 description: Library for commonly used components
 version: 1.0.0
-homepage: https://www.atsign.dev
+homepage: https://atsign.dev
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
