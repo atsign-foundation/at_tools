@@ -1,6 +1,7 @@
 name: at_utils
 description: Utility library for at projects.
 version: 1.0.0
+repository: https://github.com/atsign-foundation/at_tools
 homepage: https://atsign.dev
 
 environment:
