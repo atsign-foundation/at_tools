@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:logging/logging.dart';
 
+/// Handler class for AtSignLogger
 abstract class LoggingHandler {
   //Can extend LogRecord if any atsign specific field has to be logged
   void call(LogRecord record);

@@ -23,4 +23,3 @@ void test_console_logging() {
   test_logger.info('hello');
   expect(records[0].message, 'hello');
 }
-

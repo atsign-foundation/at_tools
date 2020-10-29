@@ -1,5 +1,6 @@
 import 'package:at_commons/at_commons.dart';
 
+// Utility class for AtMetaData related operations
 class AtMetadataUtil {
   static final AtMetadataUtil _singleton = AtMetadataUtil._internal();
 
@@ -9,6 +10,7 @@ class AtMetadataUtil {
 
   AtMetadataUtil._internal();
 
+  /// Method to validate TTL
   static int validateTTL(String ttl) {
     var ttl_ms;
     if (ttl != null) {
@@ -21,6 +23,7 @@ class AtMetadataUtil {
     return ttl_ms;
   }
 
+  /// Method to validate TTB
   static int validateTTB(String ttb) {
     var ttb_ms;
     if (ttb != null) {
@@ -33,6 +36,7 @@ class AtMetadataUtil {
     return ttb_ms;
   }
 
+  /// Method to validate TTR
   static int validateTTR(String ttr) {
     var ttr_ms;
     if (ttr != null) {
@@ -58,6 +62,7 @@ class AtMetadataUtil {
     return isCascade;
   }
 
+  /// Returns true of we pass 'true' string ese return false
   static bool getBoolVerbParams(String arg1) {
     if (arg1 != null) {
       if (arg1.toLowerCase() == 'true') {

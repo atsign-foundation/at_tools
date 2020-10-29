@@ -1,6 +1,7 @@
 import 'package:yaml/yaml.dart';
 import 'dart:io';
 
+/// Application Configuration class
 class ApplicationConfiguration {
   YamlMap _yamlMap;
 

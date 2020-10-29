@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:at_commons/at_commons.dart';
 
+/// Utility class for atSign operations
 class AtUtils {
   static final AtUtils _singleton = AtUtils._internal();
 
@@ -18,6 +19,7 @@ class AtUtils {
 //    print('$t : $s');
 //  }
 
+  /// Apply all the rules on the provided atSign and return fixedAtSign
   static String fixAtSign(String atSign) {
     // @signs are always lowercase Latin
     if (atSign == '') {
@@ -69,17 +71,18 @@ class AtUtils {
     return atSign;
   }
 
+  /// Return AtSign by appending '@' at the beginning if not present
   static String formatAtSign(String atSign) {
+    // verify whether atSign started with '@' or not
     if (atSign != null && !atSign.startsWith('@')) {
       atSign = '@${atSign}';
     }
     return atSign;
   }
 
-
   static String getShaForAtSign(String atsign) {
+    // encode the given atsign
     var bytes = utf8.encode(atsign);
     return sha256.convert(bytes).toString();
   }
-
 }

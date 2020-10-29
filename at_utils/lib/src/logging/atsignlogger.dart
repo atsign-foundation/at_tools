@@ -1,6 +1,7 @@
 import 'package:at_utils/src/logging/handlers.dart';
 import 'package:logging/logging.dart' as logging;
 
+/// Class for AtSignLogger Implementation
 class AtSignLogger {
   logging.Logger logger;
   static String _root_level = 'info';
