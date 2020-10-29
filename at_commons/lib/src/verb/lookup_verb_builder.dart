@@ -29,8 +29,9 @@ class LookupVerbBuilder implements VerbBuilder {
   @override
   String buildCommand() {
     var command;
-    if(operation != null) {
-      command = 'lookup:${operation}:${atKey}${VerbUtil.formatAtSign(sharedBy)}\n';
+    if (operation != null) {
+      command =
+          'lookup:${operation}:${atKey}${VerbUtil.formatAtSign(sharedBy)}\n';
     } else {
       command = 'lookup:${atKey}${VerbUtil.formatAtSign(sharedBy)}\n';
     }

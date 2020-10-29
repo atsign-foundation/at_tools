@@ -33,10 +33,10 @@ class LLookupVerbBuilder implements VerbBuilder {
   @override
   String buildCommand() {
     var command = 'llookup:';
-    if(operation != null) {
+    if (operation != null) {
       command += '${operation}:';
     }
-    if(isCached){
+    if (isCached) {
       command += 'cached:';
     }
     if (isPublic) {

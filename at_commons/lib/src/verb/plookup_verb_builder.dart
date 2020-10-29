@@ -19,8 +19,9 @@ class PLookupVerbBuilder implements VerbBuilder {
   @override
   String buildCommand() {
     var command;
-    if(operation != null) {
-      command = 'plookup:${operation}:${atKey}${VerbUtil.formatAtSign(sharedBy)}\n';
+    if (operation != null) {
+      command =
+          'plookup:${operation}:${atKey}${VerbUtil.formatAtSign(sharedBy)}\n';
     } else {
       command = 'plookup:${atKey}${VerbUtil.formatAtSign(sharedBy)}\n';
     }
