@@ -22,7 +22,7 @@ class VerbSyntax {
   static const delete = r'^delete:(?<atKey>.+$)';
   static const monitor = r'(^monitor$|^monitor ?(?<regex>.*)?)$';
   static const stream =
-      r'^stream:((?<operation>init|send|receive|done))?((@(?<receiver>[^@:\s]+)))?( (?<streamId>[\w-]*))?( (?<fileName>[\w.-]*))?( (?<length>\d*))?';
+      r'^stream:((?<operation>init|send|receive|done))?((@(?<receiver>[^@:\s]+)))?( (?<streamId>[\w-]*))?( (?<fileName>.* ))?((?<length>\d*))?';
   static const notify =
       r'^notify:((?<operation>update|delete):)?(ttl:(?<ttl>\d+):)?(ttb:(?<ttb>\d+):)?(ttr:(?<ttr>(-)?\d+):)?(ccd:(?<ccd>true|false):)?(@(?<forAtSign>[^@:\s]*)):(?<atKey>[^:]((?!:{2})[^@])+)@(?<atSign>[^@:\s]+)(:(?<value>.+))?$';
   static const notifyList = r'^notify:(list (?<regex>.*)|list$)';
