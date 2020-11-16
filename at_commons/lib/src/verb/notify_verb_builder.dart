@@ -62,7 +62,7 @@ class NotifyVerbBuilder implements VerbBuilder {
     if (sharedBy != null) {
       command += '${VerbUtil.formatAtSign(sharedBy)}';
     }
-    if (ttr != null && value != null) {
+    if (value != null) {
       command += ':${value}';
     }
 
