@@ -80,7 +80,7 @@ class Metadata {
   bool isHidden = false;
   bool namespaceAware = true;
   bool isBinary = false;
-  bool isEncrypted = false;
+  bool isEncrypted;
   bool isCached = false;
 
   @override
