@@ -5,7 +5,7 @@ import 'dart:convert';
 
 main(List<String> arguments) {
   var Name = arguments[0];
-  var secret =  getSecret(Name);
+  var secret = getSecret(Name);
   secret = secret.trim();
   var challenge = stdin.readLineSync();
   challenge = challenge.trim();
@@ -16,10 +16,8 @@ main(List<String> arguments) {
   stdout.write('\n');
 }
 
-
-String getSecret(String filename)  {
-
+String getSecret(String filename) {
   var pathToFile = join(dirname(Platform.script.toFilePath()), filename);
-  var contents =  File(pathToFile).readAsStringSync();
-  return(contents);
+  var contents = File(pathToFile).readAsStringSync();
+  return (contents);
 }
