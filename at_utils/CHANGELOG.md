@@ -4,3 +4,6 @@
 ## 1.0.1
 
 - Fixed issues reported by dartanalyzer
+## 1.0.1+1
+
+- at_commons version change
