@@ -3,8 +3,26 @@ import 'dart:io';
 import 'package:at_server_status/at_server_status.dart';
 
 void main() async {
-
-  var atSigns = [ '@alice🛠','@ashish🛠','@barbara🛠','@bob🛠','@colin🛠','@egbiometric🛠','@egcovidlab🛠','@egcreditbureau🛠','@eggovagency🛠','@emoji🦄🛠','@eve🛠','@jagan🛠','@kevin🛠','@murali🛠','@naresh🛠','@purnima🛠','@sameeraja🛠','@sitaram🛠'];
+  var atSigns = [
+    '@alice🛠',
+    '@ashish🛠',
+    '@barbara🛠',
+    '@bob🛠',
+    '@colin🛠',
+    '@egbiometric🛠',
+    '@egcovidlab🛠',
+    '@egcreditbureau🛠',
+    '@eggovagency🛠',
+    '@emoji🦄🛠',
+    '@eve🛠',
+    '@jagan🛠',
+    '@kevin🛠',
+    '@murali🛠',
+    '@naresh🛠',
+    '@purnima🛠',
+    '@sameeraja🛠',
+    '@sitaram🛠'
+  ];
 
   Future<AtStatus> getAtStatus(atSign) async {
     AtStatus atStatus;
