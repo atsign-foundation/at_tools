@@ -134,6 +134,9 @@ class UpdateVerbBuilder implements VerbBuilder {
     } else {
       verbParams = VerbUtil.getVerbParam(VerbSyntax.update, command);
     }
+    if (verbParams == null) {
+      return null;
+    }
     builder.isPublic = command.contains('public:');
     builder.sharedWith = VerbUtil.formatAtSign(verbParams[FOR_AT_SIGN]);
     builder.sharedBy = VerbUtil.formatAtSign(verbParams[AT_SIGN]);
