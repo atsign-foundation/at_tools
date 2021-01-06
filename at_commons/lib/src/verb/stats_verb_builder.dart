@@ -18,12 +18,20 @@ class StatsVerbBuilder implements VerbBuilder {
   /// 6. Most read keys statistics
   String statIds;
 
+  /// Regular expression to filter keys.
+  String regex;
+
   @override
   String buildCommand() {
+    var statsCommand = 'stats';
     if (statIds != null) {
-      return 'stats:${statIds}\n';
+      statsCommand += ':${statIds}';
+      if (regex != null) {
+        statsCommand += ':$regex';
+      }
     }
-    return 'stats\n';
+    statsCommand += '\n';
+    return statsCommand;
   }
 
   @override

@@ -11,3 +11,5 @@ export 'package:at_commons/src/compaction/at_compaction_config.dart';
 export 'package:at_commons/src/keystore/at_key.dart';
 export 'package:at_commons/src/verb/operation_enum.dart';
 export 'package:at_commons/at_builders.dart';
+export 'package:at_commons/src/verb/update_json.dart';
+export 'package:at_commons/src/verb/verb_util.dart';

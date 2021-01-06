@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:at_commons/src/verb/verb_util.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
@@ -55,10 +57,43 @@ class UpdateVerbBuilder implements VerbBuilder {
   /// False indicates unencrypted value
   bool isEncrypted;
 
+  /// Signed signature with atsign's private key, if isPublic is true
+  String dataSignature;
+
   String operation;
+
+  bool isJson = false;
 
   @override
   String buildCommand() {
+    if (isJson) {
+      var updateParams = UpdateParams();
+      var key = '';
+      if (sharedWith != null) {
+        key += '${VerbUtil.formatAtSign(sharedWith)}:';
+      }
+      key += atKey;
+      if (sharedBy != null) {
+        key += '${VerbUtil.formatAtSign(sharedBy)}';
+      }
+      updateParams.atKey = key;
+      updateParams.value = value;
+      updateParams.sharedBy = sharedBy;
+      updateParams.sharedWith = sharedWith;
+      var metadata = Metadata();
+      metadata.ttr = ttr;
+      metadata.ttb = ttb;
+      metadata.ttl = ttl;
+      metadata.dataSignature = dataSignature;
+      metadata.isEncrypted = isEncrypted;
+      metadata.ccd = ccd;
+      metadata.isPublic = isPublic;
+      updateParams.metadata = metadata;
+      var json = updateParams.toJson();
+      var command = 'update:json:${jsonEncode(json)}\n';
+      print('update json:$command');
+      return command;
+    }
     var command = 'update:';
     if (ttl != null) {
       command += 'ttl:${ttl}:';
@@ -71,6 +106,9 @@ class UpdateVerbBuilder implements VerbBuilder {
     }
     if (ccd != null) {
       command += 'ccd:${ccd}:';
+    }
+    if (dataSignature != null) {
+      command += 'dataSignature:${dataSignature}:';
     }
     if (isBinary != null) {
       command += 'isBinary:${isBinary}:';
@@ -87,6 +125,9 @@ class UpdateVerbBuilder implements VerbBuilder {
 
     if (sharedBy != null) {
       command += '${VerbUtil.formatAtSign(sharedBy)}';
+    }
+    if (value is String) {
+      value = VerbUtil.replaceNewline(value);
     }
     command += ' ${value}\n';
     return command;
@@ -142,11 +183,17 @@ class UpdateVerbBuilder implements VerbBuilder {
     builder.sharedBy = VerbUtil.formatAtSign(verbParams[AT_SIGN]);
     builder.atKey = verbParams[AT_KEY];
     builder.value = verbParams[AT_VALUE];
+    if (builder.value is String) {
+      builder.value = VerbUtil.replaceNewline(builder.value);
+    }
     if (verbParams[AT_TTL] != null) builder.ttl = int.parse(verbParams[AT_TTL]);
     if (verbParams[AT_TTB] != null) builder.ttb = int.parse(verbParams[AT_TTB]);
     if (verbParams[AT_TTR] != null) builder.ttr = int.parse(verbParams[AT_TTR]);
     if (verbParams[CCD] != null) {
       builder.ccd = _getBoolVerbParams(verbParams[CCD]);
+    }
+    if (verbParams[PUBLIC_DATA_SIGNATURE] != null) {
+      builder.dataSignature = verbParams[PUBLIC_DATA_SIGNATURE];
     }
     if (verbParams[IS_BINARY] != null) {
       builder.isBinary = _getBoolVerbParams(verbParams[IS_BINARY]);
