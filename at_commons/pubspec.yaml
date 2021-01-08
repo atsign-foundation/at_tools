@@ -1,6 +1,6 @@
 name: at_commons
 description: at_commons library will be used for commonly used components in implementation of the @protocol.
-version: 1.0.1+1
+version: 1.0.1+2
 repository: https://github.com/atsign-foundation/at_tools
 homepage: https://atsign.dev
 
@@ -11,5 +11,3 @@ dev_dependencies:
   pedantic: ^1.8.0
   test: ^1.6.0
   test_process: ^1.0.5
-
-
