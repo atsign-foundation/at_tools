@@ -76,6 +76,7 @@ class Metadata {
   DateTime availableAt;
   DateTime expiresAt;
   DateTime refreshAt;
+  String dataSignature;
   bool isPublic = false;
   bool isHidden = false;
   bool namespaceAware = true;
@@ -85,7 +86,56 @@ class Metadata {
 
   @override
   String toString() {
-    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, isBinary : ${isBinary}, isEncrypted : ${isEncrypted}, isCached : ${isCached}';
+    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, isBinary : ${isBinary}, isEncrypted : ${isEncrypted}, isCached : ${isCached}, dataSignature: ${dataSignature}}';
+  }
+
+  Map toJson() {
+    Map map = {};
+    map['availableAt'] = availableAt?.toUtc().toString();
+    map['expiresAt'] = expiresAt?.toUtc().toString();
+    map['refreshAt'] = refreshAt?.toUtc().toString();
+    map['isPublic'] = isPublic;
+    map[AT_TTL] = ttl;
+    map[AT_TTB] = ttb;
+    map[AT_TTR] = ttr;
+    map[IS_BINARY] = isBinary;
+    map[IS_ENCRYPTED] = isEncrypted;
+    map[PUBLIC_DATA_SIGNATURE] = dataSignature;
+    return map;
+  }
+
+  static Metadata fromJson(Map json) {
+    var metaData = Metadata();
+    try {
+      metaData.expiresAt =
+      (json['expiresAt'] == null || json['expiresAt'] == 'null')
+          ? null
+          : DateTime.parse(json['expiresAt']);
+      metaData.refreshAt =
+      (json['refreshAt'] == null || json['refreshAt'] == 'null')
+          ? null
+          : DateTime.parse(json['refreshAt']);
+      metaData.availableAt =
+      (json['availableAt'] == null || json['availableAt'] == 'null')
+          ? null
+          : DateTime.parse(json['availableAt']);
+      metaData.ttl = (json[AT_TTL] is String)
+          ? int.parse(json[AT_TTL])
+          : (json[AT_TTL] == null) ? 0 : json[AT_TTL];
+      metaData.ttb = (json[AT_TTB] is String)
+          ? int.parse(json[AT_TTB])
+          : (json[AT_TTB] == null) ? 0 : json[AT_TTB];
+      metaData.ttr = (json[AT_TTR] is String)
+          ? int.parse(json[AT_TTR])
+          : (json[AT_TTR] == null) ? 0 : json[AT_TTR];
+      metaData.isBinary = json[IS_BINARY];
+      metaData.isEncrypted = json[IS_ENCRYPTED];
+      metaData.isPublic = json[IS_PUBLIC];
+      metaData.dataSignature = json[PUBLIC_DATA_SIGNATURE];
+    } catch (error) {
+      print('AtMetaData.fromJson error: ' + error.toString());
+    }
+    return metaData;
   }
 }
 
