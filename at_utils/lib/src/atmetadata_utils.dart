@@ -1,6 +1,5 @@
 import 'package:at_commons/at_commons.dart';
 
-// Utility class for AtMetaData related operations
 class AtMetadataUtil {
   static final AtMetadataUtil _singleton = AtMetadataUtil._internal();
 
@@ -10,7 +9,6 @@ class AtMetadataUtil {
 
   AtMetadataUtil._internal();
 
-  /// Method to validate TTL
   static int validateTTL(String ttl) {
     var ttl_ms;
     if (ttl != null) {
@@ -23,7 +21,6 @@ class AtMetadataUtil {
     return ttl_ms;
   }
 
-  /// Method to validate TTB
   static int validateTTB(String ttb) {
     var ttb_ms;
     if (ttb != null) {
@@ -36,39 +33,34 @@ class AtMetadataUtil {
     return ttb_ms;
   }
 
-  /// Method to validate TTR
-  static int validateTTR(String ttr) {
-    var ttr_ms;
-    if (ttr != null) {
-      ttr_ms = int.parse(ttr);
-      if (ttr_ms == 0 || ttr_ms <= -2) {
-        throw InvalidSyntaxException(
-            'Valid values for TTR are -1 and greater than or equal to 1');
-      }
+  static int validateTTR(int ttr_ms) {
+    if (ttr_ms == null || ttr_ms == 0) {
+      return null;
+    }
+    if (ttr_ms <= -2) {
+      throw InvalidSyntaxException(
+          'Valid values for TTR are -1 and greater than or equal to 1');
     }
     return ttr_ms;
   }
 
   /// Throws [InvalidSyntaxException] if ttr is 0 or null.
-  static bool validateCascadeDelete(int ttr, String cascadeValue) {
-    bool isCascade;
-    if (cascadeValue != null) {
+  static bool validateCascadeDelete(int ttr, bool isCascade) {
+    if (isCascade != null) {
       if (ttr == 0 || ttr == null) {
         throw InvalidSyntaxException('TTR cannot be null on cascade delete');
       }
-      cascadeValue = cascadeValue.toLowerCase();
     }
-    isCascade = cascadeValue == 'true' ? true : false;
+    isCascade ??= false;
     return isCascade;
   }
 
-  /// Returns true of we pass 'true' string ese return false
   static bool getBoolVerbParams(String arg1) {
     if (arg1 != null) {
       if (arg1.toLowerCase() == 'true') {
         return true;
       }
+      return false;
     }
-    return false;
   }
 }
