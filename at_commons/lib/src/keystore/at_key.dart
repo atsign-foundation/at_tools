@@ -108,17 +108,17 @@ class Metadata {
     var metaData = Metadata();
     try {
       metaData.expiresAt =
-      (json['expiresAt'] == null || json['expiresAt'] == 'null')
-          ? null
-          : DateTime.parse(json['expiresAt']);
+          (json['expiresAt'] == null || json['expiresAt'] == 'null')
+              ? null
+              : DateTime.parse(json['expiresAt']);
       metaData.refreshAt =
-      (json['refreshAt'] == null || json['refreshAt'] == 'null')
-          ? null
-          : DateTime.parse(json['refreshAt']);
+          (json['refreshAt'] == null || json['refreshAt'] == 'null')
+              ? null
+              : DateTime.parse(json['refreshAt']);
       metaData.availableAt =
-      (json['availableAt'] == null || json['availableAt'] == 'null')
-          ? null
-          : DateTime.parse(json['availableAt']);
+          (json['availableAt'] == null || json['availableAt'] == 'null')
+              ? null
+              : DateTime.parse(json['availableAt']);
       metaData.ttl = (json[AT_TTL] is String)
           ? int.parse(json[AT_TTL])
           : (json[AT_TTL] == null) ? 0 : json[AT_TTL];
