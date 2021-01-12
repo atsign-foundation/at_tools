@@ -11,7 +11,12 @@ dependencies:
   logging: ^0.11.4
   yaml: ^2.2.0
   crypto: ^2.1.5
-  at_commons: ^1.0.1+2
+  at_commons:
+    git:
+      url: https://github.com/atsign-foundation/at_tools.git
+      path: at_commons
+      ref: dev_env
+      version: ^1.0.1+2
 
 dev_dependencies:
   pedantic: ^1.8.0
