@@ -44,3 +44,5 @@ const String IS_ENCRYPTED = 'isEncrypted';
 const String IS_PUBLIC = 'isPublic';
 const String PUBLIC_DATA_SIGNATURE = 'dataSignature';
 const String FIRST_BYTE = '#';
+const String CREATED_AT = 'createdAt';
+const String UPDATED_AT = 'updatedAt';
