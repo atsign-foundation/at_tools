@@ -76,6 +76,8 @@ class Metadata {
   DateTime availableAt;
   DateTime expiresAt;
   DateTime refreshAt;
+  DateTime createdAt;
+  DateTime updatedAt;
   String dataSignature;
   bool isPublic = false;
   bool isHidden = false;
@@ -83,8 +85,6 @@ class Metadata {
   bool isBinary = false;
   bool isEncrypted;
   bool isCached = false;
-  DateTime createdAt;
-  DateTime updatedAt;
 
   @override
   String toString() {
@@ -102,6 +102,7 @@ class Metadata {
     map[AT_TTL] = ttl;
     map[AT_TTB] = ttb;
     map[AT_TTR] = ttr;
+    map[CCD] = ccd;
     map[IS_BINARY] = isBinary;
     map[IS_ENCRYPTED] = isEncrypted;
     map[PUBLIC_DATA_SIGNATURE] = dataSignature;
@@ -140,6 +141,7 @@ class Metadata {
       metaData.ttr = (json[AT_TTR] is String)
           ? int.parse(json[AT_TTR])
           : (json[AT_TTR] == null) ? 0 : json[AT_TTR];
+      metaData.ccd = json[CCD];
       metaData.isBinary = json[IS_BINARY];
       metaData.isEncrypted = json[IS_ENCRYPTED];
       metaData.isPublic = json[IS_PUBLIC];
