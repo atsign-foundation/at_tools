@@ -76,6 +76,8 @@ class Metadata {
   DateTime availableAt;
   DateTime expiresAt;
   DateTime refreshAt;
+  DateTime createdAt;
+  DateTime updatedAt;
   String dataSignature;
   bool isPublic = false;
   bool isHidden = false;
@@ -86,7 +88,7 @@ class Metadata {
 
   @override
   String toString() {
-    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, isBinary : ${isBinary}, isEncrypted : ${isEncrypted}, isCached : ${isCached}, dataSignature: ${dataSignature}}';
+    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : ${isBinary}, isEncrypted : ${isEncrypted}, isCached : ${isCached}, dataSignature: ${dataSignature}}';
   }
 
   Map toJson() {
@@ -94,10 +96,13 @@ class Metadata {
     map['availableAt'] = availableAt?.toUtc().toString();
     map['expiresAt'] = expiresAt?.toUtc().toString();
     map['refreshAt'] = refreshAt?.toUtc().toString();
+    map[CREATED_AT] = createdAt?.toUtc().toString();
+    map[UPDATED_AT] = updatedAt?.toUtc().toString();
     map['isPublic'] = isPublic;
     map[AT_TTL] = ttl;
     map[AT_TTB] = ttb;
     map[AT_TTR] = ttr;
+    map[CCD] = ccd;
     map[IS_BINARY] = isBinary;
     map[IS_ENCRYPTED] = isEncrypted;
     map[PUBLIC_DATA_SIGNATURE] = dataSignature;
@@ -119,6 +124,14 @@ class Metadata {
           (json['availableAt'] == null || json['availableAt'] == 'null')
               ? null
               : DateTime.parse(json['availableAt']);
+      metaData.createdAt =
+          (json[CREATED_AT] == null || json[CREATED_AT] == 'null')
+              ? null
+              : DateTime.parse(json[CREATED_AT]);
+      metaData.updatedAt =
+          (json[UPDATED_AT] == null || json[UPDATED_AT] == 'null')
+              ? null
+              : DateTime.parse(json[UPDATED_AT]);
       metaData.ttl = (json[AT_TTL] is String)
           ? int.parse(json[AT_TTL])
           : (json[AT_TTL] == null) ? 0 : json[AT_TTL];
@@ -128,6 +141,7 @@ class Metadata {
       metaData.ttr = (json[AT_TTR] is String)
           ? int.parse(json[AT_TTR])
           : (json[AT_TTR] == null) ? 0 : json[AT_TTR];
+      metaData.ccd = json[CCD];
       metaData.isBinary = json[IS_BINARY];
       metaData.isEncrypted = json[IS_ENCRYPTED];
       metaData.isPublic = json[IS_PUBLIC];
