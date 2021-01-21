@@ -27,4 +27,5 @@ class VerbSyntax {
   static const notify =
       r'^notify:((?<operation>update|delete):)?(ttl:(?<ttl>\d+):)?(ttb:(?<ttb>\d+):)?(ttr:(?<ttr>(-)?\d+):)?(ccd:(?<ccd>true|false):)?(@(?<forAtSign>[^@:\s]*)):(?<atKey>[^:]((?!:{2})[^@])+)@(?<atSign>[^@:\s]+)(:(?<value>.+))?$';
   static const notifyList = r'^notify:(list (?<regex>.*)|list$)';
+  static const batch = r'^batch:(?<json>.+)$';
 }
