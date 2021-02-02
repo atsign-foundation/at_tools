@@ -9,6 +9,7 @@ const String AT_PKAM_PUBLIC_KEY = 'privatekey:at_pkam_publickey';
 const String AT_ENCRYPTION_PUBLIC_KEY = 'public:publickey';
 const String AT_ENCRYPTION_PRIVATE_KEY = 'privatekey:privatekey';
 const String AT_ENCRYPTION_SHARED_KEY = 'shared_key';
+const String AT_ENCRYPTION_SELF_KEY = 'privatekey:self_encryption_key';
 const String AT_SIGNING_PRIVATE_KEY = 'signing_privatekey';
 const String AT_SIGNING_PUBLIC_KEY = 'public:signing_publickey';
 const String AT_CRAM_SECRET = 'privatekey:at_secret';
