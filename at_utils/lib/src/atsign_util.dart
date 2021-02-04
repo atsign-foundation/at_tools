@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:crypto/crypto.dart';
+
 import 'package:at_commons/at_commons.dart';
+import 'package:crypto/crypto.dart';
 
 /// Utility class for atSign operations
 class AtUtils {
@@ -18,6 +19,18 @@ class AtUtils {
 //    var t = now.toUtc();
 //    print('$t : $s');
 //  }
+
+  static String validateAtKey(String atKey) {
+    if (atKey == null || atKey == '') {
+      throw InvalidAtKeyException('Invalid atKey : Cannot have null value');
+    }
+    if (atKey
+        .contains(RegExp(r"[\!\*\'`\(\)\;\:\@\&\=\+\$\,\/\?\#\[\]\{\}]"))) {
+      throw InvalidAtKeyException(
+          'Invalid atKey : Cannot contain \!\*\'`\(\)\;\:\@\&\=\+\$\,\/\?\#\[\]\{\} characters');
+    }
+    return atKey;
+  }
 
   /// Apply all the rules on the provided atSign and return fixedAtSign
   static String fixAtSign(String atSign) {

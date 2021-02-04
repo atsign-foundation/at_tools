@@ -15,7 +15,8 @@ const Map error_codes = {
   'BlockedConnectionException': 'AT0013',
   'AtClientException': 'AT0014',
   'KeyNotFoundException': 'AT0015',
-  'SecondaryConnectException': 'AT0021'
+  'SecondaryConnectException': 'AT0021',
+  'InvalidAtKeyException': 'AT0016'
 };
 
 const Map error_description = {
@@ -35,5 +36,6 @@ const Map error_description = {
   'AT0013': 'Connection Exception',
   'AT0014': 'Unknown AtClient exception',
   'AT0015': 'key not found',
-  'AT0021': 'Unable to connect to secondary'
+  'AT0021': 'Unable to connect to secondary',
+  'AT0016': 'Invalid atkey'
 };
