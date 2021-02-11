@@ -85,10 +85,11 @@ class Metadata {
   bool isBinary = false;
   bool isEncrypted;
   bool isCached = false;
+  bool isEncoded = false;
 
   @override
   String toString() {
-    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : ${isBinary}, isEncrypted : ${isEncrypted}, isCached : ${isCached}, dataSignature: ${dataSignature}}';
+    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : ${isBinary}, isEncrypted : ${isEncrypted}, isEncoded : ${isEncoded},isCached : ${isCached}, dataSignature: ${dataSignature}}';
   }
 
   Map toJson() {
@@ -105,6 +106,7 @@ class Metadata {
     map[CCD] = ccd;
     map[IS_BINARY] = isBinary;
     map[IS_ENCRYPTED] = isEncrypted;
+    map[IS_ENCODED] = isEncoded;
     map[PUBLIC_DATA_SIGNATURE] = dataSignature;
     return map;
   }
@@ -144,6 +146,7 @@ class Metadata {
       metaData.ccd = json[CCD];
       metaData.isBinary = json[IS_BINARY];
       metaData.isEncrypted = json[IS_ENCRYPTED];
+      metaData.isEncoded = json[IS_ENCODED];
       metaData.isPublic = json[IS_PUBLIC];
       metaData.dataSignature = json[PUBLIC_DATA_SIGNATURE];
     } catch (error) {

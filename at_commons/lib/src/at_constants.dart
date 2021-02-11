@@ -43,6 +43,7 @@ const String REFRESH_AT = 'refreshAt';
 const String IS_BINARY = 'isBinary';
 const String IS_ENCRYPTED = 'isEncrypted';
 const String IS_PUBLIC = 'isPublic';
+const String IS_ENCODED = 'isEncoded';
 const String PUBLIC_DATA_SIGNATURE = 'dataSignature';
 const String FIRST_BYTE = '#';
 const String CREATED_AT = 'createdAt';
