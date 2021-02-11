@@ -31,6 +31,21 @@ class NotifyVerbBuilder implements VerbBuilder {
 
   OperationEnum operation;
 
+  /// priority of the notification
+  PriorityEnum priority;
+
+  /// strategy in processing the notification
+  StrategyEnum strategy;
+
+  /// type of notification
+  MessageTypeEnum messageType;
+
+  /// The notifier of the notification. Defaults to system.
+  String notifier = SYSTEM;
+
+  /// Latest N notifications to notify. Defaults to 1
+  int latestN;
+
   bool ccd;
 
   @override
@@ -40,6 +55,19 @@ class NotifyVerbBuilder implements VerbBuilder {
     if (operation != null) {
       command += '${getOperationName(operation)}:';
     }
+    if (messageType != null) {
+      command += 'messageType:${getMessageType(messageType)}:';
+    }
+    if (priority != null) {
+      command += 'priority:${getPriority(priority)}:';
+    }
+    if (strategy != null) {
+      command += 'strategy:${getStrategy(strategy)}:';
+    }
+    if (latestN != null) {
+      command += 'latestN:$latestN:';
+    }
+    command += 'notifier:$notifier:';
     if (ttl != null) {
       command += 'ttl:${ttl}:';
     }
