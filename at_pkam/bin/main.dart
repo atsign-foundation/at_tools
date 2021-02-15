@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:at_pkam/commandline_parser.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:crypton/crypton.dart';
 import 'dart:io';
@@ -6,24 +7,27 @@ import 'package:at_pkam/pkam_constants.dart';
 import 'package:archive/archive_io.dart';
 
 Future<void> main(List<String> arguments) async {
-  var filePath = arguments[0];
-  var challenge = arguments[1];
-  var privateKey;
-  if (filePath.endsWith(AT_KEYS)) {
-    privateKey = await getSecretFromAtKeys(filePath);
-  } else if (filePath.endsWith(ZIP)) {
-    privateKey = await getSecretFromZip(filePath);
-  } else {
-    throw Exception(
-        'Provide .keys or zip file. \n Syntax : dart main.dart <.keys/zip file path> <from_response>');
+  try {
+    var args = CommandLineParser().getParserResults(arguments);
+    var filePath = args['file_path'];
+    var challenge = args['from_response'];
+    var privateKey;
+    if (filePath.endsWith(AT_KEYS)) {
+      privateKey = await getSecretFromAtKeys(filePath);
+    } else if (filePath.endsWith(ZIP)) {
+      privateKey = await getSecretFromZip(filePath);
+    } else {
+      throw Exception('Usage : ${CommandLineParser().parser.usage}');
+    }
+    privateKey = privateKey.trim();
+    var key = RSAPrivateKey.fromString(privateKey);
+    challenge = challenge.trim();
+    var signature = key.createSignature(challenge);
+    stdout.write(signature);
+    stdout.write('\n');
+  } on Exception catch (e) {
+    print("Exception : ${e}");
   }
-  privateKey = privateKey.trim();
-  var key = RSAPrivateKey.fromString(privateKey);
-
-  challenge = challenge.trim();
-  var signature = key.createSignature(challenge);
-  stdout.write(signature);
-  stdout.write('\n');
 }
 
 Future<String> getSecretFromAtKeys(String filePath) async {
