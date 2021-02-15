@@ -5,11 +5,9 @@ import 'package:args/args.dart';
 class CommandLineParser {
   /// Parses [arguments], a list of command-line arguments, matches them against the
   /// flags and options defined by this parser, and returns the result.
-  var parser;
-
   ArgResults getParserResults(List<String> arguments) {
     var results;
-    parser = ArgParser();
+    var parser = ArgParser();
     parser.addOption('file_path',
         abbr: 'p', help: '.keys or .zip file path which contains keys');
     parser.addOption('from_response', abbr: 'r', help: 'from:@atSign response');

@@ -17,7 +17,7 @@ Future<void> main(List<String> arguments) async {
     } else if (filePath.endsWith(ZIP)) {
       privateKey = await getSecretFromZip(filePath);
     } else {
-      throw Exception('Usage : ${CommandLineParser().parser.usage}');
+      throw Exception('Usage : ${CommandLineParser().getParserResults(null)}');
     }
     privateKey = privateKey.trim();
     var key = RSAPrivateKey.fromString(privateKey);
@@ -26,7 +26,7 @@ Future<void> main(List<String> arguments) async {
     stdout.write(signature);
     stdout.write('\n');
   } on Exception catch (e) {
-    print("Exception : ${e}");
+    print('Exception : ${e}');
   }
 }
 
