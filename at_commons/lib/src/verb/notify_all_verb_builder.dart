@@ -2,7 +2,7 @@ import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
 import 'package:at_commons/src/verb/verb_util.dart';
 
-class NotifyVerbBuilder implements VerbBuilder {
+class NotifyAllVerbBuilder implements VerbBuilder {
   /// Key that represents a user's information. e.g phone, location, email etc.,
   String atKey;
 
@@ -11,7 +11,7 @@ class NotifyVerbBuilder implements VerbBuilder {
   dynamic value;
 
   /// AtSign to whom [atKey] has to be shared.
-  String sharedWith;
+  List sharedWithList;
 
   /// AtSign of the client user calling this builder.
   String sharedBy;
@@ -31,21 +31,6 @@ class NotifyVerbBuilder implements VerbBuilder {
 
   OperationEnum operation;
 
-  /// priority of the notification
-  PriorityEnum priority;
-
-  /// strategy in processing the notification
-  StrategyEnum strategy;
-
-  /// type of notification
-  MessageTypeEnum messageType;
-
-  /// The notifier of the notification. Defaults to system.
-  String notifier = SYSTEM;
-
-  /// Latest N notifications to notify. Defaults to 1
-  int latestN;
-
   bool ccd;
 
   @override
@@ -55,19 +40,6 @@ class NotifyVerbBuilder implements VerbBuilder {
     if (operation != null) {
       command += '${getOperationName(operation)}:';
     }
-    if (messageType != null) {
-      command += 'messageType:${getMessageType(messageType)}:';
-    }
-    if (priority != null) {
-      command += 'priority:${getPriority(priority)}:';
-    }
-    if (strategy != null) {
-      command += 'strategy:${getStrategy(strategy)}:';
-    }
-    if (latestN != null) {
-      command += 'latestN:$latestN:';
-    }
-    command += 'notifier:$notifier:';
     if (ttl != null) {
       command += 'ttl:${ttl}:';
     }
@@ -78,7 +50,8 @@ class NotifyVerbBuilder implements VerbBuilder {
       ccd ??= false;
       command += 'ttr:${ttr}:ccd:${ccd}:';
     }
-    if (sharedWith != null) {
+    if (sharedWithList != null && sharedWithList.isNotEmpty) {
+      var sharedWith = sharedWithList.join(',');
       command += '${VerbUtil.formatAtSign(sharedWith)}:';
     }
 
@@ -90,6 +63,7 @@ class NotifyVerbBuilder implements VerbBuilder {
     if (sharedBy != null) {
       command += '${VerbUtil.formatAtSign(sharedBy)}';
     }
+
     if (value != null) {
       command += ':${value}';
     }
@@ -100,7 +74,7 @@ class NotifyVerbBuilder implements VerbBuilder {
   @override
   bool checkParams() {
     var isValid = true;
-    if ((atKey == null) || (isPublic == true && sharedWith != null)) {
+    if ((atKey == null) || (isPublic == true && sharedWithList != null)) {
       isValid = false;
     }
     return isValid;

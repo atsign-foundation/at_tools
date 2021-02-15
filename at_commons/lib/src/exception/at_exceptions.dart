@@ -103,3 +103,8 @@ class OutBoundConnectionInvalidException extends AtConnectException {
 class KeyNotFoundException extends AtException {
   KeyNotFoundException(message) : super(message);
 }
+
+/// Throws when user inputs invalid arguments
+class IllegalArgumentException extends AtException{
+  IllegalArgumentException(message) : super(message);
+}
