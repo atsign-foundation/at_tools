@@ -1,4 +1,6 @@
 import 'dart:collection';
+import 'package:base2e15/base2e15.dart';
+import 'dart:convert';
 
 class VerbUtil {
   static const String NEW_LINE_REPLACE_PATTERN = '~NL~';
@@ -41,5 +43,20 @@ class VerbUtil {
 
   static String getFormattedValue(String value) {
     return value.replaceAll(NEW_LINE_REPLACE_PATTERN, '\n');
+  }
+
+  static String base2e15Encode(String value) {
+    return Base2e15.encode(value.codeUnits);
+  }
+
+  static String decodeText(String text, bool isEncoded) {
+    if (isEncoded != null && isEncoded) {
+      return utf8.decode(Base2e15.decode(text));
+    }
+    return getFormattedValue(text);
+  }
+
+  static bool containsNewLine(String value) {
+    return true;
   }
 }

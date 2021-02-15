@@ -62,6 +62,8 @@ class UpdateVerbBuilder implements VerbBuilder {
 
   String operation;
 
+  bool isEncoded;
+
   bool isJson = false;
 
   @override
@@ -88,6 +90,7 @@ class UpdateVerbBuilder implements VerbBuilder {
       metadata.isEncrypted = isEncrypted;
       metadata.ccd = ccd;
       metadata.isPublic = isPublic;
+      metadata.isEncoded = isEncoded;
       updateParams.metadata = metadata;
       var json = updateParams.toJson();
       var command = 'update:json:${jsonEncode(json)}\n';
@@ -116,6 +119,9 @@ class UpdateVerbBuilder implements VerbBuilder {
     if (isEncrypted != null) {
       command += 'isEncrypted:${isEncrypted}:';
     }
+    if (isEncrypted != null) {
+      command += 'isEncoded:${isEncoded}:';
+    }
     if (isPublic) {
       command += 'public:';
     } else if (sharedWith != null) {
@@ -126,8 +132,8 @@ class UpdateVerbBuilder implements VerbBuilder {
     if (sharedBy != null) {
       command += '${VerbUtil.formatAtSign(sharedBy)}';
     }
-    if (value is String) {
-      value = VerbUtil.replaceNewline(value);
+    if (value is String && VerbUtil.containsNewLine(value)) {
+      value = VerbUtil.base2e15Encode(value);
     }
     command += ' ${value}\n';
     return command;
@@ -183,8 +189,8 @@ class UpdateVerbBuilder implements VerbBuilder {
     builder.sharedBy = VerbUtil.formatAtSign(verbParams[AT_SIGN]);
     builder.atKey = verbParams[AT_KEY];
     builder.value = verbParams[AT_VALUE];
-    if (builder.value is String) {
-      builder.value = VerbUtil.replaceNewline(builder.value);
+    if (builder.value is String && VerbUtil.containsNewLine(builder.value)) {
+      builder.value = Base2e15.encode(builder.value);
     }
     if (verbParams[AT_TTL] != null) builder.ttl = int.parse(verbParams[AT_TTL]);
     if (verbParams[AT_TTB] != null) builder.ttb = int.parse(verbParams[AT_TTB]);
