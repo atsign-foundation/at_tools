@@ -16,6 +16,7 @@ const Map error_codes = {
   'AtClientException': 'AT0014',
   'KeyNotFoundException': 'AT0015',
   'SecondaryConnectException': 'AT0021',
+  'InvalidAtKeyException': 'AT0016',
   'IllegalArgumentException': 'AT0022'
 };
 
@@ -37,5 +38,6 @@ const Map error_description = {
   'AT0014': 'Unknown AtClient exception',
   'AT0015': 'key not found',
   'AT0021': 'Unable to connect to secondary',
+  'AT0016': 'Invalid atkey',
   'AT0022': 'Illegal arguments'
 };
