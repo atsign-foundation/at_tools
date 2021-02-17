@@ -5,26 +5,41 @@ import 'package:crypton/crypton.dart';
 import 'dart:io';
 import 'package:at_pkam/pkam_constants.dart';
 import 'package:archive/archive_io.dart';
+import 'package:args/args.dart';
+
+var parser = ArgParser();
 
 Future<void> main(List<String> arguments) async {
   try {
-    var args = CommandLineParser().getParserResults(arguments);
+    parser = CommandLineParser().getParser();
+    if (arguments.length == 1 &&
+        (arguments[0] == '-h' || arguments[0] == '--help')) {
+      print('Usage: \ndart bin/main.dart \n${parser.usage}');
+      exit(0);
+    }
+    var args = CommandLineParser().getParserResults(arguments, parser);
     var filePath = args['file_path'];
     var challenge = args['from_response'];
+    var aesKeyFile = args['aes_key'];
     var privateKey;
     if (filePath.endsWith(AT_KEYS)) {
       privateKey = await getSecretFromAtKeys(filePath);
     } else if (filePath.endsWith(ZIP)) {
-      privateKey = await getSecretFromZip(filePath);
+      privateKey = await getSecretFromZip(filePath, aesKeyFile);
     } else {
-      throw Exception('Usage : ${CommandLineParser().getParserResults(null)}');
+      print('Usage : \n${parser.usage}');
+      exit(0);
     }
-    privateKey = privateKey.trim();
-    var key = RSAPrivateKey.fromString(privateKey);
-    challenge = challenge.trim();
-    var signature = key.createSignature(challenge);
-    stdout.write(signature);
-    stdout.write('\n');
+    if (privateKey != null) {
+      privateKey = privateKey.trim();
+      var key = RSAPrivateKey.fromString(privateKey);
+      challenge = challenge.trim();
+      var signature = key.createSignature(challenge);
+      stdout.write(signature);
+      stdout.write('\n');
+    }
+  } on ArgParserException catch (e) {
+    print('${e}');
   } on Exception catch (e) {
     print('Exception : ${e}');
   }
@@ -48,11 +63,11 @@ Future<String> getSecretFromAtKeys(String filePath) async {
   }
 }
 
-Future<String> getSecretFromZip(String filePath) async {
+Future<String> getSecretFromZip(String filePath, String aesKeyFilePath) async {
   try {
     var isFileExists = await File(filePath).exists();
     if (!isFileExists) {
-      throw Exception('File not found');
+      throw Exception('keys zip file not found');
     }
     var fileContents;
     var bytes = File(filePath).readAsBytesSync();
@@ -64,8 +79,12 @@ Future<String> getSecretFromZip(String filePath) async {
     }
     var keysJSON = json.decode(fileContents);
     var encryptedPKAMPrivateKey = keysJSON['aesPkamPrivateKey'];
-    print('Please scan QR code image and provide aesKey');
-    var aesKey = stdin.readLineSync();
+    var isAesFileExists = await File(aesKeyFilePath).exists();
+    if (!isAesFileExists) {
+      throw Exception(
+          'aes key file path not provided \nUsage: \n${parser.usage}');
+    }
+    var aesKey = File(aesKeyFilePath).readAsStringSync();
     aesKey = aesKey.trim();
     var pkamPrivateKey = decryptValue(encryptedPKAMPrivateKey, aesKey);
     return pkamPrivateKey;
