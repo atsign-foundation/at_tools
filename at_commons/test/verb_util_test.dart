@@ -23,4 +23,30 @@ void main() {
       expect(value, 'charlies angels');
     });
   });
+
+  group('A group of newline checktest', () {
+    test('check newline in value', () {
+      var value = 'charlies \n angels';
+      var containsNewLine = VerbUtil.containsNewLine(value);
+      expect(containsNewLine, true);
+    });
+
+    test('check newline in value. no new line', () {
+      var value = 'charlies angels';
+      var containsNewLine = VerbUtil.containsNewLine(value);
+      expect(containsNewLine, false);
+    });
+
+    test('check newline in value. carriage return', () {
+      var value = 'charlies \r angels';
+      var containsNewLine = VerbUtil.containsNewLine(value);
+      expect(containsNewLine, true);
+    });
+
+    test('check newline in value. carriage return and new line', () {
+      var value = 'charlies \r\n angels';
+      var containsNewLine = VerbUtil.containsNewLine(value);
+      expect(containsNewLine, true);
+    });
+  });
 }

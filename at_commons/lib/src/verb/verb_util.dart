@@ -57,6 +57,7 @@ class VerbUtil {
   }
 
   static bool containsNewLine(String value) {
-    return true;
+    var ls = LineSplitter();
+    return ls.convert(value).length > 1;
   }
 }

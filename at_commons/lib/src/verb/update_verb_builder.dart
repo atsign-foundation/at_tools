@@ -119,9 +119,7 @@ class UpdateVerbBuilder implements VerbBuilder {
     if (isEncrypted != null) {
       command += 'isEncrypted:${isEncrypted}:';
     }
-    if (isEncrypted != null) {
-      command += 'isEncoded:${isEncoded}:';
-    }
+
     if (isPublic) {
       command += 'public:';
     } else if (sharedWith != null) {
@@ -134,6 +132,7 @@ class UpdateVerbBuilder implements VerbBuilder {
     }
     if (value is String && VerbUtil.containsNewLine(value)) {
       value = VerbUtil.base2e15Encode(value);
+      command += 'isEncoded:${true}';
     }
     command += ' ${value}\n';
     return command;
@@ -168,6 +167,9 @@ class UpdateVerbBuilder implements VerbBuilder {
     if (isEncrypted != null) {
       command += ':isEncrypted:${isEncrypted}';
     }
+    if (isEncoded != null) {
+      command += ':isEncoded:${isEncoded}';
+    }
     command += '\n';
     return command;
   }
@@ -190,7 +192,7 @@ class UpdateVerbBuilder implements VerbBuilder {
     builder.atKey = verbParams[AT_KEY];
     builder.value = verbParams[AT_VALUE];
     if (builder.value is String && VerbUtil.containsNewLine(builder.value)) {
-      builder.value = Base2e15.encode(builder.value);
+      builder.value = VerbUtil.base2e15Encode(builder.value);
     }
     if (verbParams[AT_TTL] != null) builder.ttl = int.parse(verbParams[AT_TTL]);
     if (verbParams[AT_TTB] != null) builder.ttb = int.parse(verbParams[AT_TTB]);
