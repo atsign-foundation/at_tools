@@ -11,3 +11,5 @@
 ## 1.0.1+4
 - added createdAt and updatedAt to metadata
   Introduced batch verb for sync
+## 1.0.1+5
+- Notification sub system changes
