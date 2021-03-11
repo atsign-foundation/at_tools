@@ -21,7 +21,7 @@ class VerbSyntax {
   static const update_meta =
       r'^update:meta:((?:public:)|((?<forAtSign>@?[^@\s]*):))?(?<atKey>((?!:{2})[^@])+)@(?<atSign>[^@:\s]*)(:ttl:(?<ttl>\d+))?(:ttb:(?<ttb>\d+))?(:ttr:(?<ttr>\d+))?(:ccd:(?<ccd>true|false))?(:isBinary:(?<isBinary>true|false))?(:isEncrypted:(?<isEncrypted>true|false))?$';
   static const delete =
-      r'^delete:(priority:(?<priority>low|medium|high):)?((?:public:)|(@(?<forAtSign>[^@:\s]*):))?(?<atKey>[^:]((?!:{2})[^@])+)(@(?<atSign>[^@\s]+))?$';
+      r'^delete:(priority:(?<priority>low|medium|high):)?(?:cached:)?((?:public:)|(@(?<forAtSign>[^@:\s]*):))?(?<atKey>[^:]((?!:{2})[^@])+)(@(?<atSign>[^@\s]+))?$';
   static const monitor = r'(^monitor$|^monitor ?(?<regex>.*)?)$';
   static const stream =
       r'^stream:((?<operation>init|send|receive|done))?((@(?<receiver>[^@:\s]+)))?( (?<streamId>[\w-]*))?( (?<fileName>.* ))?((?<length>\d*))?';
