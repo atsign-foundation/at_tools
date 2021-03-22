@@ -6,6 +6,3 @@
 - Update verb builder changes
 ## 1.0.1+3
 - Notify verb builder and update verb syntax changes
-## 1.0.1+4
-- added createdAt and updatedAt to metadata
-  Introduced batch verb for sync
