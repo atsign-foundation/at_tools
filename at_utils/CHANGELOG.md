@@ -10,4 +10,4 @@
 - Metadata util improvements and at_commons version change
 ## 1.0.1+4
 - added createdAt and updatedAt to metadata
-- Introduced batch verb for sync
+  Introduced batch verb for sync
