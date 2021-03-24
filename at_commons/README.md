@@ -21,6 +21,5 @@ pub get
 import 'package:at_commons/at_commons.dart';
 ```
 ## Usage
-```
+
 Please refer to the Example section
-```
