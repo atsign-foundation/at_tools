@@ -35,10 +35,17 @@ class StringBuffer extends AtBuffer<String> {
 }
 
 class ByteBuffer extends AtBuffer<List<int>> {
+  BytesBuilder _bytesBuilder;
+
   ByteBuffer({var terminatingChar = '\n', int capacity = 4096}) {
     this.terminatingChar = utf8.encode(terminatingChar)[0];
     this.capacity = capacity;
-    message = Uint8List.fromList(<int>[]);
+    _bytesBuilder = BytesBuilder(copy: false);
+  }
+
+  @override
+  List<int> getData() {
+    return _bytesBuilder.toBytes();
   }
 
   @override
@@ -46,21 +53,25 @@ class ByteBuffer extends AtBuffer<List<int>> {
     if (isOverFlow(data)) {
       throw AtBufferOverFlowException('Byte Buffer Overflow');
     } else {
-      message = message + data;
+      _bytesBuilder.add(data);
     }
   }
 
   bool isOverFlow(data) => length() + data.length > capacity;
 
   @override
-  bool isEnd() => message.last == terminatingChar;
+  bool isEnd() => _bytesBuilder.toBytes().last == terminatingChar;
 
   @override
-  bool isFull() => message.length >= capacity;
+  bool isFull() => _bytesBuilder.length >= capacity;
 
   @override
-  void clear() => message.clear();
+  void clear() => _bytesBuilder.clear();
 
   @override
-  int length() => message.length;
+  int length() => _bytesBuilder.length;
+
+  void addByte(int byte) {
+    _bytesBuilder.addByte(byte);
+  }
 }
