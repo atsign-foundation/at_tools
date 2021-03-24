@@ -1,6 +1,6 @@
 name: at_utils
 description: This is the Utility library for @protocol projects. It contains utility classes for atsign, atmetadata, configuration and logger.
-version: 1.0.1+5
+version: 1.0.1+6
 repository: https://github.com/atsign-foundation/at_tools
 homepage: https://atsign.dev
 
@@ -11,7 +11,7 @@ dependencies:
   logging: ^0.11.4
   yaml: ^2.2.0
   crypto: ^2.1.5
-  at_commons: ^1.0.1+5
+  at_commons: ^1.0.1+6
 
 dev_dependencies:
   pedantic: ^1.8.0
