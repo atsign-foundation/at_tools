@@ -105,6 +105,6 @@ class KeyNotFoundException extends AtException {
 }
 
 /// Throws when user inputs invalid arguments
-class IllegalArgumentException extends AtException{
+class IllegalArgumentException extends AtException {
   IllegalArgumentException(message) : super(message);
 }
