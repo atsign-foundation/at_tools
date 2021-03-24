@@ -4,7 +4,8 @@
 - Fixed issues reported by dartanalyzer
 ## 1.0.1+1
 - at_commons version change
-## 1.0.1+2  
+## 1.0.1+2
+
 - at_commons version change
 ## 1.0.1+3
 - Metadata util improvements and at_commons version change
