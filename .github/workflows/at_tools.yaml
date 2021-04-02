@@ -26,13 +26,13 @@ jobs:
       # - uses: dart-lang/setup-dart@v1
       - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
 
-      # Consider passing '--fatal-infos' for slightly stricter analysis.
-      - name: Analyze project source
-        run: dart analyze
-
       - name: Install dependencies for at_commons
         working-directory: at_commons
         run: dart pub get
+
+      - name: Analyze at_commons
+      - working-directory: at_commons
+      - run: dart analyze
 
       - name: Run unit tests in at_commons
         working-directory: at_commons
@@ -41,6 +41,10 @@ jobs:
       - name: Install dependencies for at_utils
         working-directory: at_utils
         run: dart pub get
+
+      - name: Analyze at_utils
+      - working-directory: at_utils
+      - run: dart analyze
 
       - name: Run unit test in at_utils
         working-directory: at_utils
