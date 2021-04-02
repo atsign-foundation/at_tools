@@ -26,26 +26,38 @@ jobs:
       # - uses: dart-lang/setup-dart@v1
       - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
 
-      - name: Install dependencies for at_commons
+      - name: Install dependencies in at_commons
         working-directory: at_commons
         run: dart pub get
 
-      - name: Analyze at_commons
-      - working-directory: at_commons
-      - run: dart analyze
+      # Uncomment this step to verify the use of 'dart format' on each commit.
+      # - name: Verify formatting
+      #   run: dart format --output=none --set-exit-if-changed .
 
-      - name: Run unit tests in at_commons
+      # Consider passing '--fatal-infos' for slightly stricter analysis.
+      - name: Analyze project source in at_commons
         working-directory: at_commons
-        run: dart test
+        run: dart analyze
 
-      - name: Install dependencies for at_utils
+      # Your project will need to have tests in test/ and a dependency on
+      # package:test for this step to succeed. Note that Flutter projects will
+      # want to change this to 'flutter test'.
+      - name: Run tests in at_commons
+        working-directory: at_commons
+        run: dart test --concurrency=1
+
+      - name: Install dependencies in at_utils
         working-directory: at_utils
         run: dart pub get
 
-      - name: Analyze at_utils
-      - working-directory: at_utils
-      - run: dart analyze
-
-      - name: Run unit test in at_utils
+      # Consider passing '--fatal-infos' for slightly stricter analysis.
+      - name: Analyze project source in at_utils
         working-directory: at_utils
-        run: dart test
+        run: dart analyze
+
+      # Your project will need to have tests in test/ and a dependency on
+      # package:test for this step to succeed. Note that Flutter projects will
+      # want to change this to 'flutter test'.
+      - name: Run tests in at_utils
+        working-directory: at_utils
+        run: dart test --concurrency=1
