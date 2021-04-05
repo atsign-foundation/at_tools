@@ -39,7 +39,7 @@ class DeleteVerbBuilder implements VerbBuilder {
       command += '${VerbUtil.formatAtSign(sharedWith)}:';
     }
     if (sharedBy != null && sharedBy.isNotEmpty) {
-      command += '${atKey}${VerbUtil.formatAtSign(sharedBy)}';
+      command += '$atKey${VerbUtil.formatAtSign(sharedBy)}';
     } else {
       command += atKey;
     }
