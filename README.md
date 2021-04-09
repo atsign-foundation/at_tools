@@ -1,3 +1,3 @@
-![image alt <](./.github/@developersmall.png) 
+![@ developer logo](https://atsign.dev/assets/img/@developersmall.png) 
 ### Now for a little internet optimism
 
