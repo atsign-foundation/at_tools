@@ -29,7 +29,7 @@ void main() async {
     AtStatusImpl atStatusImpl;
     atStatusImpl = AtStatusImpl();
 
-    atStatusImpl.rootUrl = 'test.do-sf2.atsign.zone';
+    atStatusImpl.rootUrl = 'vip.ve.atsign.zone';
     atStatus = await atStatusImpl.get(atSign);
     print('${atSign} status: ${atStatus.status()}');
     return atStatus;
