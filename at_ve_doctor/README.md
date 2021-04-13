@@ -1,5 +1,29 @@
-A sample command-line application with an entrypoint in `bin/`, library code
-in `lib/`, and example unit test in `test/`.
+A very simple way to test the status of the secondaries running in the Virtual Environment.
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+running at_ve_doctor.dart will run through the secondaries and report out the status of each of them.
+
+The result as you start up the Virtual Environment should look like:- 
+
+````
+@alice🛠 status: AtSignStatus.activated
+@ashish🛠 status: AtSignStatus.activated
+@barbara🛠 status: AtSignStatus.activated
+@bob🛠 status: AtSignStatus.activated
+@colin🛠 status: AtSignStatus.activated
+@egbiometric🛠 status: AtSignStatus.activated
+@egcovidlab🛠 status: AtSignStatus.activated
+@egcreditbureau🛠 status: AtSignStatus.activated
+@eggovagency🛠 status: AtSignStatus.activated
+@emoji🦄🛠 status: AtSignStatus.activated
+@eve🛠 status: AtSignStatus.activated
+@jagan🛠 status: AtSignStatus.activated
+@kevin🛠 status: AtSignStatus.activated
+@murali🛠 status: AtSignStatus.activated
+@naresh🛠 status: AtSignStatus.activated
+@purnima🛠 status: AtSignStatus.activated
+@sameeraja🛠 status: AtSignStatus.activated
+@sitaram🛠 status: AtSignStatus.activated
+````
+
+If all the secondaries are not activated the go to localhost:9001 and restart the pkamLoad process.
+Then re-run at_ve_doctor to test again.
