@@ -1,4 +1,5 @@
 A very simple way to test the status of the secondaries running in the Virtual Environment.
+ Using the [at_server_status](https://pub.dev/packages/at_server_status) package.
 
 running at_ve_doctor.dart will run through the secondaries and report out the status of each of them.
 
@@ -27,3 +28,4 @@ The result as you start up the Virtual Environment should look like:-
 
 If all the secondaries are not activated the go to localhost:9001 and restart the pkamLoad process.
 Then re-run at_ve_doctor to test again.
+
