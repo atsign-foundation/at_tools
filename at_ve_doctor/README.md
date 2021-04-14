@@ -30,9 +30,9 @@ In the "teapot" state the secondaries are ready to pair using the CRAM keys in t
 As you use the @signs the at_client will create keys and place them on the secondary and "activate" them, and you will be asked to store the keyFile containing the privateKeys.
 
 The suggested way to do that is using the [at_onboarding_flutter](https://pub.dev/packages/at_onboarding_flutter)
- pakage.
+ package.
 If you want to load the secondaries with known PKAM values then goto localhost:9001 and run the pkamLoad job. This will load each of the secondaries with PKAM publicKeys and your code can use know values from [demo data] (https://github.com/atsign-foundation/at_demos/tree/master/at_demo_data), to authenticate manually.
 
-If you get stuck or loose keys you can restart the Virtual Environment and all the secondaries will be reset to a "teapot" status.
+If you get stuck or lose keys you can restart the Virtual Environment and all the secondaries will be reset to a "teapot" status.
 
 You can re-run this at_ve_doctor at anytime to see the individual status of all the secondaries. 
