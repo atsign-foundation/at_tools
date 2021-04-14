@@ -3,7 +3,7 @@ A very simple way to test the status of the secondaries running in the Virtual E
 
 running at_ve_doctor.dart will run through the secondaries and report out the status of each of them.
 
-The result as you start up the Virtual Environment should look like:- 
+The result as you start up the Virtual Environment should look like this after giving the VE a minute or two to start everything up:- 
 
 ````
 @alice🛠 status: AtSignStatus.teapot
