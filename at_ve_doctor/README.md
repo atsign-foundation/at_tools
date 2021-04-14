@@ -25,7 +25,7 @@ The result as you start up the Virtual Environment should look like this after g
 @sameeraja🛠 status: AtSignStatus.teapot
 @sitaram🛠 status: AtSignStatus.teapot
 ````
-In the "teapot" state the secondaries are ready to pair using the CRAM keys in the [demo data](https://github.com/atsign-foundation/at_demos/tree/master/at_demo_data)
+In the "teapot" state the secondaries are ready to pair using the CRAM keys or the QR Codes in the [demo data](https://github.com/atsign-foundation/at_demos/tree/master/at_demo_data)
 
 As you use the @signs the at_client will create keys and place them on the secondary and "activate" them, and you will be asked to store the keyFile containing the privateKeys.
 
