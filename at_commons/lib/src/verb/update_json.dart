@@ -8,7 +8,7 @@ class UpdateParams {
   Metadata metadata;
 
   Map toJson() {
-    Map map = {};
+    var map = {};
     map['atKey'] = atKey;
     map['value'] = value;
     map['metadata'] = metadata;

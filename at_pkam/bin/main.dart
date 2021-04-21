@@ -1,11 +1,12 @@
 import 'dart:convert';
-import 'package:at_pkam/commandline_parser.dart';
-import 'package:encrypt/encrypt.dart';
-import 'package:crypton/crypton.dart';
 import 'dart:io';
-import 'package:at_pkam/pkam_constants.dart';
+
 import 'package:archive/archive_io.dart';
 import 'package:args/args.dart';
+import 'package:at_pkam/commandline_parser.dart';
+import 'package:at_pkam/pkam_constants.dart';
+import 'package:crypton/crypton.dart';
+import 'package:encrypt/encrypt.dart';
 
 var parser = ArgParser();
 
@@ -34,14 +35,15 @@ Future<void> main(List<String> arguments) async {
       privateKey = privateKey.trim();
       var key = RSAPrivateKey.fromString(privateKey);
       challenge = challenge.trim();
-      var signature = key.createSignature(challenge);
+      var signature =
+          base64.encode(key.createSHA256Signature(utf8.encode(challenge)));
       stdout.write(signature);
       stdout.write('\n');
     }
   } on ArgParserException catch (e) {
-    print('${e}');
+    print('$e');
   } on Exception catch (e) {
-    print('Exception : ${e}');
+    print('Exception : $e');
   }
 }
 
@@ -59,7 +61,8 @@ Future<String> getSecretFromAtKeys(String filePath) async {
         decryptValue(encryptedPKAMPrivateKey, aesEncryptionKey);
     return pkamPrivateKey;
   } on Exception catch (e) {
-    print('Exception while getting secret : ${e}');
+    print('Exception while getting secret : $e');
+    return null;
   }
 }
 
@@ -89,7 +92,8 @@ Future<String> getSecretFromZip(String filePath, String aesKeyFilePath) async {
     var pkamPrivateKey = decryptValue(encryptedPKAMPrivateKey, aesKey);
     return pkamPrivateKey;
   } on Exception catch (e) {
-    print('Exception while getting secret : ${e}');
+    print('Exception while getting secret : $e');
+    return null;
   }
 }
 
