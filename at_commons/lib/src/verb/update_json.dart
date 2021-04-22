@@ -1,11 +1,11 @@
 import 'package:at_commons/at_commons.dart';
 
 class UpdateParams {
-  String atKey;
+  String? atKey;
   dynamic value;
-  String sharedBy;
-  String sharedWith;
-  Metadata metadata;
+  String? sharedBy;
+  String? sharedWith;
+  Metadata? metadata;
 
   Map toJson() {
     Map map = {};

@@ -4,9 +4,9 @@ class AtCompactionConfig {
   // -1 indicates storing for ever
   int timeInDays = -1;
   // Percentage of logs to compact when the condition is met
-  int compactionPercentage;
+  int? compactionPercentage;
   // Frequency interval in which the logs are compacted
-  int compactionFrequencyMins;
+  int? compactionFrequencyMins;
 
   AtCompactionConfig(int sizeInKB, int timeInDays, int compactionPercentage,
       int compactionFrequencyMins) {

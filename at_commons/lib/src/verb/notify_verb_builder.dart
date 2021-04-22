@@ -4,49 +4,49 @@ import 'package:at_commons/src/verb/verb_util.dart';
 
 class NotifyVerbBuilder implements VerbBuilder {
   /// Key that represents a user's information. e.g phone, location, email etc.,
-  String atKey;
+  String? atKey;
 
   /// Value of the key typically in string format. Images, files, etc.,
   /// must be converted to unicode string before storing.
   dynamic value;
 
   /// AtSign to whom [atKey] has to be shared.
-  String sharedWith;
+  String? sharedWith;
 
   /// AtSign of the client user calling this builder.
-  String sharedBy;
+  String? sharedBy;
 
   /// if [isPublic] is true, then [atKey] is accessible by all atSigns.
   /// if [isPublic] is false, then [atKey] is accessible either by [sharedWith] or [sharedBy]
   bool isPublic = false;
 
   /// time in milliseconds after which [atKey] expires.
-  int ttl;
+  int? ttl;
 
   /// time in milliseconds after which [atKey] becomes active.
-  int ttb;
+  int? ttb;
 
   /// time in milliseconds to refresh [atKey].
-  int ttr;
+  int? ttr;
 
-  OperationEnum operation;
+  OperationEnum? operation;
 
   /// priority of the notification
-  PriorityEnum priority;
+  PriorityEnum? priority;
 
   /// strategy in processing the notification
-  StrategyEnum strategy;
+  StrategyEnum? strategy;
 
   /// type of notification
-  MessageTypeEnum messageType;
+  MessageTypeEnum? messageType;
 
   /// The notifier of the notification. Defaults to system.
   String notifier = SYSTEM;
 
   /// Latest N notifications to notify. Defaults to 1
-  int latestN;
+  int? latestN;
 
-  bool ccd;
+  bool? ccd;
 
   @override
   String buildCommand() {
@@ -85,7 +85,7 @@ class NotifyVerbBuilder implements VerbBuilder {
     if (isPublic) {
       command += 'public:';
     }
-    command += atKey;
+    command += atKey!;
 
     if (sharedBy != null) {
       command += '${VerbUtil.formatAtSign(sharedBy)}';

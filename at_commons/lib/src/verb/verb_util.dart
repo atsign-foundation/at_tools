@@ -7,9 +7,9 @@ class VerbUtil {
     return matches;
   }
 
-  static HashMap<String, String> _processMatches(
+  static HashMap<String, String?> _processMatches(
       Iterable<RegExpMatch> matches) {
-    var paramsMap = HashMap<String, String>();
+    var paramsMap = HashMap<String, String?>();
     matches.forEach((f) {
       for (var name in f.groupNames) {
         paramsMap.putIfAbsent(name, () => f.namedGroup(name));
@@ -18,7 +18,7 @@ class VerbUtil {
     return paramsMap;
   }
 
-  static HashMap<String, String> getVerbParam(String regex, String command) {
+  static HashMap<String, String?>? getVerbParam(String regex, String command) {
     var regExp = RegExp(regex);
     var regexMatches = _getMatches(regExp, command);
     if (regexMatches.isEmpty) {
@@ -28,7 +28,7 @@ class VerbUtil {
     return verbParams;
   }
 
-  static String formatAtSign(String atSign) {
+  static String? formatAtSign(String? atSign) {
     if (atSign != null && !atSign.startsWith('@')) {
       atSign = '@${atSign}';
     }

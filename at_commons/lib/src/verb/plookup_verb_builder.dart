@@ -9,12 +9,12 @@ import 'package:at_commons/src/verb/verb_util.dart';
 /// ```
 class PLookupVerbBuilder implements VerbBuilder {
   /// Key of the [sharedBy] to lookup. [atKey] must have public access.
-  String atKey;
+  String? atKey;
 
   /// atSign of the secondary server on which plookup has to be executed.
-  String sharedBy;
+  String? sharedBy;
 
-  String operation;
+  String? operation;
 
   @override
   String buildCommand() {

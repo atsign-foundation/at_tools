@@ -16,15 +16,15 @@ import 'package:at_commons/src/verb/verb_builder.dart';
 /// ```
 class LookupVerbBuilder implements VerbBuilder {
   /// the key of [atKey] to lookup. [atKey] should not have private access.
-  String atKey;
+  String? atKey;
 
   /// atSign of the secondary server on which lookup has to be executed.
-  String sharedBy;
+  String? sharedBy;
 
   /// Flag to specify whether to run this builder with or without auth.
   bool auth = false;
 
-  String operation;
+  String? operation;
 
   @override
   String buildCommand() {

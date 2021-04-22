@@ -11,13 +11,13 @@ import 'package:at_commons/src/verb/verb_util.dart';
 /// ```
 class DeleteVerbBuilder implements VerbBuilder {
   /// The key to delete
-  String atKey;
+  String? atKey;
 
   /// atSign of the secondary server on which llookup has to be executed.
-  String sharedBy;
+  String? sharedBy;
 
   /// atSign of the secondary server for whom [atKey] is shared
-  String sharedWith;
+  String? sharedWith;
 
   bool isPublic = false;
 
@@ -35,13 +35,13 @@ class DeleteVerbBuilder implements VerbBuilder {
       command += 'public:';
     }
 
-    if (sharedWith != null && sharedWith.isNotEmpty) {
+    if (sharedWith != null && sharedWith!.isNotEmpty) {
       command += '${VerbUtil.formatAtSign(sharedWith)}:';
     }
-    if (sharedBy != null && sharedBy.isNotEmpty) {
+    if (sharedBy != null && sharedBy!.isNotEmpty) {
       command += '${atKey}${VerbUtil.formatAtSign(sharedBy)}';
     } else {
-      command += atKey;
+      command += atKey!;
     }
     command += '\n';
     return command;
@@ -50,7 +50,7 @@ class DeleteVerbBuilder implements VerbBuilder {
   /// Returns a builder instance from a delete command
   static DeleteVerbBuilder getBuilder(String command) {
     var builder = DeleteVerbBuilder();
-    var verbParams = VerbUtil.getVerbParam(VerbSyntax.delete, command);
+    var verbParams = VerbUtil.getVerbParam(VerbSyntax.delete, command)!;
     builder.atKey = verbParams[AT_KEY];
     return builder;
   }

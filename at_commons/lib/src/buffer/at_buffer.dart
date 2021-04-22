@@ -2,18 +2,18 @@
 
 abstract class AtBuffer<T> {
   /// Message that is stored in the buffer
-  T message;
+  T? message;
 
   /// maximum data the buffer can hold. If length() of the buffer exceeds this value,
   /// AtBufferOverFlowException will be thrown on calling append(data)
-  int capacity;
+  int? capacity;
 
   /// Define terminatingChar to indicate end of buffer
   var terminatingChar;
 
   /// Returns the message stored in the buffer
   /// @returns message stored
-  T getData() => message;
+  T? getData() => message;
 
   /// True - is current capacity is greater than or equal to defined capacity. False - otherwise
   /// @returns - boolean value indicating whether buffer is full or not.
