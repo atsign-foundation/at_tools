@@ -11,7 +11,7 @@ class AtSignLogger {
 
   AtSignLogger(String name) {
     logger = logging.Logger.detached(name);
-    logger.onRecord.listen(ConsoleLoggingHandler() as void Function(LogRecord)?);
+    logger.onRecord.listen(ConsoleLoggingHandler());
     level = _root_level;
   }
 

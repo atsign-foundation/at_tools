@@ -59,7 +59,7 @@ class AtMetadataUtil {
       if (arg1.toLowerCase() == 'true') {
         return true;
       }
-      return false;
     }
+    return false;
   }
 }
