@@ -16,7 +16,7 @@ class ConsoleLoggingHandler implements LoggingHandler {
 }
 
 class FileLoggingHandler implements LoggingHandler {
-  File _file;
+  late File _file;
 
   FileLoggingHandler(String filename) {
     _file = File(filename);

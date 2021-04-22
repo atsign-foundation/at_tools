@@ -21,7 +21,7 @@ void main() {
       var atSign = '';
       expect(
           () => AtUtils.fixAtSign(atSign),
-          throwsA(predicate((e) =>
+          throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
                   'invalid @sign: must include one @ character and at least one character on the right')));
@@ -31,7 +31,7 @@ void main() {
       var atSign = 'bob';
       expect(
           () => AtUtils.fixAtSign(atSign),
-          throwsA(predicate((e) =>
+          throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
                   'invalid @sign: must include one @ character and at least one character on the right')));
@@ -41,7 +41,7 @@ void main() {
       var atSign = 'phone@bob@alice';
       expect(
           () => AtUtils.fixAtSign(atSign),
-          throwsA(predicate((e) =>
+          throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
                   'invalid @sign: Cannot Contain more than one @ character')));
@@ -51,7 +51,7 @@ void main() {
       var atSign = 'phone@';
       expect(
           () => AtUtils.fixAtSign(atSign),
-          throwsA(predicate((e) =>
+          throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
                   'invalid @sign: must include one @ character and at least one character on the right')));
@@ -61,7 +61,7 @@ void main() {
       var atSign = 'pho ne@bob';
       expect(
           () => AtUtils.fixAtSign(atSign),
-          throwsA(predicate((e) =>
+          throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
                   'invalid @sign: Cannot Contain whitespace characters')));
@@ -71,7 +71,7 @@ void main() {
       var atSign = 'phone@\U+237E';
       expect(
           () => AtUtils.fixAtSign(atSign),
-          throwsA(predicate((e) =>
+          throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
                   'invalid @sign: Cannot contain \!\*\'`\(\)\;\:\&\=\+\$\,\/\?\#\[\]\{\} characters')));
@@ -81,7 +81,7 @@ void main() {
       var atSign = 'phone@U' + String.fromCharCode(43);
       expect(
           () => AtUtils.fixAtSign(atSign),
-          throwsA(predicate((e) =>
+          throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
                   'invalid @sign: Cannot contain \!\*\'`\(\)\;\:\&\=\+\$\,\/\?\#\[\]\{\} characters')));
@@ -91,7 +91,7 @@ void main() {
       var atSign = '@\u0021';
       expect(
           () => AtUtils.fixAtSign(atSign),
-          throwsA(predicate((e) =>
+          throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
                   'invalid @sign: Cannot contain \!\*\'`\(\)\;\:\&\=\+\$\,\/\?\#\[\]\{\} characters')));
@@ -101,7 +101,7 @@ void main() {
       var atSign = 'phone^:@b*b';
       expect(
           () => AtUtils.fixAtSign(atSign),
-          throwsA(predicate((e) =>
+          throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
                   'invalid @sign: Cannot contain \!\*\'`\(\)\;\:\&\=\+\$\,\/\?\#\[\]\{\} characters')));
@@ -111,7 +111,7 @@ void main() {
       var atSign = 'phone@\u2400';
       expect(
           () => AtUtils.fixAtSign(atSign),
-          throwsA(predicate((e) =>
+          throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
                   'invalid @sign: must not include control characters')));
@@ -121,7 +121,7 @@ void main() {
       var atSign = '@\u0019';
       expect(
           () => AtUtils.fixAtSign(atSign),
-          throwsA(predicate((e) =>
+          throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
                   'invalid @sign: must not include control characters')));

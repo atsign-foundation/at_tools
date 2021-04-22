@@ -5,20 +5,21 @@ repository: https://github.com/atsign-foundation/at_tools
 homepage: https://atsign.dev
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  logging: ^0.11.4
-  yaml: ^2.2.0
-  crypto: ^2.1.5
+  logging: ^1.0.1
+  yaml: ^3.1.0
+  crypto: ^3.0.1
   at_commons:
     git:
       url: https://github.com/atsign-foundation/at_tools.git
       path: at_commons
-      ref: dev_env
+      ref: null_safety
       version: ^1.0.1+4
+  collection: ^1.15.0-nullsafety.4
 
 dev_dependencies:
-  pedantic: ^1.8.0
-  test: ^1.6.0
-  test_process: ^1.0.5
+  pedantic: ^1.11.0
+  test: ^1.17.0
+  test_process: ^2.0.0

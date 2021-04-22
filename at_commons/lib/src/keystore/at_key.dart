@@ -1,11 +1,11 @@
 import 'package:at_commons/at_commons.dart';
 
 class AtKey {
-  String key;
-  String sharedWith;
-  String sharedBy;
-  String namespace;
-  Metadata metadata;
+  String? key;
+  String? sharedWith;
+  String? sharedBy;
+  String? namespace;
+  Metadata? metadata;
   bool isRef = false;
 
   @override
@@ -54,11 +54,11 @@ class AtKey {
       }
     }
     //remove namespace
-    if (atKey.key != null && atKey.key.contains('.')) {
-      var namespaceIndex = atKey.key.lastIndexOf('.');
+    if (atKey.key != null && atKey.key!.contains('.')) {
+      var namespaceIndex = atKey.key!.lastIndexOf('.');
       if (namespaceIndex > -1) {
-        atKey.namespace = atKey.key.substring(namespaceIndex + 1);
-        atKey.key = atKey.key.substring(0, namespaceIndex);
+        atKey.namespace = atKey.key!.substring(namespaceIndex + 1);
+        atKey.key = atKey.key!.substring(0, namespaceIndex);
       }
     } else {
       metaData.namespaceAware = false;
@@ -69,21 +69,21 @@ class AtKey {
 }
 
 class Metadata {
-  int ttl;
-  int ttb;
-  int ttr;
-  bool ccd;
-  DateTime availableAt;
-  DateTime expiresAt;
-  DateTime refreshAt;
-  DateTime createdAt;
-  DateTime updatedAt;
-  String dataSignature;
-  bool isPublic = false;
+  int? ttl;
+  int? ttb;
+  int? ttr;
+  bool? ccd;
+  DateTime? availableAt;
+  DateTime? expiresAt;
+  DateTime? refreshAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  String? dataSignature;
+  bool? isPublic = false;
   bool isHidden = false;
   bool namespaceAware = true;
-  bool isBinary = false;
-  bool isEncrypted;
+  bool? isBinary = false;
+  bool? isEncrypted;
   bool isCached = false;
 
   @override
@@ -155,7 +155,7 @@ class Metadata {
 
 class AtValue {
   dynamic value;
-  Metadata metadata;
+  Metadata? metadata;
 
   @override
   String toString() {
