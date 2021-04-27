@@ -3,6 +3,7 @@ description: A command line utility for at protocol commands.
 version: 1.0.0
 repository: https://github.com/atsign-foundation/at_tools
 homepage: https://atsign.dev
+publish_to: none
 
 environment:
   sdk: '>=2.7.0 <3.0.0'
