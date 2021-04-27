@@ -9,7 +9,7 @@ on:
   pull_request:
     branches:
       - master
-      - dev_env
+      - trunk
 
 jobs:
   build:
