@@ -1,6 +1,6 @@
+import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
 import 'package:at_commons/src/verb/verb_util.dart';
-import 'package:at_commons/at_commons.dart';
 
 /// Delete verb builder generates a command to delete a [atKey] from the secondary server.
 /// ```
@@ -21,9 +21,15 @@ class DeleteVerbBuilder implements VerbBuilder {
 
   bool isPublic = false;
 
+  bool isCached = false;
+
   @override
   String buildCommand() {
     var command = 'delete:';
+
+    if (isCached) {
+      command += 'cached:';
+    }
 
     if (isPublic) {
       command += 'public:';
@@ -33,7 +39,7 @@ class DeleteVerbBuilder implements VerbBuilder {
       command += '${VerbUtil.formatAtSign(sharedWith)}:';
     }
     if (sharedBy != null && sharedBy.isNotEmpty) {
-      command += '${atKey}${VerbUtil.formatAtSign(sharedBy)}';
+      command += '$atKey${VerbUtil.formatAtSign(sharedBy)}';
     } else {
       command += atKey;
     }

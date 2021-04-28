@@ -55,11 +55,12 @@ class AtMetadataUtil {
   }
 
   static bool getBoolVerbParams(String arg1) {
-    if (arg1 != null) {
-      if (arg1.toLowerCase() == 'true') {
-        return true;
-      }
-      return false;
+    if (arg1 == null) {
+      return null;
     }
+    if (arg1.toLowerCase() == 'true') {
+      return true;
+    }
+    return false;
   }
 }
