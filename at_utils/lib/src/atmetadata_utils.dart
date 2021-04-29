@@ -45,7 +45,7 @@ class AtMetadataUtil {
   }
 
   /// Throws [InvalidSyntaxException] if ttr is 0 or null.
-  static bool? validateCascadeDelete(int ttr, bool isCascade) {
+  static bool? validateCascadeDelete(int? ttr, bool? isCascade) {
     // When ttr is 0 or null, key is not cached, hence setting isCascade to null.
     if (ttr == 0 || ttr == null) {
       return null;
