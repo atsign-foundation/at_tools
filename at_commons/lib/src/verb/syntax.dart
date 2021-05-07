@@ -33,4 +33,7 @@ class VerbSyntax {
   static const notifyAll =
       r'^notify:all:((?<operation>update|delete):)?(messageType:((?<messageType>key|text):))(?:ttl:(?<ttl>\d+):)?(?:ttb:(?<ttb>\d+):)?(?:ttr:(?<ttr>-?\d+):)?(?:ccd:(?<ccd>true|false+):)?(?<forAtSign>(([^:\s])+)?(,([^:\s]+))*)(:(?<atKey>[^@:\s]+))(@(?<atSign>[^@:\s]+))?(:(?<value>.+))?$';
   static const batch = r'^batch:(?<json>.+)$';
+  static const index = r'^index:(?<json>.+$)';
+  static const search =
+      r'^search:((fuzzy:(?<fuzzy>\d+):)|(?:contains:))?(?<keywords>(?<word>[^,]+[ ,]*)+$)';
 }
