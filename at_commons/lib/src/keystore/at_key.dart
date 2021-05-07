@@ -92,7 +92,7 @@ class Metadata {
   }
 
   Map toJson() {
-    Map map = {};
+    var map = {};
     map['availableAt'] = availableAt?.toUtc().toString();
     map['expiresAt'] = expiresAt?.toUtc().toString();
     map['refreshAt'] = refreshAt?.toUtc().toString();
