@@ -4,6 +4,7 @@ export 'package:at_commons/src/buffer/at_buffer.dart';
 export 'package:at_commons/src/buffer/at_buffer_impl.dart';
 export 'package:at_commons/src/at_message.dart';
 export 'package:at_commons/src/at_constants.dart';
+export 'package:at_commons/src/shared_key_status.dart';
 export 'package:at_commons/src/exception/at_exceptions.dart';
 export 'package:at_commons/src/exception/error_message.dart';
 export 'package:at_commons/src/verb/syntax.dart';
