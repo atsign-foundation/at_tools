@@ -9,7 +9,7 @@ class AtMetadataUtil {
 
   AtMetadataUtil._internal();
 
-  static int? validateTTL(String ttl) {
+  static int? validateTTL(String? ttl) {
     var ttl_ms;
     if (ttl != null) {
       ttl_ms = int.parse(ttl);
@@ -21,7 +21,7 @@ class AtMetadataUtil {
     return ttl_ms;
   }
 
-  static int? validateTTB(String ttb) {
+  static int? validateTTB(String? ttb) {
     var ttb_ms;
     if (ttb != null) {
       ttb_ms = int.parse(ttb);
@@ -33,7 +33,7 @@ class AtMetadataUtil {
     return ttb_ms;
   }
 
-  static int? validateTTR(int ttr_ms) {
+  static int? validateTTR(int? ttr_ms) {
     if (ttr_ms == null || ttr_ms == 0) {
       return null;
     }
@@ -54,7 +54,7 @@ class AtMetadataUtil {
     return isCascade;
   }
 
-  static bool getBoolVerbParams(String arg1) {
+  static bool getBoolVerbParams(String? arg1) {
     if (arg1 != null) {
       if (arg1.toLowerCase() == 'true') {
         return true;
