@@ -1,5 +1,5 @@
-import 'package:at_commons/src/verb/verb_util.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
+import 'package:at_commons/src/verb/verb_util.dart';
 
 /// Local lookup verb builder generates a command to lookup value of [atKey] stored in the secondary server.
 /// e.g llookup key shared with alice
@@ -34,7 +34,7 @@ class LLookupVerbBuilder implements VerbBuilder {
   String buildCommand() {
     var command = 'llookup:';
     if (operation != null) {
-      command += '${operation}:';
+      command += '$operation:';
     }
     if (isCached) {
       command += 'cached:';
@@ -43,10 +43,10 @@ class LLookupVerbBuilder implements VerbBuilder {
       command += 'public:';
     }
     if (sharedWith != null && sharedWith!.isNotEmpty) {
-      command += '${sharedWith}:';
+      command += '$sharedWith:';
     }
     command += atKey!;
-    return '${command}${VerbUtil.formatAtSign(sharedBy)}\n';
+    return '$command${VerbUtil.formatAtSign(sharedBy)}\n';
   }
 
   @override

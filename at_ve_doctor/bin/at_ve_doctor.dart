@@ -31,7 +31,7 @@ void main() async {
 
     atStatusImpl.rootUrl = 'test.do-sf2.atsign.zone';
     atStatus = await atStatusImpl.get(atSign);
-    print('${atSign} status: ${atStatus.status()}');
+    print('$atSign status: ${atStatus.status()}');
     return atStatus;
   }
 

@@ -14,6 +14,6 @@ class BatchResponse {
 
   @override
   String toString() {
-    return '{ ${id}, ${response} }';
+    return '${id}, ${response}';
   }
 }

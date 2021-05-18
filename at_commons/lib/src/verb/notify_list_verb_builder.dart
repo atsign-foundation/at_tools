@@ -28,7 +28,7 @@ class NotifyListVerbBuilder implements VerbBuilder {
           DateTime.parse(fromDate!).millisecondsSinceEpoch) {
         isValid = false;
       }
-    } on Exception catch (e) {
+    } on Exception {
       isValid = false;
     }
     return isValid;
