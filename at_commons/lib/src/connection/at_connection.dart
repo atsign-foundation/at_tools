@@ -20,8 +20,15 @@ abstract class AtConnection {
 }
 
 abstract class AtConnectionMetaData {
+  String sessionID;
   DateTime lastAccessed;
   DateTime created;
   bool isClosed = false;
+  bool isCreated = false;
   bool isStale = false;
+  bool isListening = false;
+  bool isAuthenticated = false;
+  bool isPolAuthenticated = false;
+  bool isStream = false;
+  String streamId;
 }
