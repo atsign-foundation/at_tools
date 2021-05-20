@@ -6,12 +6,9 @@ import 'package:at_commons/src/connection/at_connection.dart';
 /// Base class for common socket operations
 abstract class BaseConnection extends AtConnection {
   final Socket _socket;
-  StringBuffer buffer;
   AtConnectionMetaData metaData;
 
-  BaseConnection(this._socket) {
-    buffer = StringBuffer();
-  }
+  BaseConnection(this._socket);
 
   @override
   AtConnectionMetaData getMetaData() {
@@ -40,7 +37,6 @@ abstract class BaseConnection extends AtConnection {
   @override
   void write(String data) {
     if (isInValid()) {
-      //# Replace with specific exception
       throw ConnectionInvalidException('Connection is invalid');
     }
     try {
