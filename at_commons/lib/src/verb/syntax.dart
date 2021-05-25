@@ -36,4 +36,5 @@ class VerbSyntax {
   static const index = r'^index:(?<json>.+$)';
   static const search =
       r'^search:((fuzzy:(?<fuzzy>\d+):)|(?:contains:))?(?<keywords>(?<word>[^,]+[ ,]*)+$)';
+  static const unindex = r'^unindex$';
 }
