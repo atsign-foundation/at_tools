@@ -12,12 +12,16 @@ import 'package:at_commons/src/verb/verb_builder.dart';
 class MonitorVerbBuilder implements VerbBuilder {
   bool auth = true;
   String regex;
+  DateTime lastNotificationTime;
 
   @override
   String buildCommand() {
     var monitorCommand = 'monitor';
     if (regex != null) {
       monitorCommand += ' $regex';
+    }
+    if (lastNotificationTime != null) {
+      monitorCommand += ' ${lastNotificationTime.millisecondsSinceEpoch.toString()}';
     }
     monitorCommand += '\n';
     return monitorCommand;
