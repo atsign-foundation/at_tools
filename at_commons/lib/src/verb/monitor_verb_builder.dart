@@ -12,7 +12,7 @@ import 'package:at_commons/src/verb/verb_builder.dart';
 class MonitorVerbBuilder implements VerbBuilder {
   bool auth = true;
   String regex;
-  DateTime lastNotificationTime;
+  int lastNotificationTime;
 
   @override
   String buildCommand() {
@@ -21,7 +21,7 @@ class MonitorVerbBuilder implements VerbBuilder {
       monitorCommand += ' $regex';
     }
     if (lastNotificationTime != null) {
-      monitorCommand += ' ${lastNotificationTime.millisecondsSinceEpoch.toString()}';
+      monitorCommand += ' ${lastNotificationTime.toString()}';
     }
     monitorCommand += '\n';
     return monitorCommand;
