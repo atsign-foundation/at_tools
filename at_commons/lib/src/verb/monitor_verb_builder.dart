@@ -17,6 +17,9 @@ class MonitorVerbBuilder implements VerbBuilder {
   @override
   String buildCommand() {
     var monitorCommand = 'monitor';
+    if (lastNotificationTime != null) {
+      monitorCommand += ':${lastNotificationTime.toString()}';
+    }
     if (regex != null) {
       monitorCommand += ' $regex';
     }
