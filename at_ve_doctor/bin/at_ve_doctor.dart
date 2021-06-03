@@ -35,7 +35,7 @@ void main() async {
     return atStatus;
   }
 
-  await Future.forEach(atSigns, (element) async {
+  await Future.forEach(atSigns, (dynamic element) async {
     await getAtStatus(element);
   });
 
