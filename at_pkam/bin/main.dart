@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:archive/archive_io.dart';
 import 'package:args/args.dart';
@@ -36,7 +37,7 @@ Future<void> main(List<String> arguments) async {
       var key = RSAPrivateKey.fromString(privateKey);
       challenge = challenge.trim();
       var signature =
-          base64.encode(key.createSHA256Signature(utf8.encode(challenge)));
+          base64.encode(key.createSHA256Signature(utf8.encode(challenge) as Uint8List));
       stdout.write(signature);
       stdout.write('\n');
     }
@@ -47,7 +48,7 @@ Future<void> main(List<String> arguments) async {
   }
 }
 
-Future<String> getSecretFromAtKeys(String filePath) async {
+Future<String?> getSecretFromAtKeys(String filePath) async {
   try {
     var isFileExists = await File(filePath).exists();
     if (!isFileExists) {
@@ -66,13 +67,13 @@ Future<String> getSecretFromAtKeys(String filePath) async {
   }
 }
 
-Future<String> getSecretFromZip(String filePath, String aesKeyFilePath) async {
+Future<String?> getSecretFromZip(String filePath, String aesKeyFilePath) async {
   try {
     var isFileExists = await File(filePath).exists();
     if (!isFileExists) {
       throw Exception('keys zip file not found');
     }
-    var fileContents;
+    late var fileContents;
     var bytes = File(filePath).readAsBytesSync();
     final archive = ZipDecoder().decodeBytes(bytes);
     for (var file in archive) {
