@@ -11,3 +11,9 @@
   Introduced batch verb for sync
 ## 1.0.1+5
 - Notification sub system changes
+## 1.0.1+6
+- Replace ByteBuffer with ByteBuilder
+## 1.0.1+7
+- Third party package dependency upgrade
+## 1.0.1+8
+- Null safety upgrade
