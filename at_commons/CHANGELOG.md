@@ -15,5 +15,5 @@
 - Replace ByteBuffer with ByteBuilder
 ## 1.0.1+7
 - Third party package dependency upgrade
-## 1.0.1+8
+## 1.1.0
 - Null safety upgrade
