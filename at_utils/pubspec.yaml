@@ -3,7 +3,6 @@ description: This is the Utility library for @protocol projects. It contains uti
 version: 1.0.1+8
 repository: https://github.com/atsign-foundation/at_tools
 homepage: https://atsign.dev
-publish_to: none
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
