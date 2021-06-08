@@ -3,9 +3,9 @@
 ### Now for a little internet optimism
 
 # at_commons
-```
-at_commons library will be used for commonly used components in implementation of the @protocol.
-```
+
+**at_commons** library will be used for commonly used components in implementation of the @protocol.
+
 ## Installation:
 To use this library in your app, first add it to your pubspec.yaml
 ```  
@@ -21,6 +21,5 @@ pub get
 import 'package:at_commons/at_commons.dart';
 ```
 ## Usage
-```
+
 Please refer to the Example section
-```
