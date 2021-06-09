@@ -69,14 +69,14 @@ class NotifyVerbBuilder implements VerbBuilder {
     }
     command += 'notifier:$notifier:';
     if (ttl != null) {
-      command += 'ttl:${ttl}:';
+      command += 'ttl:$ttl:';
     }
     if (ttb != null) {
-      command += 'ttb:${ttb}:';
+      command += 'ttb:$ttb:';
     }
     if (ttr != null) {
       ccd ??= false;
-      command += 'ttr:${ttr}:ccd:${ccd}:';
+      command += 'ttr:$ttr:ccd:$ccd:';
     }
     if (sharedWith != null) {
       command += '${VerbUtil.formatAtSign(sharedWith)}:';
@@ -91,7 +91,7 @@ class NotifyVerbBuilder implements VerbBuilder {
       command += '${VerbUtil.formatAtSign(sharedBy)}';
     }
     if (value != null) {
-      command += ':${value}';
+      command += ':$value';
     }
 
     return '$command\n';
