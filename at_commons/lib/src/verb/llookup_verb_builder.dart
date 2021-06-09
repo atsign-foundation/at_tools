@@ -16,19 +16,19 @@ import 'package:at_commons/src/verb/verb_util.dart';
 ///    var builder = LlookupVerbBuilder()..key=’@bob:credit_card’..atSign=’bob’;
 class LLookupVerbBuilder implements VerbBuilder {
   /// the key of [atKey] to llookup. [atKey] can have either public, private or shared access.
-  String atKey;
+  String? atKey;
 
   /// atSign of the secondary server on which llookup has to be executed.
-  String sharedBy;
+  String? sharedBy;
 
   /// atSign of the secondary server for whom [atKey] is shared
-  String sharedWith;
+  String? sharedWith;
 
   bool isPublic = false;
 
   bool isCached = false;
 
-  String operation;
+  String? operation;
 
   @override
   String buildCommand() {
@@ -42,10 +42,10 @@ class LLookupVerbBuilder implements VerbBuilder {
     if (isPublic) {
       command += 'public:';
     }
-    if (sharedWith != null && sharedWith.isNotEmpty) {
+    if (sharedWith != null && sharedWith!.isNotEmpty) {
       command += '$sharedWith:';
     }
-    command += atKey;
+    command += atKey!;
     return '$command${VerbUtil.formatAtSign(sharedBy)}\n';
   }
 

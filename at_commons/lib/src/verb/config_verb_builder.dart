@@ -8,20 +8,20 @@ import 'package:at_commons/src/verb/verb_util.dart';
 /// var builder = ConfigVerbBuilder()..block = '@alice';
 /// ```
 class ConfigVerbBuilder implements VerbBuilder {
-  String configType;
-  String operation;
-  List<String> atSigns;
+  String? configType;
+  String? operation;
+  List<String>? atSigns;
   @override
   String buildCommand() {
     var command = 'config:';
     command += '$configType:';
     if (operation == 'show') {
-      command += operation;
+      command += operation!;
     } else {
       command += '$operation:';
     }
-    if (atSigns != null && atSigns.isNotEmpty) {
-      atSigns
+    if (atSigns != null && atSigns!.isNotEmpty) {
+      atSigns!
           .forEach((atSign) => command += '${VerbUtil.formatAtSign(atSign)}');
     }
     command = command.trim();

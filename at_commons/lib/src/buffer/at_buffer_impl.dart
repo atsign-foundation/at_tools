@@ -15,27 +15,27 @@ class StringBuffer extends AtBuffer<String> {
     if (!canAppend(data)) {
       throw AtBufferOverFlowException('String Buffer Overflow');
     } else {
-      message = message + data;
+      message = message! + data;
     }
   }
 
-  bool canAppend(data) => length() + data.length <= capacity;
+  bool canAppend(data) => length() + data.length <= capacity!;
 
   @override
-  bool isEnd() => message.endsWith(terminatingChar);
+  bool isEnd() => message!.endsWith(terminatingChar);
 
   @override
-  bool isFull() => message != null && (message.length >= capacity);
+  bool isFull() => message != null && (message!.length >= capacity!);
 
   @override
   void clear() => message = '';
 
   @override
-  int length() => message.length;
+  int length() => message!.length;
 }
 
 class ByteBuffer extends AtBuffer<List<int>> {
-  BytesBuilder _bytesBuilder;
+  late BytesBuilder _bytesBuilder;
 
   ByteBuffer({var terminatingChar = '\n', int capacity = 4096}) {
     this.terminatingChar = utf8.encode(terminatingChar)[0];
@@ -57,13 +57,13 @@ class ByteBuffer extends AtBuffer<List<int>> {
     }
   }
 
-  bool isOverFlow(data) => length() + data.length > capacity;
+  bool isOverFlow(data) => length() + data.length > capacity!;
 
   @override
   bool isEnd() => _bytesBuilder.toBytes().last == terminatingChar;
 
   @override
-  bool isFull() => _bytesBuilder.length >= capacity;
+  bool isFull() => _bytesBuilder.length >= capacity!;
 
   @override
   void clear() => _bytesBuilder.clear();

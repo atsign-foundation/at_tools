@@ -1,12 +1,12 @@
 import 'package:at_commons/at_commons.dart';
 
 class Response {
-  String _data;
-  String _type;
+  String? _data;
+  String? _type;
   bool _isError = false;
-  String _errorMessage;
-  String errorCode;
-  AtException atException;
+  String? _errorMessage;
+  String? errorCode;
+  AtException? atException;
 
   bool get isError => _isError;
 
@@ -17,8 +17,8 @@ class Response {
   Response.factory(this._data, this.errorCode, this._errorMessage);
 
   factory Response.fromJson(dynamic json) {
-    return Response.factory(json['data'] as String,
-        json['error_code'] as String, json['error_message'] as String);
+    return Response.factory(json['data'] as String?,
+        json['error_code'] as String?, json['error_message'] as String?);
   }
 
   Map toJson() {
@@ -44,21 +44,21 @@ class Response {
     _isError = value;
   }
 
-  String get errorMessage => _errorMessage;
+  String? get errorMessage => _errorMessage;
 
-  set errorMessage(String value) {
+  set errorMessage(String? value) {
     _errorMessage = value;
   }
 
-  String get type => _type;
+  String? get type => _type;
 
-  set type(String value) {
+  set type(String? value) {
     _type = value;
   }
 
-  String get data => _data;
+  String? get data => _data;
 
-  set data(String value) {
+  set data(String? value) {
     _data = value;
   }
 }

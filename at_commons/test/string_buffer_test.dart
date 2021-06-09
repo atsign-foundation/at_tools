@@ -171,7 +171,7 @@ void test_buffer_overflow_exception() {
   }
   expect(
       () => buffer.append('HelloThere'),
-      throwsA(predicate((e) =>
+      throwsA(predicate((dynamic e) =>
           e is AtBufferOverFlowException &&
           e.message == 'String Buffer Overflow')));
 }

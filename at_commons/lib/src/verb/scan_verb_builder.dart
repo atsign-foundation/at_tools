@@ -21,18 +21,18 @@ import 'package:at_commons/src/verb/verb_util.dart';
 class ScanVerbBuilder implements VerbBuilder {
   /// atSign of another secondary server on which scan is run.
   /// If [sharedBy] is set then [auth] has to be true.
-  String sharedBy;
+  String? sharedBy;
 
   /// atSign to whom the current atClient user has shared the keys.
   /// If [sharedWith] is set then [auth] has to be true.
-  String sharedWith;
+  String? sharedWith;
 
   /// If set to true, then all keys(public, private, protected) are returned.
   /// If set to false, only the public keys of current atSign are returned.
   bool auth = false;
 
   /// Regular expression to filter keys.
-  String regex;
+  String? regex;
 
   @override
   String buildCommand() {

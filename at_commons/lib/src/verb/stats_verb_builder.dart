@@ -16,10 +16,10 @@ class StatsVerbBuilder implements VerbBuilder {
   /// 4. Storage statistics
   /// 5. Most visited atSign statistics
   /// 6. Most read keys statistics
-  String statIds;
+  String? statIds;
 
   /// Regular expression to filter keys.
-  String regex;
+  String? regex;
 
   @override
   String buildCommand() {

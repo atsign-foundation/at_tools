@@ -1,12 +1,13 @@
 import 'package:at_utils/src/logging/handlers.dart';
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:logging/logging.dart' as logging;
 
 /// Class for AtSignLogger Implementation
 class AtSignLogger {
-  logging.Logger logger;
+  late logging.Logger logger;
   static String _root_level = 'info';
   bool _hierarchicalLoggingEnabled = false;
-  String _level;
+  String? _level;
 
   AtSignLogger(String name) {
     logger = logging.Logger.detached(name);
@@ -14,22 +15,21 @@ class AtSignLogger {
     level = _root_level;
   }
 
-  String get level {
-    return LogLevel.level.keys.firstWhere(
-        (k) => LogLevel.level[k].toString() == _level,
-        orElse: () => null);
+  String? get level {
+    return LogLevel.level.keys.firstWhereOrNull(
+        (k) => LogLevel.level[k].toString() == _level);
   }
 
-  set level(String value) {
+  set level(String? value) {
     if (!_hierarchicalLoggingEnabled) {
       _hierarchicalLoggingEnabled = true;
       logging.hierarchicalLoggingEnabled = _hierarchicalLoggingEnabled;
     }
     _level = value;
-    logger.level = LogLevel.level[_level];
+    logger.level = LogLevel.level[_level!];
   }
 
-  bool isLoggable(String value) => (LogLevel.level[value] >= logger.level);
+  bool isLoggable(String value) => (LogLevel.level[value]! >= logger.level);
 
   bool get hierarchicalLoggingEnabled {
     return _hierarchicalLoggingEnabled;
@@ -61,22 +61,22 @@ class AtSignLogger {
 //  }
 
 //log methods
-  void shout(message, [Object error, StackTrace stackTrace]) =>
+  void shout(message, [Object? error, StackTrace? stackTrace]) =>
       logger.shout(message, error, stackTrace);
 
-  void severe(message, [Object error, StackTrace stackTrace]) =>
+  void severe(message, [Object? error, StackTrace? stackTrace]) =>
       logger.severe(message, error, stackTrace);
 
-  void warning(message, [Object error, StackTrace stackTrace]) =>
+  void warning(message, [Object? error, StackTrace? stackTrace]) =>
       logger.warning(message, error, stackTrace);
 
-  void info(message, [Object error, StackTrace stackTrace]) =>
+  void info(message, [Object? error, StackTrace? stackTrace]) =>
       logger.info(message, error, stackTrace);
 
-  void finer(message, [Object error, StackTrace stackTrace]) =>
+  void finer(message, [Object? error, StackTrace? stackTrace]) =>
       logger.finer(message, error, stackTrace);
 
-  void finest(message, [Object error, StackTrace stackTrace]) =>
+  void finest(message, [Object? error, StackTrace? stackTrace]) =>
       logger.finest(message, error, stackTrace);
 }
 

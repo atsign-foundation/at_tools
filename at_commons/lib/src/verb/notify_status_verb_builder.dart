@@ -2,7 +2,7 @@ import 'package:at_commons/src/verb/verb_builder.dart';
 
 class NotifyStatusVerbBuilder implements VerbBuilder {
   /// Notification Id to query the status of notification
-  String notificationId;
+  String? notificationId;
 
   @override
   String buildCommand() {

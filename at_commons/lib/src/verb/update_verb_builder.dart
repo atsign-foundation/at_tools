@@ -22,45 +22,45 @@ import 'package:at_commons/src/verb/verb_builder.dart';
 /// ```
 class UpdateVerbBuilder implements VerbBuilder {
   /// Key that represents a user's information. e.g phone, location, email etc.,
-  String atKey;
+  String? atKey;
 
   /// Value of the key typically in string format. Images, files, etc.,
   /// must be converted to unicode string before storing.
   dynamic value;
 
   /// AtSign to whom [atKey] has to be shared.
-  String sharedWith;
+  String? sharedWith;
 
   /// AtSign of the client user calling this builder.
-  String sharedBy;
+  String? sharedBy;
 
   /// if [isPublic] is true, then [atKey] is accessible by all atSigns.
   /// if [isPublic] is false, then [atKey] is accessible either by [sharedWith] or [sharedBy]
   bool isPublic = false;
 
   /// time in milliseconds after which [atKey] expires.
-  int ttl;
+  int? ttl;
 
   /// time in milliseconds after which [atKey] becomes active.
-  int ttb;
+  int? ttb;
 
   /// time in milliseconds to refresh [atKey].
-  int ttr;
+  int? ttr;
 
   ///boolean variable to enable/disable cascade delete
-  bool ccd;
+  bool? ccd;
 
-  bool isBinary;
+  bool? isBinary;
 
   /// boolean variable to indicate if the value is encrypted.
   /// True indicates encrypted value
   /// False indicates unencrypted value
-  bool isEncrypted;
+  bool? isEncrypted;
 
   /// Signed signature with atsign's private key, if isPublic is true
-  String dataSignature;
+  String? dataSignature;
 
-  String operation;
+  String? operation;
 
   bool isJson = false;
 
@@ -72,7 +72,7 @@ class UpdateVerbBuilder implements VerbBuilder {
       if (sharedWith != null) {
         key += '${VerbUtil.formatAtSign(sharedWith)}:';
       }
-      key += atKey;
+      key += atKey!;
       if (sharedBy != null) {
         key += '${VerbUtil.formatAtSign(sharedBy)}';
       }
@@ -121,7 +121,7 @@ class UpdateVerbBuilder implements VerbBuilder {
     } else if (sharedWith != null) {
       command += '${VerbUtil.formatAtSign(sharedWith)}:';
     }
-    command += atKey;
+    command += atKey!;
 
     if (sharedBy != null) {
       command += '${VerbUtil.formatAtSign(sharedBy)}';
@@ -140,7 +140,7 @@ class UpdateVerbBuilder implements VerbBuilder {
     } else if (sharedWith != null) {
       command += '${VerbUtil.formatAtSign(sharedWith)}:';
     }
-    command += atKey;
+    command += atKey!;
     if (sharedBy != null) {
       command += '${VerbUtil.formatAtSign(sharedBy)}';
     }
@@ -166,7 +166,7 @@ class UpdateVerbBuilder implements VerbBuilder {
     return command;
   }
 
-  static UpdateVerbBuilder getBuilder(String command) {
+  static UpdateVerbBuilder? getBuilder(String command) {
     var builder = UpdateVerbBuilder();
     var verbParams;
     if (command.contains(UPDATE_META)) {

@@ -11,7 +11,7 @@ import 'package:at_commons/src/verb/verb_builder.dart';
 /// ```
 class MonitorVerbBuilder implements VerbBuilder {
   bool auth = true;
-  String regex;
+  String? regex;
 
   @override
   String buildCommand() {

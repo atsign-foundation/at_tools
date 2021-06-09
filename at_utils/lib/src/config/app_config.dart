@@ -3,7 +3,7 @@ import 'dart:io';
 
 /// Application Configuration class
 class ApplicationConfiguration {
-  YamlMap _yamlMap;
+  YamlMap? _yamlMap;
 
   ApplicationConfiguration(String configPath) {
     if (File(configPath).existsSync()) {
@@ -11,7 +11,7 @@ class ApplicationConfiguration {
     }
   }
 
-  YamlMap getYaml() {
+  YamlMap? getYaml() {
     return _yamlMap;
   }
 }

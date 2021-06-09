@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart';
 
@@ -8,7 +7,7 @@ void main(List<String> arguments) {
   var Name = arguments[0];
   var secret = getSecret(Name);
   secret = secret.trim();
-  var challenge = stdin.readLineSync();
+  var challenge = stdin.readLineSync()!;
   challenge = challenge.trim();
   var combo = '$secret$challenge';
   var bytes = utf8.encode(combo);
