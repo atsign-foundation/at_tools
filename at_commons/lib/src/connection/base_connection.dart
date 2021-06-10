@@ -6,12 +6,12 @@ import 'package:at_commons/src/connection/at_connection.dart';
 /// Base class for common socket operations
 abstract class BaseConnection extends AtConnection {
   final Socket _socket;
-  AtConnectionMetaData? metaData;
+  late AtConnectionMetaData metaData;
 
   BaseConnection(this._socket);
 
   @override
-  AtConnectionMetaData? getMetaData() {
+  AtConnectionMetaData getMetaData() {
     return metaData;
   }
 
@@ -19,12 +19,12 @@ abstract class BaseConnection extends AtConnection {
   void close() {
     try {
       _socket.destroy();
-      getMetaData()!.isClosed = true;
+      getMetaData().isClosed = true;
     } on Exception {
-      getMetaData()!.isStale = true;
+      getMetaData().isStale = true;
       // Ignore exception on a connection close
     } on Error {
-      getMetaData()!.isStale = true;
+      getMetaData().isStale = true;
       // Ignore error on a connection close
     }
   }
@@ -41,15 +41,15 @@ abstract class BaseConnection extends AtConnection {
     }
     try {
       getSocket().write(data);
-      getMetaData()!.lastAccessed = DateTime.now().toUtc();
+      getMetaData().lastAccessed = DateTime.now().toUtc();
     } on StateError {
-      getMetaData()!.isStale = true;
+      getMetaData().isStale = true;
       throw ConnectionInvalidException('StateError on write');
     } on SocketException {
-      getMetaData()!.isStale = true;
+      getMetaData().isStale = true;
       throw ConnectionInvalidException('Socket exception on write');
     } on Exception {
-      getMetaData()!.isStale = true;
+      getMetaData().isStale = true;
       throw ConnectionInvalidException('Exception on write');
     }
   }
