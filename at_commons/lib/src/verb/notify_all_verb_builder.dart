@@ -41,14 +41,14 @@ class NotifyAllVerbBuilder implements VerbBuilder {
       command += '${getOperationName(operation)}:';
     }
     if (ttl != null) {
-      command += 'ttl:${ttl}:';
+      command += 'ttl:$ttl:';
     }
     if (ttb != null) {
-      command += 'ttb:${ttb}:';
+      command += 'ttb:$ttb:';
     }
     if (ttr != null) {
       ccd ??= false;
-      command += 'ttr:${ttr}:ccd:${ccd}:';
+      command += 'ttr:$ttr:ccd:$ccd:';
     }
     if (sharedWithList != null && sharedWithList!.isNotEmpty) {
       var sharedWith = sharedWithList!.join(',');
@@ -65,7 +65,7 @@ class NotifyAllVerbBuilder implements VerbBuilder {
     }
 
     if (value != null) {
-      command += ':${value}';
+      command += ':$value';
     }
 
     return '$command\n';

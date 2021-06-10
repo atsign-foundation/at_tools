@@ -19,3 +19,6 @@
 - Refactor code with dart lint rules
 ## 1.1.0
 - Null safety upgrade
+## 1.1.1
+- Add last notification time to monitor verb
+- Move reusable connection classes to at_commons 

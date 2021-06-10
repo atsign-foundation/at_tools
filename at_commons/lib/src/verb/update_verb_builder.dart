@@ -96,25 +96,25 @@ class UpdateVerbBuilder implements VerbBuilder {
     }
     var command = 'update:';
     if (ttl != null) {
-      command += 'ttl:${ttl}:';
+      command += 'ttl:$ttl:';
     }
     if (ttb != null) {
-      command += 'ttb:${ttb}:';
+      command += 'ttb:$ttb:';
     }
     if (ttr != null) {
-      command += 'ttr:${ttr}:';
+      command += 'ttr:$ttr:';
     }
     if (ccd != null) {
-      command += 'ccd:${ccd}:';
+      command += 'ccd:$ccd:';
     }
     if (dataSignature != null) {
-      command += 'dataSignature:${dataSignature}:';
+      command += 'dataSignature:$dataSignature:';
     }
     if (isBinary != null) {
-      command += 'isBinary:${isBinary}:';
+      command += 'isBinary:$isBinary:';
     }
     if (isEncrypted != null) {
-      command += 'isEncrypted:${isEncrypted}:';
+      command += 'isEncrypted:$isEncrypted:';
     }
     if (isPublic) {
       command += 'public:';
@@ -129,7 +129,7 @@ class UpdateVerbBuilder implements VerbBuilder {
     if (value is String) {
       value = VerbUtil.replaceNewline(value);
     }
-    command += ' ${value}\n';
+    command += ' $value\n';
     return command;
   }
 
@@ -145,22 +145,22 @@ class UpdateVerbBuilder implements VerbBuilder {
       command += '${VerbUtil.formatAtSign(sharedBy)}';
     }
     if (ttl != null) {
-      command += ':ttl:${ttl}';
+      command += ':ttl:$ttl';
     }
     if (ttb != null) {
-      command += ':ttb:${ttb}';
+      command += ':ttb:$ttb';
     }
     if (ttr != null) {
-      command += ':ttr:${ttr}';
+      command += ':ttr:$ttr';
     }
     if (ccd != null) {
-      command += ':ccd:${ccd}';
+      command += ':ccd:$ccd';
     }
     if (isBinary != null) {
-      command += ':isBinary:${isBinary}';
+      command += ':isBinary:$isBinary';
     }
     if (isEncrypted != null) {
-      command += ':isEncrypted:${isEncrypted}';
+      command += ':isEncrypted:$isEncrypted';
     }
     command += '\n';
     return command;

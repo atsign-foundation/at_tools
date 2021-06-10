@@ -31,9 +31,9 @@ class LookupVerbBuilder implements VerbBuilder {
     var command;
     if (operation != null) {
       command =
-          'lookup:${operation}:${atKey}${VerbUtil.formatAtSign(sharedBy)}\n';
+          'lookup:$operation:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
     } else {
-      command = 'lookup:${atKey}${VerbUtil.formatAtSign(sharedBy)}\n';
+      command = 'lookup:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
     }
     return command;
   }

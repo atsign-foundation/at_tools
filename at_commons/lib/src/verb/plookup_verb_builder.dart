@@ -21,9 +21,9 @@ class PLookupVerbBuilder implements VerbBuilder {
     var command;
     if (operation != null) {
       command =
-          'plookup:${operation}:${atKey}${VerbUtil.formatAtSign(sharedBy)}\n';
+          'plookup:$operation:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
     } else {
-      command = 'plookup:${atKey}${VerbUtil.formatAtSign(sharedBy)}\n';
+      command = 'plookup:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
     }
     return command;
   }

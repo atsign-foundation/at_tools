@@ -30,7 +30,7 @@ class VerbUtil {
 
   static String? formatAtSign(String? atSign) {
     if (atSign != null && !atSign.startsWith('@')) {
-      atSign = '@${atSign}';
+      atSign = '@$atSign';
     }
     return atSign;
   }
