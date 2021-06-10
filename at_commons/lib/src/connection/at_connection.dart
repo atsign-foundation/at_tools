@@ -16,7 +16,7 @@ abstract class AtConnection {
   bool isInValid();
 
   /// Gets the connection metadata
-  AtConnectionMetaData? getMetaData();
+  AtConnectionMetaData getMetaData();
 }
 
 abstract class AtConnectionMetaData {
