@@ -20,10 +20,9 @@ class PLookupVerbBuilder implements VerbBuilder {
   String buildCommand() {
     var command;
     if (operation != null) {
-      command =
-          'plookup:${operation}:${atKey}${VerbUtil.formatAtSign(sharedBy)}\n';
+      command = 'plookup:$operation:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
     } else {
-      command = 'plookup:${atKey}${VerbUtil.formatAtSign(sharedBy)}\n';
+      command = 'plookup:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
     }
     return command;
   }
