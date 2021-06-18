@@ -16,3 +16,5 @@ export 'package:at_commons/src/verb/stats_verb_builder.dart';
 export 'package:at_commons/src/verb/syntax.dart';
 export 'package:at_commons/src/verb/update_verb_builder.dart';
 export 'package:at_commons/src/verb/verb_builder.dart';
+export 'package:at_commons/src/verb/index_verb_builder.dart';
+export 'package:at_commons/src/verb/search_verb_builder.dart';
