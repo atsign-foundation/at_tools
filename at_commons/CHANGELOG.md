@@ -17,5 +17,7 @@
 - Third party package dependency upgrade
 ## 1.0.1+8
 - Refactor code with dart lint rules
-## 1.1.0
+## 2.0.0
 - Null safety upgrade
+## 2.0.1
+- Remove trailing space in StatsVerbBuilder
