@@ -1,20 +1,20 @@
 import 'package:at_commons/at_builders.dart';
 
 class SyncVerbBuilder implements VerbBuilder {
-  int commitId = -1;
+  int? commitId;
 
-  String regex = '';
+  String? regex;
 
-  bool isStream = false;
+  bool? isStream;
 
   @override
   String buildCommand() {
     var command = 'sync:';
-    if (isStream) {
+    if (isStream!) {
       command += 'stream:';
     }
     command += '$commitId';
-    if (regex.isNotEmpty) {
+    if (regex != null && regex!.isNotEmpty) {
       command += ':$regex';
     }
     command += '\n';
