@@ -79,6 +79,7 @@ class Metadata {
   DateTime? createdAt;
   DateTime? updatedAt;
   String? dataSignature;
+  String? sharedKeyStatus;
   bool? isPublic = false;
   bool isHidden = false;
   bool namespaceAware = true;
