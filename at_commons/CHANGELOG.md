@@ -22,3 +22,5 @@
 ## 2.0.1
 - Add last notification time to monitor verb
 - Move reusable connection classes to at_commons 
+## 2.0.2
+- Syntax change in stream verb to support resume
