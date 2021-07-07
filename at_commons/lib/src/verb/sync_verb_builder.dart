@@ -10,7 +10,7 @@ class SyncVerbBuilder implements VerbBuilder {
   @override
   String buildCommand() {
     var command = 'sync:';
-    if (isStream!) {
+    if (isStream != null) {
       command += 'stream:';
     }
     command += '$commitId';

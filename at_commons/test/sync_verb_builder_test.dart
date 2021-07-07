@@ -4,7 +4,8 @@ import 'package:test/test.dart';
 
 void main() {
   test('build sync verb command with defaults values', () {
-    var command = SyncVerbBuilder().buildCommand();
+    var syncVerbBuilder = SyncVerbBuilder()..commitId = -1;
+    var command = syncVerbBuilder.buildCommand();
     expect(command, 'sync:-1\n');
     var regex = RegExp(VerbSyntax.sync);
     command = command.replaceAll('\n', '');
@@ -12,7 +13,9 @@ void main() {
   });
 
   test('build sync verb command with regex', () {
-    var syncVerbBuilder = SyncVerbBuilder()..regex = '.buzz';
+    var syncVerbBuilder = SyncVerbBuilder()
+      ..regex = '.buzz'
+      ..commitId = -1;
     var command = syncVerbBuilder.buildCommand();
     expect(command, 'sync:-1:.buzz\n');
     var regex = RegExp(VerbSyntax.sync);
@@ -43,7 +46,7 @@ void main() {
     assert(regex.hasMatch(command));
   });
 
-  test('build sync stream verb command',(){
+  test('build sync stream verb command', () {
     var syncVerbBuilder = SyncVerbBuilder()
       ..commitId = 3
       ..isStream = true;
@@ -54,9 +57,10 @@ void main() {
     assert(regex.hasMatch(command));
   });
 
-  test('build sync stream verb command',(){
+  test('build sync stream verb command', () {
     var syncVerbBuilder = SyncVerbBuilder()
-      ..isStream = true;
+      ..isStream = true
+      ..commitId = -1;
     var command = syncVerbBuilder.buildCommand();
     expect(command, 'sync:stream:-1\n');
     var regex = RegExp(VerbSyntax.syncStream);
