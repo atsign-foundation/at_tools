@@ -20,5 +20,7 @@
 ## 2.0.0
 - Null safety upgrade
 ## 2.0.1
+- Remove trailing space in StatsVerbBuilder
+## 2.0.1
 - Add last notification time to monitor verb
-- Move reusable connection classes to at_commons 
+- Move reusable connection classes to at_commons

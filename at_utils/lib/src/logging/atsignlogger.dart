@@ -16,8 +16,8 @@ class AtSignLogger {
   }
 
   String? get level {
-    return LogLevel.level.keys.firstWhereOrNull(
-        (k) => LogLevel.level[k].toString() == _level);
+    return LogLevel.level.keys
+        .firstWhereOrNull((k) => LogLevel.level[k].toString() == _level);
   }
 
   set level(String? value) {
