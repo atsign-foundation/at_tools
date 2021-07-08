@@ -79,7 +79,6 @@ class Metadata {
   DateTime? createdAt;
   DateTime? updatedAt;
   String? dataSignature;
-  String? sharedKeyStatus;
   bool? isPublic = false;
   bool isHidden = false;
   bool namespaceAware = true;
@@ -89,7 +88,7 @@ class Metadata {
 
   @override
   String toString() {
-    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : $isBinary, isEncrypted : $isEncrypted, isCached : $isCached, dataSignature: $dataSignature}';
+    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : ${isBinary}, isEncrypted : ${isEncrypted}, isCached : ${isCached}, dataSignature: ${dataSignature}}';
   }
 
   Map toJson() {
@@ -107,7 +106,6 @@ class Metadata {
     map[IS_BINARY] = isBinary;
     map[IS_ENCRYPTED] = isEncrypted;
     map[PUBLIC_DATA_SIGNATURE] = dataSignature;
-    map[SHARED_KEY_STATUS] = sharedKeyStatus;
     return map;
   }
 
@@ -154,7 +152,6 @@ class Metadata {
       metaData.isEncrypted = json[IS_ENCRYPTED];
       metaData.isPublic = json[IS_PUBLIC];
       metaData.dataSignature = json[PUBLIC_DATA_SIGNATURE];
-      metaData.sharedKeyStatus = json[SHARED_KEY_STATUS];
     } catch (error) {
       print('AtMetaData.fromJson error: ' + error.toString());
     }
