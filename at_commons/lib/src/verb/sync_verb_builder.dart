@@ -5,12 +5,12 @@ class SyncVerbBuilder implements VerbBuilder {
 
   String? regex;
 
-  bool isStream = false;
+  bool? isStream;
 
   @override
   String buildCommand() {
     var command = 'sync:';
-    if (isStream) {
+    if (isStream != null) {
       command += 'stream:';
     }
     command += '$commitId';
