@@ -12,15 +12,7 @@ dependencies:
   yaml: ^3.1.0
   crypto: ^3.0.1
   at_commons: ^2.0.1
-  collection: ^1.15.0-nullsafety.4
-
-dependency_overrides:
-  at_commons:
-    git:
-      url: https://github.com/atsign-foundation/at_tools.git
-      path: at_commons
-      ref: trunk
-      version: ^2.0.1
+  collection: ^1.15.0
 
 dev_dependencies:
   pedantic: ^1.11.0

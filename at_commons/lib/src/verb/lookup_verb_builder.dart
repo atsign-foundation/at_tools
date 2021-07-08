@@ -30,8 +30,7 @@ class LookupVerbBuilder implements VerbBuilder {
   String buildCommand() {
     var command;
     if (operation != null) {
-      command =
-          'lookup:$operation:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
+      command = 'lookup:$operation:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
     } else {
       command = 'lookup:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
     }
