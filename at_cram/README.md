@@ -1,4 +1,4 @@
-#at_cram
+# at_cram
 
 The at_cram utility is used to create the authentication digest when connecting
 to a secondary server that does not yet have pkam authentication activated.
