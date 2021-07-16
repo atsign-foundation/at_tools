@@ -25,7 +25,7 @@ class StatsVerbBuilder implements VerbBuilder {
   String buildCommand() {
     var statsCommand = 'stats';
     if (statIds != null) {
-      statsCommand += ':${statIds}';
+      statsCommand += ':$statIds';
       if (regex != null) {
         statsCommand += ':$regex';
       }

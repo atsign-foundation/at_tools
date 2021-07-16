@@ -15,6 +15,6 @@ class BatchRequest {
 
   @override
   String toString() {
-    return '${id}, ${command}';
+    return '$id, $command';
   }
 }
