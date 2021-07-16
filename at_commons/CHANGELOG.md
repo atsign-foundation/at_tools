@@ -21,3 +21,5 @@
 - Null safety upgrade
 ## 2.0.1
 - Remove trailing space in StatsVerbBuilder
+## 2.0.2
+- Fix regex issue in Notify verb

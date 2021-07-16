@@ -37,7 +37,7 @@ class Response {
 
   @override
   String toString() {
-    return 'Response{_data: ${_data}, _type: $_type, _isError: $_isError, _errorMessage: $_errorMessage}';
+    return 'Response{_data: $_data, _type: $_type, _isError: $_isError, _errorMessage: $_errorMessage}';
   }
 
   set isError(bool value) {
