@@ -75,7 +75,7 @@ class AtUtils {
   static String? formatAtSign(String? atSign) {
     // verify whether atSign started with '@' or not
     if (atSign != null && !atSign.startsWith('@')) {
-      atSign = '@${atSign}';
+      atSign = '@$atSign';
     }
     return atSign;
   }
