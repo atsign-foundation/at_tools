@@ -23,3 +23,5 @@
 - Remove trailing space in StatsVerbBuilder
 ## 2.0.2
 - Fix regex issue in Notify verb
+## 2.0.3
+- Syntax change in stream verb to support resume
