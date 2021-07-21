@@ -1,5 +1,6 @@
 name: at_utils
-description: This is the Utility library for @protocol projects. It contains utility classes for atsign, atmetadata, configuration and logger.
+description: A Dart library that contains various utility classes such as atSign, atmetadata, configuration, and logger.
+documentation: https://atsign.dev/docs/
 version: 2.0.2
 repository: https://github.com/atsign-foundation/at_tools
 homepage: https://atsign.dev
