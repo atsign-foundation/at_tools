@@ -19,11 +19,12 @@ class AtCli {
     if (preference.authMode == 'pkam') {
       _atLookup = AtLookupImpl(
           _atSign, preference.rootDomain, preference.rootPort,
-          privateKey: authKey);
+          privateKey: authKey.trim());
     } else if (preference.authMode == 'cram') {
+      // print('${preference.authMode}, $_atSign, ${preference.rootDomain}, ${preference.rootPort}, $authKey');
       _atLookup = AtLookupImpl(
           _atSign, preference.rootDomain, preference.rootPort,
-          cramSecret: authKey);
+          cramSecret: authKey.trim());
     } else {
       throw Exception('No authentication specified');
     }
@@ -53,17 +54,18 @@ class AtCli {
         var key = arguments['key'];
         var sharedWith = arguments['shared_with'];
         var isPublic = arguments['public'];
+        var sharedBy = (arguments['shared_by'] != null) ?  arguments['shared_by'] : _atSign;
         result = await _atLookup.llookup(key,
-            isPublic: isPublic == 'true', sharedWith: sharedWith);
+            isPublic: isPublic == 'true', sharedWith: sharedWith, sharedBy: sharedBy);
         break;
       case 'lookup':
         var key = arguments['key'];
-        var sharedBy = arguments['shared_by'];
+        var sharedBy = (arguments['shared_by'] != null) ?  arguments['shared_by'] : _atSign;
         result = await _atLookup.lookup(key, sharedBy);
         break;
       case 'plookup':
         var key = arguments['key'];
-        var sharedBy = arguments['shared_by'];
+        var sharedBy = (arguments['shared_by'] != null) ?  arguments['shared_by'] : _atSign;
         result = await _atLookup.plookup(key, sharedBy);
         break;
       case 'delete':
@@ -75,9 +77,9 @@ class AtCli {
         break;
       case 'scan':
         var regex = arguments['regex'];
-        var sharedBy = arguments['shared_by'];
+        var sharedBy = (arguments['shared_by'] != null) ?  arguments['shared_by'] : _atSign;
         await _atLookup
-            .scan(regex: regex, sharedBy: sharedBy, auth: false)
+            .scan(regex: regex, sharedBy: sharedBy, auth: arguments['auth'] == 'true')
             .then((scan_result) {
           result = scan_result;
         }).catchError((scan_error) {

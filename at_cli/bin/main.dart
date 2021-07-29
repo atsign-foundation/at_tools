@@ -25,12 +25,12 @@ void main(List<String> arguments) async {
     }
     atCli.init(currentAtSign, preferences);
     var result;
-    print('verb : ${parsedArgs['verb']}');
+    print('verb received: ${parsedArgs['verb']}');
     if (parsedArgs['verb'] != null) {
       result = await atCli.execute(parsedArgs);
     } else if (parsedArgs['command'] != null) {
       var command = parsedArgs['command'];
-      print('command : $command');
+      print('command received : $command');
       var auth = parsedArgs['auth'];
       result = await atCli.executeCommand(command, isAuth: auth == 'true');
     } else {
@@ -77,7 +77,7 @@ AtCliPreference _getAtCliPreference(ArgResults parsedArgs) {
 
   preferences.authKeyFile = (parsedArgs != null)
       ? ((parsedArgs['authKeyFile'] != null)
-          ? parsedArgs['keyFile']
+          ? parsedArgs['authKeyFile']
           : ConfigUtil.getYaml()['auth']['key_file_location'])
       : ConfigUtil.getYaml()['auth']['key_file_location'];
   return preferences;
