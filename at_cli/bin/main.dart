@@ -4,8 +4,10 @@ import 'package:at_cli/at_cli.dart';
 import 'package:at_cli/src/command_line_parser.dart';
 import 'package:at_cli/src/preference.dart';
 import 'package:at_cli/src/config_util.dart';
+import 'package:at_utils/at_logger.dart';
 
 void main(List<String> arguments) async {
+  AtSignLogger.root_level = 'severe';
   try {
     var parsedArgs = CommandLineParser.getParserResults(arguments);
     if(parsedArgs == null || parsedArgs.arguments.isEmpty) {
@@ -25,17 +27,16 @@ void main(List<String> arguments) async {
     }
     atCli.init(currentAtSign, preferences);
     var result;
-    print('verb received: ${parsedArgs['verb']}');
     if (parsedArgs['verb'] != null) {
       result = await atCli.execute(parsedArgs);
     } else if (parsedArgs['command'] != null) {
       var command = parsedArgs['command'];
-      print('command received : $command');
       var auth = parsedArgs['auth'];
       result = await atCli.executeCommand(command, isAuth: auth == 'true');
     } else {
       print('Invalid command. Verb or command not entered');
     }
+    result = (result != null) ? result.replaceFirst('data:', '') : result;
     print(result);
     exit(0);
   } on Exception {

@@ -21,7 +21,6 @@ class AtCli {
           _atSign, preference.rootDomain, preference.rootPort,
           privateKey: authKey.trim());
     } else if (preference.authMode == 'cram') {
-      // print('${preference.authMode}, $_atSign, ${preference.rootDomain}, ${preference.rootPort}, $authKey');
       _atLookup = AtLookupImpl(
           _atSign, preference.rootDomain, preference.rootPort,
           cramSecret: authKey.trim());
@@ -77,7 +76,7 @@ class AtCli {
         break;
       case 'scan':
         var regex = arguments['regex'];
-        var sharedBy = (arguments['shared_by'] != null) ?  arguments['shared_by'] : _atSign;
+        var sharedBy = arguments['shared_by'];
         await _atLookup
             .scan(regex: regex, sharedBy: sharedBy, auth: arguments['auth'] == 'true')
             .then((scan_result) {
