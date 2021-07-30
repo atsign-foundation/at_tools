@@ -8,7 +8,6 @@ class Response {
   String? errorCode;
   AtException? atException;
 
-  // ignore: unnecessary_getters_setters
   bool get isError => _isError;
 
   bool isStream = false;
@@ -41,31 +40,24 @@ class Response {
     return 'Response{_data: $_data, _type: $_type, _isError: $_isError, _errorMessage: $_errorMessage}';
   }
 
-  // ignore: unnecessary_getters_setters
   set isError(bool value) {
     _isError = value;
   }
 
-  // ignore: unnecessary_getters_setters
   String? get errorMessage => _errorMessage;
 
-  // ignore: unnecessary_getters_setters
   set errorMessage(String? value) {
     _errorMessage = value;
   }
 
-  // ignore: unnecessary_getters_setters
   String? get type => _type;
 
-  // ignore: unnecessary_getters_setters
   set type(String? value) {
     _type = value;
   }
 
-  // ignore: unnecessary_getters_setters
   String? get data => _data;
 
-  // ignore: unnecessary_getters_setters
   set data(String? value) {
     _data = value;
   }

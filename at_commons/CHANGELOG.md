@@ -21,6 +21,7 @@
 - Null safety upgrade
 ## 2.0.1
 - Remove trailing space in StatsVerbBuilder
-## 2.0.1
-- Add last notification time to monitor verb
-- Move reusable connection classes to at_commons
+## 2.0.2
+- Fix regex issue in Notify verb
+## 2.0.3
+- Syntax change in stream verb to support resume

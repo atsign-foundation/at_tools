@@ -64,8 +64,6 @@ class UpdateVerbBuilder implements VerbBuilder {
 
   bool isJson = false;
 
-  String? sharedKeyStatus;
-
   @override
   String buildCommand() {
     if (isJson) {
@@ -90,7 +88,6 @@ class UpdateVerbBuilder implements VerbBuilder {
       metadata.isEncrypted = isEncrypted;
       metadata.ccd = ccd;
       metadata.isPublic = isPublic;
-      metadata.sharedKeyStatus = sharedKeyStatus;
       updateParams.metadata = metadata;
       var json = updateParams.toJson();
       var command = 'update:json:${jsonEncode(json)}\n';

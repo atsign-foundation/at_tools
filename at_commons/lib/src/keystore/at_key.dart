@@ -79,7 +79,6 @@ class Metadata {
   DateTime? createdAt;
   DateTime? updatedAt;
   String? dataSignature;
-  String? sharedKeyStatus;
   bool? isPublic = false;
   bool isHidden = false;
   bool namespaceAware = true;
@@ -107,7 +106,6 @@ class Metadata {
     map[IS_BINARY] = isBinary;
     map[IS_ENCRYPTED] = isEncrypted;
     map[PUBLIC_DATA_SIGNATURE] = dataSignature;
-    map[SHARED_KEY_STATUS] = sharedKeyStatus;
     return map;
   }
 
@@ -154,7 +152,6 @@ class Metadata {
       metaData.isEncrypted = json[IS_ENCRYPTED];
       metaData.isPublic = json[IS_PUBLIC];
       metaData.dataSignature = json[PUBLIC_DATA_SIGNATURE];
-      metaData.sharedKeyStatus = json[SHARED_KEY_STATUS];
     } catch (error) {
       print('AtMetaData.fromJson error: ' + error.toString());
     }
