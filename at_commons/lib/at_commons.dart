@@ -15,3 +15,4 @@ export 'package:at_commons/src/verb/verb_util.dart';
 export 'package:at_commons/src/verb/response.dart';
 export 'package:at_commons/src/verb/batch/batch_request.dart';
 export 'package:at_commons/src/verb/batch/batch_response.dart';
+export 'package:at_commons/src/shared_key_status.dart';
