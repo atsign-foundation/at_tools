@@ -36,7 +36,7 @@ void main(List<String> arguments) async {
     } else {
       print('Invalid command. Verb or command not entered');
     }
-    result = (result != null) ? result.replaceFirst('data:', '') : result;
+    result = (result != null)  ? result.toString().replaceFirst('data:', '') : result;
     print(result);
     exit(0);
   } on Exception {
