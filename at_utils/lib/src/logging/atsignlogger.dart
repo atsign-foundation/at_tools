@@ -40,7 +40,7 @@ class AtSignLogger {
   }
 
   static set root_level(String rootLevel) {
-    _root_level = rootLevel != null ? rootLevel.toLowerCase() : 'info';
+    _root_level = rootLevel.toLowerCase();
     logging.Logger.root.level = LogLevel.level[_root_level] ??
         logging.Level.INFO; // defaults to Level.INFO
   }
