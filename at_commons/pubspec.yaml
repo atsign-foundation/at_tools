@@ -1,5 +1,5 @@
 name: at_commons
-description: The at_commons library will be used for commonly used components in implementation of the @protocol.
+description: A library of Dart and Flutter utility classes that are used across other components of the @‎platform.
 version: 2.0.4
 repository: https://github.com/atsign-foundation/at_tools
 homepage: https://atsign.dev
