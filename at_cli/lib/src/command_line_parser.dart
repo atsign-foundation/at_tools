@@ -6,7 +6,7 @@ class CommandLineParser {
   /// Parses [arguments], a list of command-line arguments, matches them against the
   /// flags and options defined by this parser, and returns the result.
   static var parser = ArgParser();
-  static ArgResults getParserResults(List<String> arguments) {
+  static ArgResults? getParserResults(List<String> arguments) {
     var results;
     // var parser = ArgParser();
     parser.addOption('auth',
