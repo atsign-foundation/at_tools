@@ -1,3 +1,5 @@
+## 2.0.5
+- version 2.0.4 update issue
 ## 2.0.4
 - Shared key status in metadata
 - Add last notification time to Monitor
