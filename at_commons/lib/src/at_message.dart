@@ -11,20 +11,20 @@ enum AtMessage {
 
 extension AtMessageExtension on AtMessage {
   String get text {
-    const _notFoundMsg = 'No message found';
-    const _wrongVerbMsg =
+    const String _notFoundMsg = 'No message found';
+    const String _wrongVerbMsg =
         'Available verbs are: lookup:, from:, pol:, llookup:, plookup:, update:, delete:, scan and exit. ';
-    const _closingConnectionMsg = 'Closing the connection. ';
-    const _cleanExitMsg = 'Exited cleanly, closing the connection. ';
-    const _moreThanOneAt =
+    const String _closingConnectionMsg = 'Closing the connection. ';
+    const String _cleanExitMsg = 'Exited cleanly, closing the connection. ';
+    const String _moreThanOneAt =
         'invalid @sign: Cannot Contain more than one @ character';
-    const _whiteSpaceNotAllowed =
+    const String _whiteSpaceNotAllowed =
         'invalid @sign: Cannot Contain whitespace characters';
-    const _reservedCharacterUsed =
-        'invalid @sign: Cannot contain \!\*\'`\(\)\;\:\&\=\+\$\,\/\?\#\[\]\{\} characters';
-    const _noAtSign =
+    const String _reservedCharacterUsed =
+        'invalid @sign: Cannot contain !*\'`();:&=+\$,/?#[]{}\\ characters';
+    const String _noAtSign =
         'invalid @sign: must include one @ character and at least one character on the right';
-    const _controlCharacter =
+    const String _controlCharacter =
         'invalid @sign: must not include control characters';
 
     switch (this) {

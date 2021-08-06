@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
 import 'package:at_commons/src/verb/verb_util.dart';
@@ -25,7 +27,7 @@ class DeleteVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    var command = 'delete:';
+    String command = 'delete:';
 
     if (isCached) {
       command += 'cached:';
@@ -49,8 +51,8 @@ class DeleteVerbBuilder implements VerbBuilder {
 
   /// Returns a builder instance from a delete command
   static DeleteVerbBuilder getBuilder(String command) {
-    var builder = DeleteVerbBuilder();
-    var verbParams = VerbUtil.getVerbParam(VerbSyntax.delete, command)!;
+    DeleteVerbBuilder builder = DeleteVerbBuilder();
+    HashMap<String, String?> verbParams = VerbUtil.getVerbParam(VerbSyntax.delete, command)!;
     builder.atKey = verbParams[AT_KEY];
     return builder;
   }

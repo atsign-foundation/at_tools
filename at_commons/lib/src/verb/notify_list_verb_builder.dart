@@ -7,7 +7,7 @@ class NotifyListVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    var command = 'notify:list';
+    String command = 'notify:list';
     if (fromDate != null) {
       command += ':$fromDate';
     }
@@ -22,7 +22,7 @@ class NotifyListVerbBuilder implements VerbBuilder {
 
   @override
   bool checkParams() {
-    var isValid = true;
+    bool isValid = true;
     try {
       if (DateTime.parse(toDate!).millisecondsSinceEpoch <
           DateTime.parse(fromDate!).millisecondsSinceEpoch) {

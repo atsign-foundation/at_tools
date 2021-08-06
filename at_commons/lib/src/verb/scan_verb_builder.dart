@@ -36,7 +36,7 @@ class ScanVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    var scanCommand = 'scan';
+    String scanCommand = 'scan';
     if (sharedBy != null) {
       scanCommand += ':${VerbUtil.formatAtSign(sharedBy)}';
     }

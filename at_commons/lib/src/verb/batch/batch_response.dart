@@ -10,7 +10,10 @@ class BatchResponse {
     return BatchResponse(json['id'] as int?, json['response'] as Response?);
   }
 
-  Map toJson() => {'id': id, 'response': response!.toJson()};
+  Map<String, Object?> toJson() => <String, Object?>{
+        'id': id,
+        'response': response!.toJson(),
+      };
 
   @override
   String toString() {

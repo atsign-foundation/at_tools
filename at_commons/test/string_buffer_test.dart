@@ -46,90 +46,90 @@ void main() {
 }
 
 void test_default_terminating_char() {
-  var buffer = sb.StringBuffer();
+  sb.StringBuffer buffer = sb.StringBuffer();
   expect(buffer.terminatingChar, '\n');
 }
 
 void test_default_capacity() {
-  var buffer = sb.StringBuffer();
+  sb.StringBuffer buffer = sb.StringBuffer();
   expect(buffer.capacity, 4096);
 }
 
 void test_override_terminating_char() {
-  var buffer = sb.StringBuffer(terminatingChar: 'q');
+  sb.StringBuffer buffer = sb.StringBuffer(terminatingChar: 'q');
   expect(buffer.terminatingChar, 'q');
 }
 
 void test_override_capacity() {
-  var buffer = sb.StringBuffer(capacity: 1000);
+  sb.StringBuffer buffer = sb.StringBuffer(capacity: 1000);
   expect(buffer.capacity, 1000);
 }
 
 void test_override_terminating_char_and_capacity() {
-  var buffer = sb.StringBuffer(terminatingChar: 's', capacity: 100);
+  sb.StringBuffer buffer = sb.StringBuffer(terminatingChar: 's', capacity: 100);
   expect(buffer.capacity, 100);
   expect(buffer.terminatingChar, 's');
 }
 
 void test_message_contains_default_terminating_char() {
-  var data = 'hello\n';
-  var buffer = sb.StringBuffer();
+  String data = 'hello\n';
+  sb.StringBuffer buffer = sb.StringBuffer();
   buffer.append(data);
   expect(buffer.isEnd(), true);
 }
 
 void test_message_not_contains_default_terminating_char() {
-  var data = 'hello';
-  var buffer = sb.StringBuffer();
+  String data = 'hello';
+  sb.StringBuffer buffer = sb.StringBuffer();
   buffer.append(data);
   expect(buffer.isEnd(), false);
 }
 
 void test_message_contains_overridden_terminating_char() {
-  var data = 'hello%';
-  var buffer = sb.StringBuffer(terminatingChar: '%');
+  String data = 'hello%';
+  sb.StringBuffer buffer = sb.StringBuffer(terminatingChar: '%');
   buffer.append(data);
   expect(buffer.isEnd(), true);
 }
 
 void test_message_not_contains_overridden_terminating_char() {
-  var data = 'hello';
-  var buffer = sb.StringBuffer(terminatingChar: '%');
+  String data = 'hello';
+  sb.StringBuffer buffer = sb.StringBuffer(terminatingChar: '%');
   buffer.append(data);
   expect(buffer.isEnd(), false);
 }
 
 void test_buffer_not_full_default_capacity() {
-  var data = 'hi';
-  var buffer = sb.StringBuffer();
+  String data = 'hi';
+  sb.StringBuffer buffer = sb.StringBuffer();
   buffer.append(data);
   expect(buffer.isFull(), false);
 }
 
 void test_buffer_full_overrriden_capacity() {
-  var data = '1234567890';
-  var buffer = sb.StringBuffer(capacity: 10);
+  String data = '1234567890';
+  sb.StringBuffer buffer = sb.StringBuffer(capacity: 10);
   buffer.append(data);
   expect(buffer.isFull(), true);
 }
 
 void test_buffer_not_full_overrriden_capacity() {
-  var data = '1234';
-  var buffer = sb.StringBuffer(capacity: 10);
+  String data = '1234';
+  sb.StringBuffer buffer = sb.StringBuffer(capacity: 10);
   buffer.append(data);
   expect(buffer.isFull(), false);
 }
 
 void test_buffer_append_once() {
-  var data = 'Hello';
-  var buffer = sb.StringBuffer();
+  String data = 'Hello';
+  sb.StringBuffer buffer = sb.StringBuffer();
   buffer.append(data);
   expect(buffer.getData(), 'Hello');
 }
 
 void test_buffer_append_multiple() {
-  var data = 'Veni';
-  var buffer = sb.StringBuffer();
+  String data = 'Veni';
+  sb.StringBuffer buffer = sb.StringBuffer();
   buffer.append(data);
   buffer.append('Vidi');
   buffer.append('Vici');
@@ -137,32 +137,32 @@ void test_buffer_append_multiple() {
 }
 
 void test_can_append_default_capacity() {
-  var data = 'Hello';
-  var buffer = sb.StringBuffer();
+  String data = 'Hello';
+  sb.StringBuffer buffer = sb.StringBuffer();
   buffer.append(data);
-  var canAppend = buffer.canAppend('Hi');
+  bool canAppend = buffer.canAppend('Hi');
   expect(canAppend, true);
 }
 
 void test_can_append_overriden_capacity() {
-  var data = 'Hello';
-  var buffer = sb.StringBuffer(capacity: 10);
+  String data = 'Hello';
+  sb.StringBuffer buffer = sb.StringBuffer(capacity: 10);
   buffer.append(data);
-  var canAppend = buffer.canAppend('Hi');
+  bool canAppend = buffer.canAppend('Hi');
   expect(canAppend, true);
 }
 
 void test_cannot_append_overriden_capacity() {
-  var data = 'Hello';
-  var buffer = sb.StringBuffer(capacity: 10);
+  String data = 'Hello';
+  sb.StringBuffer buffer = sb.StringBuffer(capacity: 10);
   buffer.append(data);
-  var canAppend = buffer.canAppend('HelloThere');
+  bool canAppend = buffer.canAppend('HelloThere');
   expect(canAppend, false);
 }
 
 void test_buffer_overflow_exception() {
-  var data = 'Hello';
-  var buffer = sb.StringBuffer(capacity: 10);
+  String data = 'Hello';
+  sb.StringBuffer buffer = sb.StringBuffer(capacity: 10);
   buffer.append(data);
   try {
     buffer.append('HelloThere');

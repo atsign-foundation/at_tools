@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:at_commons/src/verb/verb_util.dart';
@@ -69,20 +70,20 @@ class UpdateVerbBuilder implements VerbBuilder {
   @override
   String buildCommand() {
     if (isJson) {
-      var updateParams = UpdateParams();
-      var key = '';
+      UpdateParams updateParams = UpdateParams();
+      String key = '';
       if (sharedWith != null) {
         key += '${VerbUtil.formatAtSign(sharedWith)}:';
       }
       key += atKey!;
       if (sharedBy != null) {
-        key += '${VerbUtil.formatAtSign(sharedBy)}';
+        key += VerbUtil.formatAtSign(sharedBy)!;
       }
       updateParams.atKey = key;
       updateParams.value = value;
       updateParams.sharedBy = sharedBy;
       updateParams.sharedWith = sharedWith;
-      var metadata = Metadata();
+      Metadata metadata = Metadata();
       metadata.ttr = ttr;
       metadata.ttb = ttb;
       metadata.ttl = ttl;
@@ -92,12 +93,12 @@ class UpdateVerbBuilder implements VerbBuilder {
       metadata.isPublic = isPublic;
       metadata.sharedKeyStatus = sharedKeyStatus;
       updateParams.metadata = metadata;
-      var json = updateParams.toJson();
-      var command = 'update:json:${jsonEncode(json)}\n';
+      Map<dynamic, dynamic> json = updateParams.toJson();
+      String command = 'update:json:${jsonEncode(json)}\n';
       print('update json:$command');
       return command;
     }
-    var command = 'update:';
+    String command = 'update:';
     if (ttl != null) {
       command += 'ttl:$ttl:';
     }
@@ -127,7 +128,7 @@ class UpdateVerbBuilder implements VerbBuilder {
     command += atKey!;
 
     if (sharedBy != null) {
-      command += '${VerbUtil.formatAtSign(sharedBy)}';
+      command += VerbUtil.formatAtSign(sharedBy)!;
     }
     if (value is String) {
       value = VerbUtil.replaceNewline(value);
@@ -137,7 +138,7 @@ class UpdateVerbBuilder implements VerbBuilder {
   }
 
   String buildCommandForMeta() {
-    var command = 'update:meta:';
+    String command = 'update:meta:';
     if (isPublic) {
       command += 'public:';
     } else if (sharedWith != null) {
@@ -145,7 +146,7 @@ class UpdateVerbBuilder implements VerbBuilder {
     }
     command += atKey!;
     if (sharedBy != null) {
-      command += '${VerbUtil.formatAtSign(sharedBy)}';
+      command += VerbUtil.formatAtSign(sharedBy)!;
     }
     if (ttl != null) {
       command += ':ttl:$ttl';
@@ -170,8 +171,8 @@ class UpdateVerbBuilder implements VerbBuilder {
   }
 
   static UpdateVerbBuilder? getBuilder(String command) {
-    var builder = UpdateVerbBuilder();
-    var verbParams;
+    UpdateVerbBuilder builder = UpdateVerbBuilder();
+    HashMap<String, String?>? verbParams;
     if (command.contains(UPDATE_META)) {
       verbParams = VerbUtil.getVerbParam(VerbSyntax.update_meta, command);
       builder.operation = UPDATE_META;
@@ -189,27 +190,27 @@ class UpdateVerbBuilder implements VerbBuilder {
     if (builder.value is String) {
       builder.value = VerbUtil.replaceNewline(builder.value);
     }
-    if (verbParams[AT_TTL] != null) builder.ttl = int.parse(verbParams[AT_TTL]);
-    if (verbParams[AT_TTB] != null) builder.ttb = int.parse(verbParams[AT_TTB]);
-    if (verbParams[AT_TTR] != null) builder.ttr = int.parse(verbParams[AT_TTR]);
+    if (verbParams[AT_TTL] != null) builder.ttl = int.parse(verbParams[AT_TTL]!);
+    if (verbParams[AT_TTB] != null) builder.ttb = int.parse(verbParams[AT_TTB]!);
+    if (verbParams[AT_TTR] != null) builder.ttr = int.parse(verbParams[AT_TTR]!);
     if (verbParams[CCD] != null) {
-      builder.ccd = _getBoolVerbParams(verbParams[CCD]);
+      builder.ccd = _getBoolVerbParams(verbParams[CCD]!);
     }
     if (verbParams[PUBLIC_DATA_SIGNATURE] != null) {
       builder.dataSignature = verbParams[PUBLIC_DATA_SIGNATURE];
     }
     if (verbParams[IS_BINARY] != null) {
-      builder.isBinary = _getBoolVerbParams(verbParams[IS_BINARY]);
+      builder.isBinary = _getBoolVerbParams(verbParams[IS_BINARY]!);
     }
     if (verbParams[IS_ENCRYPTED] != null) {
-      builder.isEncrypted = _getBoolVerbParams(verbParams[IS_ENCRYPTED]);
+      builder.isEncrypted = _getBoolVerbParams(verbParams[IS_ENCRYPTED]!);
     }
     return builder;
   }
 
   @override
   bool checkParams() {
-    var isValid = true;
+    bool isValid = true;
     if ((atKey == null || value == null) ||
         (isPublic == true && sharedWith != null)) {
       isValid = false;

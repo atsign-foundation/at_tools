@@ -14,8 +14,8 @@ class AtKey {
   }
 
   static AtKey fromString(String key) {
-    var atKey = AtKey();
-    var metaData = Metadata();
+    AtKey atKey = AtKey();
+    Metadata metaData = Metadata();
     if (key.startsWith(AT_PKAM_PRIVATE_KEY) ||
         key.startsWith(AT_PKAM_PUBLIC_KEY)) {
       atKey.key = key;
@@ -27,7 +27,7 @@ class AtKey {
       atKey.metadata = metaData;
       return atKey;
     }
-    var keyParts = key.split(':');
+    List<String> keyParts = key.split(':');
     if (keyParts.length == 1) {
       atKey.sharedBy = keyParts[0].split('@')[1];
       atKey.key = keyParts[0].split('@')[0];
@@ -40,22 +40,22 @@ class AtKey {
       } else {
         atKey.sharedWith = keyParts[0];
       }
-      var keyArr;
+      List<String>? keyArr;
+      if (keyArr != null && keyArr.length == 2) {
+        atKey.sharedBy = keyArr[1];
+        atKey.key = keyArr[0];
+      } else {
+        atKey.key = keyArr![0];
+      }
       if (keyParts[0] == CACHED) {
         keyArr = keyParts[2].split('@');
       } else {
         keyArr = keyParts[1].split('@');
       }
-      if (keyArr != null && keyArr.length == 2) {
-        atKey.sharedBy = keyArr[1];
-        atKey.key = keyArr[0];
-      } else {
-        atKey.key = keyArr[0];
-      }
     }
     //remove namespace
     if (atKey.key != null && atKey.key!.contains('.')) {
-      var namespaceIndex = atKey.key!.lastIndexOf('.');
+      int namespaceIndex = atKey.key!.lastIndexOf('.');
       if (namespaceIndex > -1) {
         atKey.namespace = atKey.key!.substring(namespaceIndex + 1);
         atKey.key = atKey.key!.substring(0, namespaceIndex);
@@ -92,8 +92,8 @@ class Metadata {
     return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : $isBinary, isEncrypted : $isEncrypted, isCached : $isCached, dataSignature: $dataSignature, sharedKeyStatus: $sharedKeyStatus}';
   }
 
-  Map toJson() {
-    var map = {};
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> map = <String, dynamic>{};
     map['availableAt'] = availableAt?.toUtc().toString();
     map['expiresAt'] = expiresAt?.toUtc().toString();
     map['refreshAt'] = refreshAt?.toUtc().toString();
@@ -111,34 +111,34 @@ class Metadata {
     return map;
   }
 
-  static Metadata fromJson(Map json) {
-    var metaData = Metadata();
+  static Metadata fromJson(Map<String, dynamic> json) {
+    Metadata metaData = Metadata();
     try {
       metaData.expiresAt =
           (json['expiresAt'] == null || json['expiresAt'] == 'null')
               ? null
-              : DateTime.parse(json['expiresAt']);
+              : DateTime.parse(json['expiresAt']!.toString());
       metaData.refreshAt =
           (json['refreshAt'] == null || json['refreshAt'] == 'null')
               ? null
-              : DateTime.parse(json['refreshAt']);
+              : DateTime.parse(json['refreshAt']!.toString());
       metaData.availableAt =
           (json['availableAt'] == null || json['availableAt'] == 'null')
               ? null
-              : DateTime.parse(json['availableAt']);
+              : DateTime.parse(json['availableAt']!.toString());
       metaData.createdAt =
           (json[CREATED_AT] == null || json[CREATED_AT] == 'null')
               ? null
-              : DateTime.parse(json[CREATED_AT]);
+              : DateTime.parse(json[CREATED_AT]!.toString());
       metaData.updatedAt =
           (json[UPDATED_AT] == null || json[UPDATED_AT] == 'null')
               ? null
-              : DateTime.parse(json[UPDATED_AT]);
-      metaData.ttl = (json[AT_TTL] is String)
-          ? int.parse(json[AT_TTL])
+              : DateTime.parse(json[UPDATED_AT]!.toString());
+      metaData.ttl = ((json[AT_TTL] is String)
+          ? int.parse(json[AT_TTL]!.toString())
           : (json[AT_TTL] == null)
               ? 0
-              : json[AT_TTL];
+              : json[AT_TTL]) as int?;
       metaData.ttb = (json[AT_TTB] is String)
           ? int.parse(json[AT_TTB])
           : (json[AT_TTB] == null)

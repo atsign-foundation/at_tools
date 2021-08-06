@@ -6,7 +6,7 @@ class NotifyStatusVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    var command = 'notify:status:';
+    String command = 'notify:status:';
     if (notificationId != null) {
       command += '$notificationId\n';
     }
@@ -15,7 +15,7 @@ class NotifyStatusVerbBuilder implements VerbBuilder {
 
   @override
   bool checkParams() {
-    var isValid = true;
+    bool isValid = true;
     if (notificationId == null) {
       isValid = false;
     }

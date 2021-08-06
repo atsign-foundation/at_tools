@@ -13,7 +13,7 @@ class ConfigVerbBuilder implements VerbBuilder {
   List<String>? atSigns;
   @override
   String buildCommand() {
-    var command = 'config:';
+    String command = 'config:';
     command += '$configType:';
     if (operation == 'show') {
       command += operation!;
@@ -21,8 +21,9 @@ class ConfigVerbBuilder implements VerbBuilder {
       command += '$operation:';
     }
     if (atSigns != null && atSigns!.isNotEmpty) {
-      atSigns!
-          .forEach((atSign) => command += '${VerbUtil.formatAtSign(atSign)}');
+      for (String atSign in atSigns!) {
+        command += VerbUtil.formatAtSign(atSign)!;
+      }
     }
     command = command.trim();
     command = command + '\n';

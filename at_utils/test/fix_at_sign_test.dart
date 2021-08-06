@@ -1,5 +1,6 @@
+// ignore_for_file: unnecessary_string_escapes
 import 'package:at_commons/at_commons.dart';
-import 'package:at_utils/at_utils.dart';
+import 'package:at_utils/src/utils/atsign_util.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -60,31 +61,39 @@ void main() {
     test('white spaces in atsign - InvalidAtSignException', () {
       var atSign = 'pho ne@bob';
       expect(
-          () => AtUtils.fixAtSign(atSign),
-          throwsA(predicate((dynamic e) =>
+        () => AtUtils.fixAtSign(atSign),
+        throwsA(
+          predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
-                  'invalid @sign: Cannot Contain whitespace characters')));
+                  'invalid @sign: Cannot Contain whitespace characters'),
+        ),
+      );
     });
 
     test('reserved characters in atsign : + - InvalidAtSignException', () {
-      var atSign = 'phone@\U+237E';
+      var atSign = 'phone@U+237E';
       expect(
           () => AtUtils.fixAtSign(atSign),
           throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
-                  'invalid @sign: Cannot contain \!\*\'`\(\)\;\:\&\=\+\$\,\/\?\#\[\]\{\} characters')));
+                  'invalid @sign: Cannot contain !*\'`();:&=+\$,/?#[]{}\\ characters')));
     });
 
     test('reserved characters with ascii codes - InvalidAtsignException', () {
       var atSign = 'phone@U' + String.fromCharCode(43);
       expect(
-          () => AtUtils.fixAtSign(atSign),
-          throwsA(predicate((dynamic e) =>
-              e is InvalidAtSignException &&
-              e.message ==
-                  'invalid @sign: Cannot contain \!\*\'`\(\)\;\:\&\=\+\$\,\/\?\#\[\]\{\} characters')));
+        () => AtUtils.fixAtSign(atSign),
+        throwsA(
+          predicate(
+            (dynamic e) =>
+                e is InvalidAtSignException &&
+                e.message ==
+                    '''invalid @sign: Cannot contain !*\'`();:&=+\$,/?#[]{}\\ characters''',
+          ),
+        ),
+      );
     });
 
     test('reserved characters with unicode - InvalidAtsignException', () {
@@ -94,7 +103,7 @@ void main() {
           throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
-                  'invalid @sign: Cannot contain \!\*\'`\(\)\;\:\&\=\+\$\,\/\?\#\[\]\{\} characters')));
+                  'invalid @sign: Cannot contain !*\'`();:&=+\$,/?#[]{}\\ characters')));
     });
 
     test('special characters in atsign - * InvalidAtSignException', () {
@@ -104,7 +113,7 @@ void main() {
           throwsA(predicate((dynamic e) =>
               e is InvalidAtSignException &&
               e.message ==
-                  'invalid @sign: Cannot contain \!\*\'`\(\)\;\:\&\=\+\$\,\/\?\#\[\]\{\} characters')));
+                  'invalid @sign: Cannot contain !*\'`();:&=+\$,/?#[]{}\\ characters')));
     });
 
     test('control characters in atsign - InvalidAtSignException', () {

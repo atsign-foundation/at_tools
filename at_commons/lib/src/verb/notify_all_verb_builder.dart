@@ -11,7 +11,7 @@ class NotifyAllVerbBuilder implements VerbBuilder {
   dynamic value;
 
   /// AtSign to whom [atKey] has to be shared.
-  List? sharedWithList;
+  List<String>? sharedWithList;
 
   /// AtSign of the client user calling this builder.
   String? sharedBy;
@@ -35,7 +35,7 @@ class NotifyAllVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    var command = 'notify:';
+    String command = 'notify:';
 
     if (operation != null) {
       command += '${getOperationName(operation)}:';
@@ -51,7 +51,7 @@ class NotifyAllVerbBuilder implements VerbBuilder {
       command += 'ttr:$ttr:ccd:$ccd:';
     }
     if (sharedWithList != null && sharedWithList!.isNotEmpty) {
-      var sharedWith = sharedWithList!.join(',');
+      String sharedWith = sharedWithList!.join(',');
       command += '${VerbUtil.formatAtSign(sharedWith)}:';
     }
 
@@ -61,7 +61,7 @@ class NotifyAllVerbBuilder implements VerbBuilder {
     command += atKey!;
 
     if (sharedBy != null) {
-      command += '${VerbUtil.formatAtSign(sharedBy)}';
+      command += VerbUtil.formatAtSign(sharedBy)!;
     }
 
     if (value != null) {
@@ -73,7 +73,7 @@ class NotifyAllVerbBuilder implements VerbBuilder {
 
   @override
   bool checkParams() {
-    var isValid = true;
+    bool isValid = true;
     if ((atKey == null) || (isPublic == true && sharedWithList != null)) {
       isValid = false;
     }

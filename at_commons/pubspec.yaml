@@ -1,6 +1,6 @@
 name: at_commons
 description: A library of Dart and Flutter utility classes that are used across other components of the @‎platform.
-version: 2.0.4
+version: 2.0.5
 repository: https://github.com/atsign-foundation/at_tools
 homepage: https://atsign.dev
 
@@ -8,6 +8,6 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dev_dependencies:
-  pedantic: ^1.11.0
+  lints: ^1.0.1
   test: ^1.17.0
   test_process: ^2.0.0

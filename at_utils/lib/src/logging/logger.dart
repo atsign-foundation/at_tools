@@ -4,15 +4,18 @@ import 'package:logging/logging.dart' as logging;
 
 /// Class for AtSignLogger Implementation
 class AtSignLogger {
+  /// Late logger object
   late logging.Logger logger;
-  static String _root_level = 'info';
-  bool _hierarchicalLoggingEnabled = false;
+
+  /// level for AtSignLogger is `info`
+  static String _rootLevel = 'info';
+  bool hierarchicalLoggingEnabled = false;
   String? _level;
 
   AtSignLogger(String name) {
     logger = logging.Logger.detached(name);
     logger.onRecord.listen(ConsoleLoggingHandler());
-    level = _root_level;
+    level = _rootLevel;
   }
 
   String? get level {
@@ -21,9 +24,9 @@ class AtSignLogger {
   }
 
   set level(String? value) {
-    if (!_hierarchicalLoggingEnabled) {
-      _hierarchicalLoggingEnabled = true;
-      logging.hierarchicalLoggingEnabled = _hierarchicalLoggingEnabled;
+    if (!hierarchicalLoggingEnabled) {
+      hierarchicalLoggingEnabled = true;
+      logging.hierarchicalLoggingEnabled = hierarchicalLoggingEnabled;
     }
     _level = value;
     logger.level = LogLevel.level[_level!];
@@ -31,34 +34,17 @@ class AtSignLogger {
 
   bool isLoggable(String value) => (LogLevel.level[value]! >= logger.level);
 
-  bool get hierarchicalLoggingEnabled {
-    return _hierarchicalLoggingEnabled;
+  static set rootLevel(String rootLevel) {
+    _rootLevel = rootLevel.toLowerCase();
+    logging.Logger.root.level = LogLevel.level[_rootLevel] ??
+
+        /// defaults to Level.INFO
+        logging.Level.INFO;
   }
 
-  set hierarchicalLoggingEnabled(bool value) {
-    _hierarchicalLoggingEnabled = value;
+  static String get rootLevel {
+    return _rootLevel;
   }
-
-  static set root_level(String rootLevel) {
-    _root_level = rootLevel.toLowerCase();
-    logging.Logger.root.level = LogLevel.level[_root_level] ??
-        logging.Level.INFO; // defaults to Level.INFO
-  }
-
-  static String get root_level {
-    return _root_level;
-  }
-
-//  static set rootLogFilePath(String path) {
-//    _rootLogFilePath = path;
-//    if (_rootLogFilePath != null) {
-//      logging.Logger.root.onRecord.listen(FileLoggingHandler(_rootLogFilePath));
-//    }
-//  }
-//
-//  void setLogFilePath(String path) {
-//    logger.onRecord.listen(FileLoggingHandler(path));
-//  }
 
 //log methods
   void shout(message, [Object? error, StackTrace? stackTrace]) =>

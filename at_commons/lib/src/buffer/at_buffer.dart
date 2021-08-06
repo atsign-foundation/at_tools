@@ -9,7 +9,7 @@ abstract class AtBuffer<T> {
   int? capacity;
 
   /// Define terminatingChar to indicate end of buffer
-  var terminatingChar;
+  dynamic terminatingChar;
 
   /// Returns the message stored in the buffer
   /// @returns message stored
@@ -35,7 +35,7 @@ abstract class AtBuffer<T> {
   /// @param incoming data
   /// @returns void
   /// @throws AtBufferOverFlowException if length() + data.length > capacity
-  void append(var data);
+  void append(dynamic data);
 }
 
 class AtBufferOverFlowException implements Exception {

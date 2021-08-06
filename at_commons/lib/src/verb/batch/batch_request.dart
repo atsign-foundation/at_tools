@@ -8,9 +8,9 @@ class BatchRequest {
     return BatchRequest(json['id'] as int?, json['command'] as String?);
   }
 
-  Map toJson() => {
+  Map<String, Object?> toJson() => <String, Object?>{
         'id': id,
-        'command': '$command',
+        'command': command,
       };
 
   @override

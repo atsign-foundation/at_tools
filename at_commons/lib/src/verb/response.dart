@@ -8,8 +8,6 @@ class Response {
   String? errorCode;
   AtException? atException;
 
-  bool get isError => _isError;
-
   bool isStream = false;
 
   Response();
@@ -21,8 +19,8 @@ class Response {
         json['error_code'] as String?, json['error_message'] as String?);
   }
 
-  Map toJson() {
-    var jsonMap = {};
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> jsonMap = <String, dynamic>{};
     if (_data != null) {
       jsonMap['data'] = _data;
     }
@@ -40,25 +38,5 @@ class Response {
     return 'Response{_data: $_data, _type: $_type, _isError: $_isError, _errorMessage: $_errorMessage}';
   }
 
-  set isError(bool value) {
-    _isError = value;
-  }
-
-  String? get errorMessage => _errorMessage;
-
-  set errorMessage(String? value) {
-    _errorMessage = value;
-  }
-
-  String? get type => _type;
-
-  set type(String? value) {
-    _type = value;
-  }
-
-  String? get data => _data;
-
-  set data(String? value) {
-    _data = value;
-  }
+  set isError(bool value) => _isError = value;
 }

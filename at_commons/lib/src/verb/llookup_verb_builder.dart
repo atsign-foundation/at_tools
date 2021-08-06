@@ -32,7 +32,7 @@ class LLookupVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    var command = 'llookup:';
+    String command = 'llookup:';
     if (operation != null) {
       command += '$operation:';
     }

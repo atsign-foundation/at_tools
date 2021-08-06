@@ -16,7 +16,7 @@ class MonitorVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    var monitorCommand = 'monitor';
+    String monitorCommand = 'monitor';
     if (lastNotificationTime != null) {
       monitorCommand += ':${lastNotificationTime.toString()}';
     }

@@ -23,7 +23,7 @@ class StatsVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    var statsCommand = 'stats';
+    String statsCommand = 'stats';
     if (statIds != null) {
       statsCommand += ':$statIds';
       if (regex != null) {

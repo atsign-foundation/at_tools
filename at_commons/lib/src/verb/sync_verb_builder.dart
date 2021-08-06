@@ -1,7 +1,7 @@
 import 'package:at_commons/at_builders.dart';
 
 class SyncVerbBuilder implements VerbBuilder {
-  late var commitId;
+  late String commitId;
 
   String? regex;
 
@@ -9,11 +9,11 @@ class SyncVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    var command = 'sync:';
+    String command = 'sync:';
     if (isStream) {
       command += 'stream:';
     }
-    command += '$commitId';
+    command += commitId;
     if (regex != null && regex!.isNotEmpty) {
       command += ':$regex';
     }

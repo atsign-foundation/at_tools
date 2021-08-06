@@ -1,4 +1,4 @@
-const Map error_codes = {
+const Map<String, String> error_codes = <String, String>{
   'AtServerException': 'AT0001',
   'DataStoreException': 'AT0002',
   'InvalidSyntaxException': 'AT0003',
@@ -19,7 +19,7 @@ const Map error_codes = {
   'IllegalArgumentException': 'AT0022'
 };
 
-const Map error_description = {
+const Map<String, String> error_description = <String, String>{
   'AT0001': 'Server exception',
   'AT0002': 'DataStore exception',
   'AT0003': 'Invalid syntax',

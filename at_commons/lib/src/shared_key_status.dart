@@ -6,4 +6,4 @@ enum SharedKeyStatus {
   SHARED_WITH_READ
 }
 
-String getSharedKeyName(SharedKeyStatus d) => '$d'.split('.').last;
+String getSharedKeyName(SharedKeyStatus d) => d.toString().split('.').last;

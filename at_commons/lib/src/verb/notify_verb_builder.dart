@@ -50,7 +50,7 @@ class NotifyVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    var command = 'notify:';
+    String command = 'notify:';
 
     if (operation != null) {
       command += '${getOperationName(operation)}:';
@@ -88,7 +88,7 @@ class NotifyVerbBuilder implements VerbBuilder {
     command += atKey!;
 
     if (sharedBy != null) {
-      command += '${VerbUtil.formatAtSign(sharedBy)}';
+      command += VerbUtil.formatAtSign(sharedBy)!;
     }
     if (value != null) {
       command += ':$value';
@@ -99,7 +99,7 @@ class NotifyVerbBuilder implements VerbBuilder {
 
   @override
   bool checkParams() {
-    var isValid = true;
+    bool isValid = true;
     if ((atKey == null) || (isPublic == true && sharedWith != null)) {
       isValid = false;
     }
