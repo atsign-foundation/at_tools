@@ -10,6 +10,7 @@ log:
   debug: false
 
 auth:
-  mode: pkam #cram or pkam
+  reuired: true
+  mode: cram #cram or pkam
   key_file_location: 'bin/@alice'
   at_sign: '@alice'

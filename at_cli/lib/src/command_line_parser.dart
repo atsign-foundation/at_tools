@@ -5,12 +5,19 @@ import 'package:args/args.dart';
 class CommandLineParser {
   /// Parses [arguments], a list of command-line arguments, matches them against the
   /// flags and options defined by this parser, and returns the result.
-  static ArgResults getParserResults(List<String> arguments) {
+  static var parser = ArgParser();
+  static ArgResults? getParserResults(List<String> arguments) {
     var results;
-    var parser = ArgParser();
-    parser.addOption('command', abbr: 'c', help: 'The at command to execute');
+    // var parser = ArgParser();
     parser.addOption('auth',
         abbr: 'a', help: 'Set this flag if command needs auth to server');
+    parser.addOption('mode',
+        allowed: ['cram', 'pkam'],
+        abbr: 'm',
+        help: 'Choose Authentication mode if auth required');
+    parser.addOption('authKeyFile', abbr: 'f', help: 'cram/pkam file path');
+    parser.addOption('atsign', help: 'Current Atsign');
+    parser.addOption('command', abbr: 'c', help: 'The at command to execute');
     parser.addOption('verb', abbr: 'v', help: 'The verb to execute');
     parser.addOption('public',
         abbr: 'p', help: 'set to true if key has public access');
@@ -29,5 +36,9 @@ class CommandLineParser {
     } on ArgParserException {
       throw ArgParserException('ArgParserException\n' + parser.usage);
     }
+  }
+
+  static String getUsage() {
+    return parser.usage;
   }
 }
