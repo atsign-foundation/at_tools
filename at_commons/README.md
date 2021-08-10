@@ -7,10 +7,4 @@
 # at_commons
 ```
 at_commons library will be used for commonly used components in implementation of the @protocol.
-```
-## Getting Started
-To use this library in your app, first add it to your pubspec.yaml
 ```  
-dependencies:
-  at_commons: ^2.0.5
-```
