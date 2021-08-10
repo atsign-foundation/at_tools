@@ -6,21 +6,9 @@
 ```
 at_commons library will be used for commonly used components in implementation of the @protocol.
 ```
-## Installation:
+## Getting Started
 To use this library in your app, first add it to your pubspec.yaml
 ```  
 dependencies:
-  at_commons: ^1.0.1
-```
-### Add to your project 
-```
-pub get 
-```
-### Import in your application code
-```
-import 'package:at_commons/at_commons.dart';
-```
-## Usage
-```
-Please refer to the Example section
+  at_commons: ^2.0.5
 ```
