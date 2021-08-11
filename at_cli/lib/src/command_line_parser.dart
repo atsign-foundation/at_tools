@@ -9,18 +9,20 @@ class CommandLineParser {
   static ArgResults? getParserResults(List<String> arguments) {
     var results;
     // var parser = ArgParser();
-    parser.addOption('auth',
-        abbr: 'a', help: 'Set this flag if command needs auth to server');
+    parser.addFlag('auth',help: 'Set this flag if command needs auth to server', abbr: 'a', defaultsTo: false);
+    // parser.addOption('auth',
+    //     abbr: 'a', help: 'Set this flag if command needs auth to server');
     parser.addOption('mode',
         allowed: ['cram', 'pkam'],
         abbr: 'm',
-        help: 'Choose Authentication mode if auth required');
+        help: 'Choose Authentication mode if auth required', defaultsTo: 'pkam');
     parser.addOption('authKeyFile', abbr: 'f', help: 'cram/pkam file path');
     parser.addOption('atsign', help: 'Current Atsign');
     parser.addOption('command', abbr: 'c', help: 'The at command to execute');
     parser.addOption('verb', abbr: 'v', help: 'The verb to execute');
-    parser.addOption('public',
-        abbr: 'p', help: 'set to true if key has public access');
+    // parser.addOption('public',
+    //     abbr: 'p', help: 'set to true if key has public access');
+    parser.addFlag('public', abbr: 'p', help: 'set to true if key has public access', defaultsTo: false);
     parser.addOption('key', abbr: 'k', help: 'key to update');
     parser.addOption('value', help: 'value of the key');
     parser.addOption('shared_with',

@@ -3,7 +3,7 @@
 root_server:
   # The port on which root server runs.
   port: 64
-  host: 'root.atsign.org'
+  host: 'root.atsign.wtf'
 
 # The @Protocol application log configurations
 log:
@@ -11,6 +11,6 @@ log:
 
 auth:
   reuired: true
-  mode: cram #cram or pkam
-  key_file_location: 'bin/@alice'
+  mode: pkam #cram or pkam
+  key_file_location: 'bin/@alice.atKeys'
   at_sign: '@alice'

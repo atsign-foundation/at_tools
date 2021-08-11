@@ -4,4 +4,5 @@ class AtCliPreference {
   bool authRequired = false;
   late String authMode;
   late String authKeyFile;
+  String namespace = '';
 }
