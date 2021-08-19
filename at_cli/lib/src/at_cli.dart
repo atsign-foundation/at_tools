@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:args/args.dart';
+import 'package:at_cli/src/command_line_parser.dart';
 import 'package:at_client/at_client.dart';
 import 'package:at_cli/src/preference.dart';
 import 'package:encrypt/encrypt.dart';
@@ -69,6 +70,10 @@ class AtCli {
           builder.sharedBy = currentAtSign;
           builder.sharedWith = arguments['shared_with'];
           builder.value = arguments['value'];
+          if (!builder.checkParams()) {
+            throw Exception(
+                'Invalid command \n ${CommandLineParser.getUsage()}');
+          }
           var command = builder.buildCommand();
           result = await _atClientImpl!
               .getRemoteSecondary()!
@@ -83,6 +88,10 @@ class AtCli {
           builder.sharedBy = (arguments['shared_by'] != null)
               ? arguments['shared_by']
               : _atSign;
+          if (!builder.checkParams()) {
+            throw Exception(
+                'Invalid command \n ${CommandLineParser.getUsage()}');
+          }
           var command = builder.buildCommand();
           result = await _atClientImpl!
               .getRemoteSecondary()!
@@ -94,6 +103,10 @@ class AtCli {
           builder.sharedBy = (arguments['shared_by'] != null)
               ? arguments['shared_by']
               : _atSign;
+          if (!builder.checkParams()) {
+            throw Exception(
+                'Invalid command \n ${CommandLineParser.getUsage()}');
+          }
           var command = builder.buildCommand();
           result = await _atClientImpl!
               .getRemoteSecondary()!
@@ -105,6 +118,10 @@ class AtCli {
           builder.sharedBy = (arguments['shared_by'] != null)
               ? arguments['shared_by']
               : _atSign;
+          if (!builder.checkParams()) {
+            throw Exception(
+                'Invalid command \n ${CommandLineParser.getUsage()}');
+          }
           var command = builder.buildCommand();
           result = await _atClientImpl!
               .getRemoteSecondary()!
@@ -115,6 +132,10 @@ class AtCli {
           builder.atKey = arguments['key'];
           builder.sharedWith = arguments['shared_with'];
           builder.isPublic = arguments['public'];
+          if (!builder.checkParams()) {
+            throw Exception(
+                'Invalid command \n ${CommandLineParser.getUsage()}');
+          }
           var command = builder.buildCommand();
           result = await _atClientImpl!
               .getRemoteSecondary()!
@@ -125,6 +146,10 @@ class AtCli {
           builder.regex = arguments['regex'];
           builder.sharedBy = arguments['shared_by'];
           var command = builder.buildCommand();
+          if (!builder.checkParams()) {
+            throw Exception(
+                'Invalid command \n ${CommandLineParser.getUsage()}');
+          }
           result = await _atClientImpl!
               .getRemoteSecondary()!
               .executeCommand(command, auth: auth);
