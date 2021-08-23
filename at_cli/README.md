@@ -1,4 +1,4 @@
-<img src="https://atsign.dev/assets/img/@developersmall.png?sanitize=true">
+<img src="https://atsign.dev/assets/img/@dev.png?sanitize=true">
 
 ### Now for a little internet optimism
 
@@ -40,7 +40,17 @@ Usage:
 -b, --shared_by      atsign who shared the key
 -r, --regex          regex for scan
 ```
+
+If you're going to run `atcli` a lot then it makes sense to create a binary
+and copy it to somewhere on the PATH e.g.
+
+```bash
+dart compile exe bin/main.dart -o ~/atcli
+sudo cp ~/atcli /usr/local/bin/
+```
+
 Verify the following information in config.yaml file. Please provide valid values.
+
 ```
 root_server:
   # The port on which root server runs.
@@ -48,11 +58,12 @@ root_server:
   host: 'root.atsign.org'
   
  auth:
-  reuired: true # Authentication required for the Verb or not
-  mode: cram # Mode of Authentication (cram or pkam)
+  required: true # Authentication required for the Verb or not
+  mode: cram     # Mode of Authentication (cram or pkam)
   key_file_location: 'bin/@alice' # File path which contains PKAM/CRAM secret 
   at_sign: '@alice'
 ```
+
 Also, we can provide auth related information from commandline as mentioned above.
 
 Here are some examples to execute verbs
