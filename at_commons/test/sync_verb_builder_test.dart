@@ -38,10 +38,11 @@ void main() {
     var syncVerbBuilder = SyncVerbBuilder()
       ..commitId = 3
       ..regex = '.buzz'
-      ..isStream = true;
+      ..isPaginated = true
+      ..limit = 10;
     var command = syncVerbBuilder.buildCommand();
-    expect(command, 'sync:stream:3:.buzz\n');
-    var regex = RegExp(VerbSyntax.syncStream);
+    expect(command, 'sync:from:3:limit:10:.buzz\n');
+    var regex = RegExp(VerbSyntax.syncFrom);
     command = command.replaceAll('\n', '');
     assert(regex.hasMatch(command));
   });
@@ -49,21 +50,20 @@ void main() {
   test('build sync stream verb command', () {
     var syncVerbBuilder = SyncVerbBuilder()
       ..commitId = 3
-      ..isStream = true;
+      ..isPaginated = true
+      ..limit = 10;
     var command = syncVerbBuilder.buildCommand();
-    expect(command, 'sync:stream:3\n');
-    var regex = RegExp(VerbSyntax.syncStream);
+    expect(command, 'sync:from:3:limit:10\n');
+    var regex = RegExp(VerbSyntax.syncFrom);
     command = command.replaceAll('\n', '');
     assert(regex.hasMatch(command));
   });
 
   test('build sync stream verb command', () {
-    var syncVerbBuilder = SyncVerbBuilder()
-      ..isStream = true
-      ..commitId = -1;
+    var syncVerbBuilder = SyncVerbBuilder()..commitId = -1..isPaginated = true..limit = 5;
     var command = syncVerbBuilder.buildCommand();
-    expect(command, 'sync:stream:-1\n');
-    var regex = RegExp(VerbSyntax.syncStream);
+    expect(command, 'sync:from:-1:limit:5\n');
+    var regex = RegExp(VerbSyntax.syncFrom);
     command = command.replaceAll('\n', '');
     assert(regex.hasMatch(command));
   });

@@ -5,15 +5,20 @@ class SyncVerbBuilder implements VerbBuilder {
 
   String? regex;
 
-  bool isStream = false;
+  int limit = 10;
+
+  bool isPaginated = false;
 
   @override
   String buildCommand() {
     var command = 'sync:';
-    if (isStream) {
-      command += 'stream:';
+    if (isPaginated) {
+      command += 'from:';
     }
     command += '$commitId';
+    if (isPaginated) {
+      command += ':limit:$limit';
+    }
     if (regex != null && regex!.isNotEmpty) {
       command += ':$regex';
     }
