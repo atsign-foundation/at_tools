@@ -46,16 +46,11 @@ class AtCli {
     }
   }
 
-  factory AtCli() {
-    return _singleton;
-  }
-
   /// Method to execute verb
   /// input - Commandline arguments and values
   /// return value - verb result
-  Future<dynamic> execute(String currentAtSign, AtCliPreference atCliPreference,
-      ArgResults arguments) async {
-    await init(currentAtSign, atCliPreference);
+  Future<dynamic> execute(
+      AtCliPreference atCliPreference, ArgResults arguments) async {
     var verb = arguments['verb'];
     bool auth = arguments['auth'];
     var result;
@@ -67,7 +62,7 @@ class AtCli {
             builder.isPublic = true;
           }
           builder.atKey = arguments['key'];
-          builder.sharedBy = currentAtSign;
+          builder.sharedBy = _atSign;
           builder.sharedWith = arguments['shared_with'];
           builder.value = arguments['value'];
           if (!builder.checkParams()) {
@@ -168,7 +163,6 @@ class AtCli {
       String currentAtSign, AtCliPreference atCliPreference, String command,
       {bool isAuth = false}) async {
     var result;
-    await init(currentAtSign, atCliPreference);
     try {
       command = command + '\n';
       if (isAuth) {

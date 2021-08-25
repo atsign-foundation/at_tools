@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:args/args.dart';
 import 'package:at_cli/at_cli.dart';
@@ -6,7 +5,6 @@ import 'package:at_cli/src/command_line_parser.dart';
 import 'package:at_cli/src/preference.dart';
 import 'package:at_cli/src/config_util.dart';
 import 'package:at_utils/at_logger.dart';
-import 'package:encrypt/encrypt.dart';
 
 void main(List<String> arguments) async {
   AtSignLogger.root_level = 'severe';
@@ -19,7 +17,6 @@ void main(List<String> arguments) async {
     }
     var currentAtSign = _getCurrentAtSign(parsedArgs).trim();
     var preferences = await _getAtCliPreference(parsedArgs);
-    var atCli = AtCli();
     if (preferences.authKeyFile != null) {
       if (!(await File(preferences.authKeyFile).exists())) {
         print('Given Authentication key file is not exists. '
@@ -28,17 +25,17 @@ void main(List<String> arguments) async {
         exit(0);
       }
     }
-    // atCli.init(currentAtSign, preferences);
+    await AtCli.getInstance().init(currentAtSign, preferences);
     var result;
     // If a verb is provided, call execute method with arguments
     // Else if command is provided as argument, we'll execute command directly.
     if (parsedArgs['verb'] != null) {
-      result = await atCli.execute(currentAtSign, preferences, parsedArgs);
+      result = await AtCli.getInstance().execute(preferences, parsedArgs);
     } else if (parsedArgs['command'] != null) {
       var command = parsedArgs['command'];
       var auth = parsedArgs['auth'];
-      result = await atCli.executeCommand(currentAtSign, preferences, command,
-          isAuth: auth);
+      result = await AtCli.getInstance()
+          .executeCommand(currentAtSign, preferences, command, isAuth: auth);
     } else {
       print('Invalid command. Verb or command not entered');
     }
@@ -60,7 +57,6 @@ String _getCurrentAtSign(ArgResults arguments) {
 }
 
 String getCommand(ArgResults arguments) {
-  print(arguments);
   return arguments.toString();
 }
 
