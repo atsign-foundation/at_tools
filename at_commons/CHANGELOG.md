@@ -1,3 +1,5 @@
+## 3.0.0
+- sync pagination changes
 ## 2.0.5
 - version 2.0.4 update issue
 ## 2.0.4
