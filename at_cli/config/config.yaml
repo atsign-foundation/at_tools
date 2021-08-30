@@ -11,6 +11,6 @@ log:
 
 auth:
   reuired: true
-  mode: cram #cram or pkam
-  key_file_location: 'bin/@alice'
+  mode: pkam #cram or pkam
+  key_file_location: 'bin/@alice.atKeys'
   at_sign: '@alice'

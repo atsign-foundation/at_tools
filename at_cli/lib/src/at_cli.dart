@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:args/args.dart';
-import 'package:at_commons/at_commons.dart';
+import 'package:at_cli/src/command_line_parser.dart';
+import 'package:at_client/at_client.dart';
 import 'package:at_cli/src/preference.dart';
-import 'package:at_lookup/at_lookup.dart';
+import 'package:encrypt/encrypt.dart';
+import 'package:at_commons/at_builders.dart';
 
 /// A class to execute verbs from commandline.
 class AtCli {
@@ -16,95 +19,135 @@ class AtCli {
 
   var _atSign;
 
-  AtLookupImpl? _atLookup;
+  var _aesEncryptionKey;
+  var _pkamPrivateKey;
+
+  var _atClientImpl;
 
   /// Method to create Atlookup instance with the preferences
-  void init(String currentAtSign, AtCliPreference preference) async {
+  Future<void> init(
+      String currentAtSign, AtCliPreference atCliPreference) async {
     _atSign = currentAtSign;
-    var authKey = getAuthKey(currentAtSign, preference.authKeyFile);
-    if (preference.authMode == 'pkam') {
-      _atLookup = AtLookupImpl(
-          _atSign, preference.rootDomain, preference.rootPort,
-          privateKey: authKey.trim());
-    } else if (preference.authMode == 'cram') {
-      _atLookup = AtLookupImpl(
-          _atSign, preference.rootDomain, preference.rootPort,
-          cramSecret: authKey.trim());
-    } else {
-      throw Exception('No authentication specified');
-    }
-  }
 
-  factory AtCli() {
-    return _singleton;
+    var keysJSON = await getSecretFromAtKeys(atCliPreference.authKeyFile);
+    _aesEncryptionKey = keysJSON['selfEncryptionKey'].toString().trim();
+    _pkamPrivateKey =
+        decryptValue(keysJSON['aesPkamPrivateKey'], _aesEncryptionKey).trim();
+
+    var atClientPreference =
+        _getAtClientPreference(_pkamPrivateKey, atCliPreference);
+
+    await AtClientImpl.createClient(
+        _atSign, atCliPreference.namespace, atClientPreference);
+
+    _atClientImpl = await AtClientImpl.getClient(_atSign);
+    if (_atClientImpl == null) {
+      throw Exception('unable to create at client instance');
+    }
   }
 
   /// Method to execute verb
   /// input - Commandline arguments and values
   /// return value - verb result
-  Future<dynamic> execute(ArgResults arguments) async {
+  Future<dynamic> execute(
+      AtCliPreference atCliPreference, ArgResults arguments) async {
     var verb = arguments['verb'];
+    bool auth = arguments['auth'];
     var result;
     try {
       switch (verb) {
         case 'update':
-          var key = arguments['key'];
-          var value = arguments['value'];
-          var isPublic = arguments['public'];
-          var sharedWith = arguments['shared_with'];
-          var metadata;
-          if (isPublic == 'true') {
-            metadata = Metadata()..isPublic = true;
+          var builder = UpdateVerbBuilder();
+          if (arguments['public']) {
+            builder.isPublic = true;
           }
-          result = await _atLookup!
-              .update(key, value, sharedWith: sharedWith, metadata: metadata);
+          builder.atKey = arguments['key'];
+          builder.sharedBy = _atSign;
+          builder.sharedWith = arguments['shared_with'];
+          builder.value = arguments['value'];
+          if (!builder.checkParams()) {
+            throw Exception(
+                'Invalid command \n ${CommandLineParser.getUsage()}');
+          }
+          var command = builder.buildCommand();
+          result = await _atClientImpl!
+              .getRemoteSecondary()!
+              .executeCommand(command, auth: true);
           break;
         case 'llookup':
-          var key = arguments['key'];
-          var sharedWith = arguments['shared_with'];
-          var isPublic = arguments['public'];
-          var sharedBy = (arguments['shared_by'] != null)
+          var builder = LLookupVerbBuilder();
+          builder.atKey = arguments['key'];
+          builder.sharedBy = _atSign;
+          builder.sharedWith = arguments['shared_with'];
+          builder.isPublic = arguments['public'];
+          builder.sharedBy = (arguments['shared_by'] != null)
               ? arguments['shared_by']
               : _atSign;
-          result = await _atLookup!.llookup(key,
-              isPublic: isPublic == 'true',
-              sharedWith: sharedWith,
-              sharedBy: sharedBy);
+          if (!builder.checkParams()) {
+            throw Exception(
+                'Invalid command \n ${CommandLineParser.getUsage()}');
+          }
+          var command = builder.buildCommand();
+          result = await _atClientImpl!
+              .getRemoteSecondary()!
+              .executeCommand(command, auth: true);
           break;
         case 'lookup':
-          var key = arguments['key'];
-          var sharedBy = (arguments['shared_by'] != null)
+          var builder = LookupVerbBuilder();
+          builder.atKey = arguments['key'];
+          builder.sharedBy = (arguments['shared_by'] != null)
               ? arguments['shared_by']
               : _atSign;
-          result = await _atLookup!.lookup(key, sharedBy);
+          if (!builder.checkParams()) {
+            throw Exception(
+                'Invalid command \n ${CommandLineParser.getUsage()}');
+          }
+          var command = builder.buildCommand();
+          result = await _atClientImpl!
+              .getRemoteSecondary()!
+              .executeCommand(command, auth: true);
           break;
         case 'plookup':
-          var key = arguments['key'];
-          var sharedBy = (arguments['shared_by'] != null)
+          var builder = PLookupVerbBuilder();
+          builder.atKey = arguments['key'];
+          builder.sharedBy = (arguments['shared_by'] != null)
               ? arguments['shared_by']
               : _atSign;
-          result = await _atLookup!.plookup(key, sharedBy);
+          if (!builder.checkParams()) {
+            throw Exception(
+                'Invalid command \n ${CommandLineParser.getUsage()}');
+          }
+          var command = builder.buildCommand();
+          result = await _atClientImpl!
+              .getRemoteSecondary()!
+              .executeCommand(command, auth: true);
           break;
         case 'delete':
-          var key = arguments['key'];
-          var sharedWith = arguments['shared_with'];
-          var isPublic = arguments['public'];
-          result = await _atLookup!.delete(key,
-              sharedWith: sharedWith, isPublic: isPublic == 'true');
+          var builder = DeleteVerbBuilder();
+          builder.atKey = arguments['key'];
+          builder.sharedWith = arguments['shared_with'];
+          builder.isPublic = arguments['public'];
+          if (!builder.checkParams()) {
+            throw Exception(
+                'Invalid command \n ${CommandLineParser.getUsage()}');
+          }
+          var command = builder.buildCommand();
+          result = await _atClientImpl!
+              .getRemoteSecondary()!
+              .executeCommand(command, auth: true);
           break;
         case 'scan':
-          var regex = arguments['regex'];
-          var sharedBy = arguments['shared_by'];
-          await _atLookup!
-              .scan(
-                  regex: regex,
-                  sharedBy: sharedBy,
-                  auth: arguments['auth'] == 'true')
-              .then((scan_result) {
-            result = scan_result;
-          }).catchError((scan_error) {
-            result = _handleError(scan_error);
-          });
+          var builder = ScanVerbBuilder();
+          builder.regex = arguments['regex'];
+          builder.sharedBy = arguments['shared_by'];
+          var command = builder.buildCommand();
+          if (!builder.checkParams()) {
+            throw Exception(
+                'Invalid command \n ${CommandLineParser.getUsage()}');
+          }
+          result = await _atClientImpl!
+              .getRemoteSecondary()!
+              .executeCommand(command, auth: auth);
           break;
       }
       return result;
@@ -113,21 +156,22 @@ class AtCli {
     }
   }
 
-  String _handleError(AtLookUpException exception) {
-    return '${exception.errorCode}-${exception.errorMessage}';
-  }
-
   /// Method to execute command
   /// input - command and isAuth
   /// return value - command response
-  Future<String> executeCommand(String command, {bool isAuth = false}) async {
+  Future<String> executeCommand(
+      String currentAtSign, AtCliPreference atCliPreference, String command,
+      {bool isAuth = false}) async {
     var result;
     try {
       command = command + '\n';
       if (isAuth) {
-        result = await _atLookup!.executeCommand(command, auth: true);
+        result = await _atClientImpl!
+            .getRemoteSecondary()!
+            .executeCommand(command, auth: true);
       } else {
-        result = await _atLookup!.executeCommand(command);
+        result =
+            await _atClientImpl!.getRemoteSecondary()!.executeCommand(command);
       }
     } on Exception {
       rethrow;
@@ -143,5 +187,32 @@ class AtCli {
       rethrow;
     }
     return contents;
+  }
+
+  ///Method to get pkam key and encryption key from atKeys file
+  Future<dynamic> getSecretFromAtKeys(String filePath) async {
+    try {
+      var fileContents = File(filePath).readAsStringSync();
+      return json.decode(fileContents);
+    } on Exception catch (e) {
+      throw Exception('Exception while reading atKeys file : $e');
+    }
+  }
+
+  String decryptValue(String encryptedValue, String decryptionKey) {
+    var aesKey = AES(Key.fromBase64(decryptionKey));
+    var decrypter = Encrypter(aesKey);
+    var iv2 = IV.fromLength(16);
+    return decrypter.decrypt64(encryptedValue, iv: iv2);
+  }
+
+  AtClientPreference _getAtClientPreference(
+      String privateKey, AtCliPreference atCliPreference) {
+    var preference = AtClientPreference();
+    preference.isLocalStoreRequired = false;
+    preference.privateKey = preference.rootDomain = atCliPreference.rootDomain;
+    preference.outboundConnectionTimeout = 60000;
+    preference.privateKey = privateKey;
+    return preference;
   }
 }

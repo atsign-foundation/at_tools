@@ -5,7 +5,6 @@ import 'package:at_cli/src/command_line_parser.dart';
 import 'package:at_cli/src/preference.dart';
 import 'package:at_cli/src/config_util.dart';
 import 'package:at_utils/at_logger.dart';
-import 'package:at_commons/at_commons.dart';
 
 void main(List<String> arguments) async {
   AtSignLogger.root_level = 'severe';
@@ -16,9 +15,8 @@ void main(List<String> arguments) async {
       print('Usage: \n${CommandLineParser.getUsage()}');
       exit(0);
     }
-    var currentAtSign = _getCurrentAtSign(parsedArgs);
-    var preferences = _getAtCliPreference(parsedArgs);
-    var atCli = AtCli();
+    var currentAtSign = _getCurrentAtSign(parsedArgs).trim();
+    var preferences = await _getAtCliPreference(parsedArgs);
     if (preferences.authKeyFile != null) {
       if (!(await File(preferences.authKeyFile).exists())) {
         print('Given Authentication key file is not exists. '
@@ -27,16 +25,17 @@ void main(List<String> arguments) async {
         exit(0);
       }
     }
-    atCli.init(currentAtSign, preferences);
+    await AtCli.getInstance().init(currentAtSign, preferences);
     var result;
     // If a verb is provided, call execute method with arguments
     // Else if command is provided as argument, we'll execute command directly.
     if (parsedArgs['verb'] != null) {
-      result = await atCli.execute(parsedArgs);
+      result = await AtCli.getInstance().execute(preferences, parsedArgs);
     } else if (parsedArgs['command'] != null) {
       var command = parsedArgs['command'];
       var auth = parsedArgs['auth'];
-      result = await atCli.executeCommand(command, isAuth: auth == 'true');
+      result = await AtCli.getInstance()
+          .executeCommand(currentAtSign, preferences, command, isAuth: auth);
     } else {
       print('Invalid command. Verb or command not entered');
     }
@@ -58,30 +57,17 @@ String _getCurrentAtSign(ArgResults arguments) {
 }
 
 String getCommand(ArgResults arguments) {
-  print(arguments);
   return arguments.toString();
 }
 
-AtCliPreference _getAtCliPreference(ArgResults? parsedArgs) {
+Future<AtCliPreference> _getAtCliPreference(ArgResults? parsedArgs) async {
   var rootDomainFromConfig = ConfigUtil.getYaml()!['root_server']['host'];
   var preferences = AtCliPreference();
   if (rootDomainFromConfig != null) {
-    preferences.rootDomain = rootDomainFromConfig;
+    preferences.rootDomain = rootDomainFromConfig.trim();
   }
 
-  if (parsedArgs != null) {
-    if (parsedArgs['auth'] != null) {
-      preferences.authRequired = (parsedArgs['auth'] == 'true');
-    } else if (ConfigUtil.getYaml() != null &&
-        ConfigUtil.getYaml()!['auth'] != null &&
-        ConfigUtil.getYaml()!['auth']['required'] != null) {
-      preferences.authRequired = ConfigUtil.getYaml()!['auth']['required'];
-    }
-  } else if (ConfigUtil.getYaml() != null &&
-      ConfigUtil.getYaml()!['auth'] != null &&
-      ConfigUtil.getYaml()!['auth']['required'] != null) {
-    preferences.authRequired = ConfigUtil.getYaml()!['auth']['required'];
-  }
+  preferences.authRequired = parsedArgs!['auth'];
 
   preferences.authMode = (parsedArgs != null)
       ? ((parsedArgs['mode'] != null)
@@ -94,5 +80,6 @@ AtCliPreference _getAtCliPreference(ArgResults? parsedArgs) {
           ? parsedArgs['authKeyFile']
           : ConfigUtil.getYaml()!['auth']['key_file_location'])
       : ConfigUtil.getYaml()!['auth']['key_file_location'];
+
   return preferences;
 }
