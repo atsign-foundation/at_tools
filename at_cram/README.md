@@ -1,4 +1,8 @@
-# at_cram
+<img src="https://atsign.dev/assets/img/@dev.png?sanitize=true">
+
+### Now for a little internet optimism
+
+## at_cram
 
 The at_cram utility is used to create the authentication digest when connecting
 to a secondary server that does not yet have pkam authentication activated.

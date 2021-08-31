@@ -1,22 +1,27 @@
-# at_ve_doctor
+<img src="https://atsign.dev/assets/img/@dev.png?sanitize=true">
 
-at_ve_doctor is a simple utility than can check the state of the secondaries running in the 
-virtual environment (VE) . 
-The virtual environment provides the full @platform stack including a @root server and a number of 
-preconfigured @signs.
+### Now for a little internet optimism
 
-Once the virtual environment is up and running the at_ve_doctor can be run and it will report back the 
-state of each of the preconfigured @signs.
+## at_ve_doctor
 
-Before the @signs are paired with a device they will report as being in a "teapot" once paired and a 
-pkam key is in place they will report as "activated".
+at_ve_doctor is a simple utility than can check the state of the secondaries
+running in the virtual environment (VE).  
+The virtual environment provides the full @platform stack including a @root
+server and a number of preconfigured @signs.
 
-Activation can be done via the onboarding widget or if you prefer to activate all the @signs 
-with predefined pkam keys the pkamLoad script can be run on the supervisor Ui found at 
-localhost:9001 when running the VE.
+Once the virtual environment is up and running the at_ve_doctor can be run
+and it will report back the state of each of the preconfigured @signs.
+
+Before the @signs are paired with a device they will report as being in a
+"teapot" once paired and a pkam key is in place they will report as
+"activated".
+
+Activation can be done via the onboarding widget or if you prefer to
+activate all the @signs with predefined pkam keys the pkamLoad script
+can be run on the supervisor Ui found at localhost:9001 when running the VE.
 
 ```
-cconstab$ dart bin/at_ve_doctor.dart
+$ dart bin/at_ve_doctor.dart
 @alice🛠 status: AtSignStatus.teapot
 outbound finish handler called
 @ashish🛠 status: AtSignStatus.teapot
@@ -52,12 +57,12 @@ outbound finish handler called
 @sameeraja🛠 status: AtSignStatus.teapot
 outbound finish handler called
 @sitaram🛠 status: AtSignStatus.teapot
-cconstab$
+$
 ```
 
 Once pkamLoad has been run
 ```
-cconstab$ dart bin/at_ve_doctor.dart
+$ dart bin/at_ve_doctor.dart
 @alice🛠 status: AtSignStatus.activated
 outbound finish handler called
 @ashish🛠 status: AtSignStatus.activated
@@ -93,5 +98,5 @@ outbound finish handler called
 @sameeraja🛠 status: AtSignStatus.activated
 outbound finish handler called
 @sitaram🛠 status: AtSignStatus.activated
-cconstab$
+$
 ```
