@@ -1,10 +1,15 @@
+<img src="https://atsign.dev/assets/img/@dev.png?sanitize=true">
+
+### Now for a little internet optimism
+
 ## at_pkam
 
 A command line tool to create PKAM authentication tokens.
 
 ### Building
 
-__Assumption__ - you have the [Dart SDK](https://dart.dev/get-dart) installed. The version should be >= 2.12.0 and <3.0.0.
+__Assumption__ - you have the [Dart SDK](https://dart.dev/get-dart) installed.
+The version should be >= 2.12.0 and <3.0.0.
 
 First fetch dependencies (as defined in pubspec.yaml):
 
