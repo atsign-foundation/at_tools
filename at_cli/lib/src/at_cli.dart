@@ -127,6 +127,9 @@ class AtCli {
           builder.atKey = arguments['key'];
           builder.sharedWith = arguments['shared_with'];
           builder.isPublic = arguments['public'];
+          builder.sharedBy = (arguments['shared_by'] != null)
+              ? arguments['shared_by']
+              : _atSign;
           if (!builder.checkParams()) {
             throw Exception(
                 'Invalid command \n ${CommandLineParser.getUsage()}');
