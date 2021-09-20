@@ -108,3 +108,8 @@ class KeyNotFoundException extends AtException {
 class IllegalArgumentException extends AtException {
   IllegalArgumentException(message) : super(message);
 }
+
+/// Throws when the User tries to find an element that is not available.
+class ElementNotFoundException extends AtException {
+  ElementNotFoundException(message) : super(message);
+}
