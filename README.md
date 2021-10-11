@@ -2,6 +2,9 @@
 
 ### Now for a little internet optimism
 
+[![Build Status](https://github.com/atsign-foundation/at_tools/actions/workflows/at_tools.yaml/badge.svg)](https://github.com/atsign-foundation/at_tools/actions/workflows/at_tools.yaml)
+[![GitHub License](https://img.shields.io/badge/license-BSD3-blue.svg)](./LICENSE)
+
 ## at_tools
 
 This repository contains @protocol tools and  libraries for developers
