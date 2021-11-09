@@ -1,0 +1,28 @@
+name: at_hive_recovery
+description: A command-line utility to recover corrupt hive box
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+dependencies:
+  at_persistence_secondary_server: ^3.0.5
+#  at_persistence_secondary_server:
+#    git:
+#      url: https://github.com/atsign-foundation/at_server.git
+#      path: at_secondary/at_persistence_secondary_server
+#      ref: trunk
+  crypto: ^3.0.1
+  archive: ^3.1.6
+
+dependency_overrides:
+  hive:
+    git:
+      url: https://github.com/atsign-foundation/hive.git
+      path: hive
+      ref: corrupt_box_workaround
+
+
+dev_dependencies:
+  lints: ^1.0.1
