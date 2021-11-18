@@ -2,6 +2,11 @@ class AtException implements Exception {
   var message;
 
   AtException(this.message);
+
+  @override
+  String toString() {
+    return 'Exception: $message';
+  }
 }
 
 /// Parent exception for any connection specific exception
@@ -107,9 +112,4 @@ class KeyNotFoundException extends AtException {
 /// Throws when user inputs invalid arguments
 class IllegalArgumentException extends AtException {
   IllegalArgumentException(message) : super(message);
-}
-
-/// Throws when the User tries to find an element that is not available.
-class ElementNotFoundException extends AtException {
-  ElementNotFoundException(message) : super(message);
 }

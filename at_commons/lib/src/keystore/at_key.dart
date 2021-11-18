@@ -27,6 +27,11 @@ class AtKey {
       atKey.metadata = metaData;
       return atKey;
     }
+    //If key does not contain '@'. It is not a valid key.
+    // Following are the valid key: @alice:phone@bob (or) phone@bob
+    if (!key.contains('@')) {
+      throw InvalidSyntaxException('$key is not well-formed key');
+    }
     var keyParts = key.split(':');
     if (keyParts.length == 1) {
       atKey.sharedBy = keyParts[0].split('@')[1];
