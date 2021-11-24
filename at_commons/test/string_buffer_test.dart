@@ -1,3 +1,4 @@
+// ignore_for_file: non_constant_identifier_names
 import 'package:at_commons/src/buffer/at_buffer.dart';
 import 'package:at_commons/src/buffer/at_buffer_impl.dart' as sb;
 import 'package:test/test.dart';

@@ -54,13 +54,13 @@ void main() {
   });
 
   group('A group a negative test cases', () {
-    test('Test to verify invalid syntax exception is thrown',(){
+    test('Test to verify invalid syntax exception is thrown', () {
       var key = 'phone.buzz';
       expect(
-              () => AtKey.fromString(key),
+          () => AtKey.fromString(key),
           throwsA(predicate((dynamic e) =>
-          e is InvalidSyntaxException && e.message == '$key is not well-formed key')));
-
+              e is InvalidSyntaxException &&
+              e.message == '$key is not well-formed key')));
     });
   });
 }

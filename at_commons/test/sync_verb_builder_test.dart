@@ -60,7 +60,10 @@ void main() {
   });
 
   test('build sync stream verb command', () {
-    var syncVerbBuilder = SyncVerbBuilder()..commitId = -1..isPaginated = true..limit = 5;
+    var syncVerbBuilder = SyncVerbBuilder()
+      ..commitId = -1
+      ..isPaginated = true
+      ..limit = 5;
     var command = syncVerbBuilder.buildCommand();
     expect(command, 'sync:from:-1:limit:5\n');
     var regex = RegExp(VerbSyntax.syncFrom);
