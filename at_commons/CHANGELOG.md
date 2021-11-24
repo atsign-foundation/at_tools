@@ -1,3 +1,5 @@
+## 3.0.1
+- Add AtKey validations
 ## 3.0.0
 - sync pagination changes
 ## 2.0.5
