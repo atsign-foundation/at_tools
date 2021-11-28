@@ -23,6 +23,9 @@ class NotifyVerbBuilder implements VerbBuilder {
   /// time in milliseconds after which [atKey] expires.
   int? ttl;
 
+  /// time in milliseconds after which a notification expires.
+  int? ttln;
+
   /// time in milliseconds after which [atKey] becomes active.
   int? ttb;
 
@@ -70,6 +73,9 @@ class NotifyVerbBuilder implements VerbBuilder {
     command += 'notifier:$notifier:';
     if (ttl != null) {
       command += 'ttl:$ttl:';
+    }
+    if (ttl != null) {
+      command += 'ttln:$ttln:';
     }
     if (ttb != null) {
       command += 'ttb:$ttb:';
