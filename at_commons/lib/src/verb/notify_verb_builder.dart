@@ -74,7 +74,7 @@ class NotifyVerbBuilder implements VerbBuilder {
     if (ttl != null) {
       command += 'ttl:$ttl:';
     }
-    if (ttl != null) {
+    if (ttln != null) {
       command += 'ttln:$ttln:';
     }
     if (ttb != null) {
