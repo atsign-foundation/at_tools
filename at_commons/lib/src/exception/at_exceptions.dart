@@ -2,6 +2,11 @@ class AtException implements Exception {
   var message;
 
   AtException(this.message);
+
+  @override
+  String toString() {
+    return 'Exception: $message';
+  }
 }
 
 /// Parent exception for any connection specific exception

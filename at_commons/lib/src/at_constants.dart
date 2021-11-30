@@ -1,3 +1,4 @@
+// ignore_for_file: constant_identifier_names
 const String AT_SIGN = 'atSign';
 const String FOR_AT_SIGN = 'forAtSign';
 const String AT_KEY = 'atKey';

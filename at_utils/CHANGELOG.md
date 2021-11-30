@@ -1,3 +1,5 @@
+## 3.0.1
+- at_commons version change for AtKey validations
 ## 3.0.0
 - at_commons version change for sync_pagination
 ## 2.0.4

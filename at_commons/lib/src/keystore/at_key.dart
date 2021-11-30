@@ -27,14 +27,23 @@ class AtKey {
       atKey.metadata = metaData;
       return atKey;
     }
+    //If key does not contain '@'. or key has space, it is not a valid key.
+    if (!key.contains('@') || key.contains(' ')) {
+      throw InvalidSyntaxException('$key is not well-formed key');
+    }
     var keyParts = key.split(':');
+    // If key does not contain ':' Ex: phone@bob; then keyParts length is 1
+    // where phone is key and @bob is sharedBy
     if (keyParts.length == 1) {
       atKey.sharedBy = keyParts[0].split('@')[1];
       atKey.key = keyParts[0].split('@')[0];
     } else {
+      // Example key: public:phone@bob
       if (keyParts[0] == 'public') {
         metaData.isPublic = true;
-      } else if (keyParts[0] == CACHED) {
+      }
+      // Example key: cached:@alice:phone@bob
+      else if (keyParts[0] == CACHED) {
         metaData.isCached = true;
         atKey.sharedWith = keyParts[1];
       } else {

@@ -1,3 +1,4 @@
+// ignore_for_file: unnecessary_string_escapes
 import 'package:at_commons/at_commons.dart';
 import 'package:at_utils/at_utils.dart';
 import 'package:test/test.dart';

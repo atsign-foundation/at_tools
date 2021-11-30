@@ -1,3 +1,4 @@
+// ignore_for_file: constant_identifier_names
 enum SharedKeyStatus {
   LOCAL_UPDATED,
   REMOTE_UPDATED,
