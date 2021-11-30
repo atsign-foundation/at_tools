@@ -1,3 +1,5 @@
+## 3.0.2
+- at_commons version change for compaction and notification expiry
 ## 3.0.1
 - at_commons version change for AtKey validations
 ## 3.0.0
