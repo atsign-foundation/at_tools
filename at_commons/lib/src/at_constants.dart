@@ -21,6 +21,7 @@ const String AT_STAT_ID = 'statId';
 const String AT_TTL = 'ttl';
 const String AT_TTB = 'ttb';
 const String AT_TTR = 'ttr';
+const String AT_TTL_NOTIFICATION = 'ttln';
 const String AT_FROM_COMMIT_SEQUENCE = 'from_commit_seq';
 const String AT_OPERATION = 'operation';
 const String AT_VALUE_REFERENCE = 'atsign://';
