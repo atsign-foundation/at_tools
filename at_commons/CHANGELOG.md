@@ -1,3 +1,5 @@
+## 3.0.2
+- added constants for compaction and notification expiry
 ## 3.0.1
 - Add AtKey validations
 ## 3.0.0
