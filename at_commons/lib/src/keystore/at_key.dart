@@ -40,7 +40,7 @@ class AtKey {
   ///AtKey atKey = (AtKey.shared('phone', 'wavi')
   ///  ..sharedWith('bob')
   ///  ..cache(1000, true))
-  ///    .build();
+  ///  .build();
   /// ```
   static SharedKeyBuilder shared(String key, String namespace,
       {ValueType valueType = ValueType.text}) {
@@ -50,6 +50,9 @@ class AtKey {
   }
 
   /// Builds a self key and returns a [SelfKeyBuilder].
+  ///
+  /// Self keys are the private key's which are only accessed by the owner of the
+  /// keys.
   ///
   /// Example: phone.wavi@alice
   /// ```dart
@@ -62,11 +65,12 @@ class AtKey {
       ..namespace(namespace);
   }
 
-  /// Builds a hidden key and returns a [HiddenKeyBuilder].
+  /// Builds a hidden key and returns a [HiddenKeyBuilder]. Hidden key are not
+  /// returned when fetched for key's of atSign.
   ///
   /// Example: _phone.wavi@alice
   /// ```dart
-  /// AtKey selfKey = AtKey.hidden('phone', 'wavi').build();
+  /// AtKey hiddenKey = AtKey.hidden('phone', 'wavi').build();
   /// ```
   static HiddenKeyBuilder hidden(String key, String namespace,
       {ValueType valueType = ValueType.text}) {
@@ -125,11 +129,11 @@ class AtKey {
       }
     }
     //remove namespace
-    if (atKey.key != null && atKey.key!.contains('.')) {
-      var namespaceIndex = atKey.key!.lastIndexOf('.');
+    if (atKey.key != null && atKey.key.contains('.')) {
+      var namespaceIndex = atKey.key.lastIndexOf('.');
       if (namespaceIndex > -1) {
-        atKey.namespace = atKey.key!.substring(namespaceIndex + 1);
-        atKey.key = atKey.key!.substring(0, namespaceIndex);
+        atKey.namespace = atKey.key.substring(namespaceIndex + 1);
+        atKey.key = atKey.key.substring(0, namespaceIndex);
       }
     } else {
       metaData.namespaceAware = false;
