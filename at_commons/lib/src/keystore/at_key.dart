@@ -1,16 +1,78 @@
 import 'package:at_commons/at_commons.dart';
+import 'package:at_commons/src/keystore/at_key_builder_impl.dart';
 
 class AtKey {
-  String? key;
+  late String key;
   String? sharedWith;
   String? sharedBy;
-  String? namespace;
+  late String namespace;
   Metadata? metadata;
   bool isRef = false;
 
   @override
   String toString() {
     return 'AtKey{key: $key, sharedWith: $sharedWith, sharedBy: $sharedBy, namespace: $namespace, metadata: $metadata, isRef: $isRef}';
+  }
+
+  ///Builds a public key and returns a [PublicKeyBuilder]
+  ///
+  ///Example: public:phone.wavi@alice.
+  ///```dart
+  ///AtKey publicKey = AtKey.public('phone', 'wavi').build();
+  ///```
+  static PublicKeyBuilder public(String key, String namespace,
+      {ValueType valueType = ValueType.text}) {
+    return PublicKeyBuilder(valueType)
+      ..key(key)
+      ..namespace(namespace);
+  }
+
+  ///Builds a sharedWith key and returns a [SharedKeyBuilder]. Optionally the key
+  ///can be cached on the [AtKey.sharedWith] atSign.
+  ///
+  ///Example: @bob:phone.wavi@alice.
+  ///```dart
+  ///AtKey sharedKey = (AtKey.shared('phone', 'wavi')
+  ///     ..sharedWith('@bob')).build();
+  ///```
+  /// To cache a key on the @bob atSign.
+  /// ```dart
+  ///AtKey atKey = (AtKey.shared('phone', 'wavi')
+  ///  ..sharedWith('bob')
+  ///  ..cache(1000, true))
+  ///    .build();
+  /// ```
+  static SharedKeyBuilder shared(String key, String namespace,
+      {ValueType valueType = ValueType.text}) {
+    return SharedKeyBuilder(valueType)
+      ..key(key)
+      ..namespace(namespace);
+  }
+
+  /// Builds a self key and returns a [SelfKeyBuilder].
+  ///
+  /// Example: phone.wavi@alice
+  /// ```dart
+  /// AtKey selfKey = AtKey.self('phone', 'wavi').build();
+  /// ```
+  static SelfKeyBuilder self(String key, String namespace,
+      {ValueType valueType = ValueType.text}) {
+    return SelfKeyBuilder(valueType)
+      ..key(key)
+      ..namespace(namespace);
+  }
+
+  /// Builds a hidden key and returns a [HiddenKeyBuilder].
+  ///
+  /// Example: _phone.wavi@alice
+  /// ```dart
+  /// AtKey selfKey = AtKey.hidden('phone', 'wavi').build();
+  /// ```
+  static HiddenKeyBuilder hidden(String key, String namespace,
+      {ValueType valueType = ValueType.text}) {
+    return HiddenKeyBuilder(valueType)
+      ..key(key)
+      ..namespace(namespace);
   }
 
   static AtKey fromString(String key) {
@@ -74,6 +136,37 @@ class AtKey {
     }
     atKey.metadata = metaData;
     return atKey;
+  }
+}
+
+/// Represents a public key.
+class PublicKey extends AtKey {
+  PublicKey() {
+    super.metadata ??= Metadata();
+    super.metadata!.isPublic = true;
+  }
+}
+
+///Represents a Self key.
+class SelfKey extends AtKey {
+  SelfKey() {
+    super.metadata ??= Metadata();
+    super.metadata!.isPublic = false;
+  }
+}
+
+/// Represents a key shared to another atSign.
+class SharedKey extends AtKey {
+  SharedKey() {
+    super.metadata ??= Metadata();
+  }
+}
+
+/// Represents a Hidden key.
+class HiddenKey extends AtKey {
+  HiddenKey() {
+    super.metadata ??= Metadata();
+    super.metadata!.isHidden = true;
   }
 }
 
@@ -180,3 +273,9 @@ class AtValue {
     return 'AtValue{value: $value, metadata: $metadata}';
   }
 }
+
+/// Enumeration that represents value type in @protocol
+///
+/// binary - Represents binary data like images
+/// text   - Anything that's not binary falls into this category
+enum ValueType { binary, text }
