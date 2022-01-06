@@ -6,10 +6,6 @@ abstract class AbstractKeyBuilder implements KeyBuilder {
   final _meta = Metadata();
   late AtKey _atKey;
 
-  AbstractKeyBuilder(ValueType valueType) {
-    _meta.isBinary = (valueType == ValueType.binary);
-  }
-
   @override
   void key(String key) {
     key = key.trim();
@@ -17,8 +13,8 @@ abstract class AbstractKeyBuilder implements KeyBuilder {
   }
 
   @override
-  void namespace(String namespace) {
-    namespace = namespace.trim();
+  void namespace(String? namespace) {
+    namespace = namespace?.trim();
     _atKey.namespace = namespace;
   }
 
@@ -47,7 +43,7 @@ abstract class AbstractKeyBuilder implements KeyBuilder {
       throw AtException("Key cannot be empty");
     }
 
-    if (_atKey.namespace.isEmpty) {
+    if (_atKey.namespace == null || _atKey.namespace!.isEmpty) {
       throw AtException("Namespace cannot be empty");
     }
   }
@@ -55,7 +51,7 @@ abstract class AbstractKeyBuilder implements KeyBuilder {
 
 /// Builder class for cached key's.
 abstract class CachedKeyBuilder extends AbstractKeyBuilder {
-  CachedKeyBuilder(ValueType valueType) : super(valueType);
+  CachedKeyBuilder() : super();
 
   ///Cache's the key on [AtKey.sharedWith] atSign.
   /// TTR denotes the time to refresh the cached key. Accepts an integer value
@@ -68,7 +64,7 @@ abstract class CachedKeyBuilder extends AbstractKeyBuilder {
 
 /// Builder to build the public keys
 class PublicKeyBuilder extends CachedKeyBuilder {
-  PublicKeyBuilder(ValueType valueType) : super(valueType) {
+  PublicKeyBuilder() : super() {
     _atKey = PublicKey();
     _meta.isPublic = true;
     _meta.isHidden = false;
@@ -84,7 +80,7 @@ class PublicKeyBuilder extends CachedKeyBuilder {
 
 /// Builder to build the shared keys
 class SharedKeyBuilder extends CachedKeyBuilder {
-  SharedKeyBuilder(ValueType valueType) : super(valueType) {
+  SharedKeyBuilder() : super() {
     _atKey = SharedKey();
     _meta.isPublic = false;
     _meta.isHidden = false;
@@ -115,7 +111,7 @@ class SharedKeyBuilder extends CachedKeyBuilder {
 
 /// Builder to build the Self keys
 class SelfKeyBuilder extends AbstractKeyBuilder {
-  SelfKeyBuilder(ValueType valueType) : super(valueType) {
+  SelfKeyBuilder() : super() {
     _atKey = SelfKey();
     _meta.isPublic = false;
     _meta.isHidden = false;
@@ -124,7 +120,7 @@ class SelfKeyBuilder extends AbstractKeyBuilder {
 
 /// Builder to build the hidden keys
 class HiddenKeyBuilder extends AbstractKeyBuilder {
-  HiddenKeyBuilder(ValueType valueType) : super(valueType) {
+  HiddenKeyBuilder() : super() {
     _atKey = HiddenKey();
     _meta.isHidden = true;
     _meta.isPublic = false;

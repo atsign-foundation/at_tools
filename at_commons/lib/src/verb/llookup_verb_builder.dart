@@ -1,3 +1,4 @@
+import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
 import 'package:at_commons/src/verb/verb_util.dart';
 
@@ -15,18 +16,20 @@ import 'package:at_commons/src/verb/verb_util.dart';
 /// // Lookup a credit card number that is accessible only by Bob
 ///    var builder = LlookupVerbBuilder()..key=’@bob:credit_card’..atSign=’bob’;
 class LLookupVerbBuilder implements VerbBuilder {
-  /// the key of [atKey] to llookup. [atKey] can have either public, private or shared access.
-  String? atKey;
+  late AtKey atKey;
 
-  /// atSign of the secondary server on which llookup has to be executed.
-  String? sharedBy;
-
-  /// atSign of the secondary server for whom [atKey] is shared
-  String? sharedWith;
-
-  bool isPublic = false;
-
-  bool isCached = false;
+  // /// the key of [atKey] to llookup. [atKey] can have either public, private or shared access.
+  // String? atKey;
+  //
+  // /// atSign of the secondary server on which llookup has to be executed.
+  // String? sharedBy;
+  //
+  // /// atSign of the secondary server for whom [atKey] is shared
+  // String? sharedWith;
+  //
+  // bool isPublic = false;
+  //
+  // bool isCached = false;
 
   String? operation;
 
@@ -36,21 +39,21 @@ class LLookupVerbBuilder implements VerbBuilder {
     if (operation != null) {
       command += '$operation:';
     }
-    if (isCached) {
+    if (atKey.metadata != null && atKey.metadata!.isCached) {
       command += 'cached:';
     }
-    if (isPublic) {
+    if (atKey.metadata != null && atKey.metadata!.isPublic) {
       command += 'public:';
     }
-    if (sharedWith != null && sharedWith!.isNotEmpty) {
-      command += '$sharedWith:';
+    if (atKey.sharedWith != null && atKey.sharedWith!.isNotEmpty) {
+      command += '${atKey.sharedWith}:';
     }
-    command += atKey!;
-    return '$command${VerbUtil.formatAtSign(sharedBy)}\n';
+    command += atKey.key;
+    return '$command${VerbUtil.formatAtSign(atKey.sharedBy)}\n';
   }
 
   @override
   bool checkParams() {
-    return atKey != null && sharedBy != null;
+    return atKey.sharedBy!.isNotEmpty;
   }
 }

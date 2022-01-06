@@ -67,47 +67,51 @@ void main() {
 
   group('A group of tests to validate the AtKey builder instances', () {
     test('Validate public key builder', () {
-      PublicKeyBuilder publicKeyBuilder = AtKey.public('phone', 'wavi');
+      PublicKeyBuilder publicKeyBuilder =
+          AtKey.public('phone', namespace: 'wavi');
       expect(publicKeyBuilder, isA<PublicKeyBuilder>());
     });
 
     test('Validate the shared key builder', () {
-      SharedKeyBuilder sharedKeyBuilder = AtKey.shared('phone', 'wavi')
-        ..sharedWith('@bob');
+      SharedKeyBuilder sharedKeyBuilder =
+          AtKey.shared('phone', namespace: 'wavi')..sharedWith('@bob');
       expect(sharedKeyBuilder, isA<SharedKeyBuilder>());
     });
 
     test('Validate the self key builder', () {
-      SelfKeyBuilder selfKeyBuilder = AtKey.self('phone', 'wavi');
+      SelfKeyBuilder selfKeyBuilder = AtKey.self('phone', namespace: 'wavi');
       expect(selfKeyBuilder, isA<SelfKeyBuilder>());
     });
 
     test('Validate the hidden key builder', () {
-      HiddenKeyBuilder hiddenKeyBuilder = AtKey.hidden('phone', 'wavi');
+      HiddenKeyBuilder hiddenKeyBuilder =
+          AtKey.hidden('phone', namespace: 'wavi');
       expect(hiddenKeyBuilder, isA<HiddenKeyBuilder>());
     });
   });
 
   group('A group of tests to validate the AtKey instances', () {
     test('Test to verify the public key', () {
-      AtKey atKey = AtKey.public('phone', 'wavi').build();
+      AtKey atKey = AtKey.public('phone', namespace: 'wavi').build();
       expect(atKey, isA<PublicKey>());
     });
 
     test('Test to verify the shared key', () {
-      AtKey atKey = (AtKey.shared('image', 'wavi', valueType: ValueType.binary)
-            ..sharedWith('bob'))
+      AtKey atKey = (AtKey.shared(
+        'image',
+        namespace: 'wavi',
+      )..sharedWith('bob'))
           .build();
       expect(atKey, isA<SharedKey>());
     });
 
     test('Test to verify the self key', () {
-      AtKey selfKey = AtKey.self('phone', 'wavi').build();
+      AtKey selfKey = AtKey.self('phone', namespace: 'wavi').build();
       expect(selfKey, isA<SelfKey>());
     });
 
     test('Test to verify the hidden key', () {
-      AtKey selfKey = AtKey.hidden('phone', 'wavi').build();
+      AtKey selfKey = AtKey.hidden('phone', namespace: 'wavi').build();
       expect(selfKey, isA<HiddenKey>());
     });
   });
@@ -115,14 +119,14 @@ void main() {
   group('A group of negative tests to validate AtKey', () {
     test('Test to verify AtException is thrown when key is empty', () {
       expect(
-          () => (AtKey.public('', 'wavi')).build(),
+          () => (AtKey.public('', namespace: 'wavi')).build(),
           throwsA(predicate((dynamic e) =>
               e is AtException && e.message == 'Key cannot be empty')));
     });
 
     test('Test to verify AtException is thrown when namespace is empty', () {
       expect(
-          () => (AtKey.public('phone', ' ')).build(),
+          () => (AtKey.public('phone', namespace: '')).build(),
           throwsA(predicate((dynamic e) =>
               e is AtException && e.message == 'Namespace cannot be empty')));
     });
@@ -131,7 +135,7 @@ void main() {
         'Test to verify AtException is thrown when sharedWith is populated for sharedKey',
         () {
       expect(
-          () => (AtKey.shared('phone', 'wavi')).build(),
+          () => (AtKey.shared('phone', namespace: 'wavi')).build(),
           throwsA(predicate((dynamic e) =>
               e is AtException && e.message == 'sharedWith cannot be empty')));
     });
@@ -139,7 +143,7 @@ void main() {
 
   group('Test public key creation', () {
     test('Test key and namespace with no ttl and ttb', () {
-      AtKey atKey = AtKey.public('phone', 'wavi').build();
+      AtKey atKey = AtKey.public('phone', namespace: 'wavi').build();
       expect(atKey.key, equals('phone'));
       expect(atKey.namespace, equals('wavi'));
       expect(atKey.metadata!.ttl, equals(null));
@@ -150,11 +154,10 @@ void main() {
     });
 
     test('Test key and namespace with ttl and ttb', () {
-      AtKey atKey = (AtKey.public('phone', 'wavi')
-        ..timeToLive(1000)
-        ..timeToBirth(2000))
+      AtKey atKey = (AtKey.public('phone', namespace: 'wavi')
+            ..timeToLive(1000)
+            ..timeToBirth(2000))
           .build();
-
 
       expect(atKey.key, equals('phone'));
       expect(atKey.namespace, equals('wavi'));
@@ -165,25 +168,12 @@ void main() {
       expect(atKey.metadata!.isBinary, equals(false));
       expect(atKey.metadata!.isCached, equals(false));
     });
-
-    test('Test binary public data', () {
-      AtKey atKey = AtKey.public('image', 'wavi', valueType: ValueType.binary).build();
-
-      expect(atKey.key, equals('image'));
-      expect(atKey.namespace, equals('wavi'));
-      expect(atKey.metadata!.ttl, equals(null));
-      expect(atKey.metadata!.ttb, equals(null));
-      expect(atKey.metadata!.isPublic, equals(true));
-      expect(atKey.metadata!.isBinary, equals(true));
-      expect(atKey.metadata!.isCached, equals(false));
-    });
   });
 
   group('Test shared key creation', () {
     test('Test shared key without caching', () {
-      AtKey atKey = (AtKey.shared('phone', 'wavi')
-        ..sharedWith('bob'))
-          .build();
+      AtKey atKey =
+          (AtKey.shared('phone', namespace: 'wavi')..sharedWith('bob')).build();
 
       expect(atKey.key, equals('phone'));
       expect(atKey.namespace, equals('wavi'));
@@ -196,12 +186,10 @@ void main() {
     });
 
     test('Test shared key with caching', () {
-
-      AtKey atKey = (AtKey.shared('phone', 'wavi')
-        ..sharedWith('bob')
-        ..cache(1000, true))
+      AtKey atKey = (AtKey.shared('phone', namespace: 'wavi')
+            ..sharedWith('bob')
+            ..cache(1000, true))
           .build();
-
 
       expect(atKey.key, equals('phone'));
       expect(atKey.namespace, equals('wavi'));
@@ -213,21 +201,6 @@ void main() {
       expect(atKey.metadata!.isPublic, equals(false));
       expect(atKey.metadata!.isBinary, equals(false));
       expect(atKey.metadata!.isCached, equals(true));
-    });
-
-    test('Test binary shared key', () {
-
-      AtKey atKey = (AtKey.shared('image', 'wavi', valueType: ValueType.binary)
-        ..sharedWith('bob'))
-          .build();
-
-      expect(atKey.key, equals('image'));
-      expect(atKey.namespace, equals('wavi'));
-      expect(atKey.metadata!.ttl, equals(null));
-      expect(atKey.metadata!.ttb, equals(null));
-      expect(atKey.metadata!.isPublic, equals(false));
-      expect(atKey.metadata!.isBinary, equals(true));
-      expect(atKey.metadata!.isCached, equals(false));
     });
   });
 }

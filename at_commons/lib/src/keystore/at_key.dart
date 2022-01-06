@@ -5,7 +5,7 @@ class AtKey {
   late String key;
   String? sharedWith;
   String? sharedBy;
-  late String namespace;
+  String? namespace;
   Metadata? metadata;
   bool isRef = false;
 
@@ -20,9 +20,8 @@ class AtKey {
   ///```dart
   ///AtKey publicKey = AtKey.public('phone', 'wavi').build();
   ///```
-  static PublicKeyBuilder public(String key, String namespace,
-      {ValueType valueType = ValueType.text}) {
-    return PublicKeyBuilder(valueType)
+  static PublicKeyBuilder public(String key, {String? namespace}) {
+    return PublicKeyBuilder()
       ..key(key)
       ..namespace(namespace);
   }
@@ -42,9 +41,8 @@ class AtKey {
   ///  ..cache(1000, true))
   ///  .build();
   /// ```
-  static SharedKeyBuilder shared(String key, String namespace,
-      {ValueType valueType = ValueType.text}) {
-    return SharedKeyBuilder(valueType)
+  static SharedKeyBuilder shared(String key, {String? namespace}) {
+    return SharedKeyBuilder()
       ..key(key)
       ..namespace(namespace);
   }
@@ -58,9 +56,8 @@ class AtKey {
   /// ```dart
   /// AtKey selfKey = AtKey.self('phone', 'wavi').build();
   /// ```
-  static SelfKeyBuilder self(String key, String namespace,
-      {ValueType valueType = ValueType.text}) {
-    return SelfKeyBuilder(valueType)
+  static SelfKeyBuilder self(String key, {String? namespace}) {
+    return SelfKeyBuilder()
       ..key(key)
       ..namespace(namespace);
   }
@@ -72,9 +69,8 @@ class AtKey {
   /// ```dart
   /// AtKey hiddenKey = AtKey.hidden('phone', 'wavi').build();
   /// ```
-  static HiddenKeyBuilder hidden(String key, String namespace,
-      {ValueType valueType = ValueType.text}) {
-    return HiddenKeyBuilder(valueType)
+  static HiddenKeyBuilder hidden(String key, {String? namespace}) {
+    return HiddenKeyBuilder()
       ..key(key)
       ..namespace(namespace);
   }
@@ -146,7 +142,7 @@ class AtKey {
 /// Represents a public key.
 class PublicKey extends AtKey {
   PublicKey() {
-    super.metadata ??= Metadata();
+    super.metadata = Metadata();
     super.metadata!.isPublic = true;
   }
 }
@@ -154,23 +150,23 @@ class PublicKey extends AtKey {
 ///Represents a Self key.
 class SelfKey extends AtKey {
   SelfKey() {
-    super.metadata ??= Metadata();
-    super.metadata!.isPublic = false;
+    super.metadata = Metadata();
+    super.metadata?.isPublic = false;
   }
 }
 
 /// Represents a key shared to another atSign.
 class SharedKey extends AtKey {
   SharedKey() {
-    super.metadata ??= Metadata();
+    super.metadata = Metadata();
   }
 }
 
 /// Represents a Hidden key.
 class HiddenKey extends AtKey {
   HiddenKey() {
-    super.metadata ??= Metadata();
-    super.metadata!.isHidden = true;
+    super.metadata = Metadata();
+    super.metadata?.isHidden = true;
   }
 }
 
@@ -186,11 +182,11 @@ class Metadata {
   DateTime? updatedAt;
   String? dataSignature;
   String? sharedKeyStatus;
-  bool? isPublic = false;
+  bool isPublic = false;
   bool isHidden = false;
   bool namespaceAware = true;
-  bool? isBinary = false;
-  bool? isEncrypted;
+  bool isBinary = false;
+  bool isEncrypted = false;
   bool isCached = false;
 
   @override
@@ -277,9 +273,3 @@ class AtValue {
     return 'AtValue{value: $value, metadata: $metadata}';
   }
 }
-
-/// Enumeration that represents value type in @protocol
-///
-/// binary - Represents binary data like images
-/// text   - Anything that's not binary falls into this category
-enum ValueType { binary, text }

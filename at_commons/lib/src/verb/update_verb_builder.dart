@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:at_commons/src/verb/verb_util.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
+import 'package:at_commons/src/verb/verb_util.dart';
 
 /// Update builder generates a command to update [value] for a key [atKey] in the secondary server of [sharedBy].
 /// Use [getBuilder] method if you want to convert command to a builder.
@@ -21,113 +21,62 @@ import 'package:at_commons/src/verb/verb_builder.dart';
 ///  ..value='+1-5678';
 /// ```
 class UpdateVerbBuilder implements VerbBuilder {
-  /// Key that represents a user's information. e.g phone, location, email etc.,
-  String? atKey;
+  late AtKey atKey;
 
   /// Value of the key typically in string format. Images, files, etc.,
   /// must be converted to unicode string before storing.
   dynamic value;
 
-  /// AtSign to whom [atKey] has to be shared.
-  String? sharedWith;
-
-  /// AtSign of the client user calling this builder.
-  String? sharedBy;
-
-  /// if [isPublic] is true, then [atKey] is accessible by all atSigns.
-  /// if [isPublic] is false, then [atKey] is accessible either by [sharedWith] or [sharedBy]
-  bool isPublic = false;
-
-  /// time in milliseconds after which [atKey] expires.
-  int? ttl;
-
-  /// time in milliseconds after which [atKey] becomes active.
-  int? ttb;
-
-  /// time in milliseconds to refresh [atKey].
-  int? ttr;
-
-  ///boolean variable to enable/disable cascade delete
-  bool? ccd;
-
-  bool? isBinary;
-
-  /// boolean variable to indicate if the value is encrypted.
-  /// True indicates encrypted value
-  /// False indicates unencrypted value
-  bool? isEncrypted;
-
-  /// Signed signature with atsign's private key, if isPublic is true
-  String? dataSignature;
-
   String? operation;
 
   bool isJson = false;
-
-  String? sharedKeyStatus;
 
   @override
   String buildCommand() {
     if (isJson) {
       var updateParams = UpdateParams();
       var key = '';
-      if (sharedWith != null) {
-        key += '${VerbUtil.formatAtSign(sharedWith)}:';
+      if (atKey.sharedWith != null) {
+        key += '${VerbUtil.formatAtSign(atKey.sharedWith)}:';
       }
-      key += atKey!;
-      if (sharedBy != null) {
-        key += '${VerbUtil.formatAtSign(sharedBy)}';
+      key += atKey.key;
+      if (atKey.sharedBy != null) {
+        key += '${VerbUtil.formatAtSign(atKey.sharedBy)}';
       }
       updateParams.atKey = key;
       updateParams.value = value;
-      updateParams.sharedBy = sharedBy;
-      updateParams.sharedWith = sharedWith;
-      var metadata = Metadata();
-      metadata.ttr = ttr;
-      metadata.ttb = ttb;
-      metadata.ttl = ttl;
-      metadata.dataSignature = dataSignature;
-      metadata.isEncrypted = isEncrypted;
-      metadata.ccd = ccd;
-      metadata.isPublic = isPublic;
-      metadata.sharedKeyStatus = sharedKeyStatus;
-      updateParams.metadata = metadata;
+      updateParams.sharedBy = atKey.sharedBy;
+      updateParams.sharedWith = atKey.sharedWith;
+      if (atKey.metadata != null) {
+        var metadata = Metadata();
+        metadata.ttr = atKey.metadata!.ttr;
+        metadata.ttb = atKey.metadata!.ttb;
+        metadata.ttl = atKey.metadata!.ttl;
+        metadata.dataSignature = atKey.metadata!.dataSignature;
+        metadata.isEncrypted = atKey.metadata!.isEncrypted;
+        metadata.ccd = atKey.metadata!.ccd;
+        metadata.isPublic = atKey.metadata!.isPublic;
+        metadata.sharedKeyStatus = atKey.metadata!.sharedKeyStatus;
+        updateParams.metadata = metadata;
+      }
       var json = updateParams.toJson();
       var command = 'update:json:${jsonEncode(json)}\n';
       print('update json:$command');
       return command;
     }
+    //If JSON is false.
     var command = 'update:';
-    if (ttl != null) {
-      command += 'ttl:$ttl:';
-    }
-    if (ttb != null) {
-      command += 'ttb:$ttb:';
-    }
-    if (ttr != null) {
-      command += 'ttr:$ttr:';
-    }
-    if (ccd != null) {
-      command += 'ccd:$ccd:';
-    }
-    if (dataSignature != null) {
-      command += 'dataSignature:$dataSignature:';
-    }
-    if (isBinary != null) {
-      command += 'isBinary:$isBinary:';
-    }
-    if (isEncrypted != null) {
-      command += 'isEncrypted:$isEncrypted:';
-    }
-    if (isPublic) {
-      command += 'public:';
-    } else if (sharedWith != null) {
-      command += '${VerbUtil.formatAtSign(sharedWith)}:';
-    }
-    command += atKey!;
+    command += _getMetadataCommand(atKey.metadata);
 
-    if (sharedBy != null) {
-      command += '${VerbUtil.formatAtSign(sharedBy)}';
+    if (atKey.metadata != null && atKey.metadata!.isPublic) {
+      command += 'public:';
+    } else if (atKey.sharedWith != null) {
+      command += '${VerbUtil.formatAtSign(atKey.sharedWith)}:';
+    }
+    command += atKey.key;
+
+    if (atKey.sharedBy != null) {
+      command += '${VerbUtil.formatAtSign(atKey.sharedBy)}';
     }
     if (value is String) {
       value = VerbUtil.replaceNewline(value);
@@ -138,39 +87,23 @@ class UpdateVerbBuilder implements VerbBuilder {
 
   String buildCommandForMeta() {
     var command = 'update:meta:';
-    if (isPublic) {
+    if (atKey.metadata != null && atKey.metadata!.isPublic) {
       command += 'public:';
-    } else if (sharedWith != null) {
-      command += '${VerbUtil.formatAtSign(sharedWith)}:';
+    } else if (atKey.sharedWith != null) {
+      command += '${VerbUtil.formatAtSign(atKey.sharedWith)}:';
     }
-    command += atKey!;
-    if (sharedBy != null) {
-      command += '${VerbUtil.formatAtSign(sharedBy)}';
+    command += atKey.key;
+    if (atKey.sharedBy != null) {
+      command += '${VerbUtil.formatAtSign(atKey.sharedBy)}';
     }
-    if (ttl != null) {
-      command += ':ttl:$ttl';
-    }
-    if (ttb != null) {
-      command += ':ttb:$ttb';
-    }
-    if (ttr != null) {
-      command += ':ttr:$ttr';
-    }
-    if (ccd != null) {
-      command += ':ccd:$ccd';
-    }
-    if (isBinary != null) {
-      command += ':isBinary:$isBinary';
-    }
-    if (isEncrypted != null) {
-      command += ':isEncrypted:$isEncrypted';
-    }
+    command += _getMetadataCommand(atKey.metadata);
     command += '\n';
     return command;
   }
 
   static UpdateVerbBuilder? getBuilder(String command) {
-    var builder = UpdateVerbBuilder();
+    var atKey = AtKey()..metadata = Metadata();
+    var builder = UpdateVerbBuilder()..atKey = atKey;
     var verbParams;
     if (command.contains(UPDATE_META)) {
       verbParams = VerbUtil.getVerbParam(VerbSyntax.update_meta, command);
@@ -181,37 +114,74 @@ class UpdateVerbBuilder implements VerbBuilder {
     if (verbParams == null) {
       return null;
     }
-    builder.isPublic = command.contains('public:');
-    builder.sharedWith = VerbUtil.formatAtSign(verbParams[FOR_AT_SIGN]);
-    builder.sharedBy = VerbUtil.formatAtSign(verbParams[AT_SIGN]);
+    builder.atKey.metadata!.isPublic = command.contains('public:');
+    builder.atKey.sharedWith = VerbUtil.formatAtSign(verbParams[FOR_AT_SIGN]);
+    builder.atKey.sharedBy = VerbUtil.formatAtSign(verbParams[AT_SIGN]);
     builder.atKey = verbParams[AT_KEY];
     builder.value = verbParams[AT_VALUE];
     if (builder.value is String) {
       builder.value = VerbUtil.replaceNewline(builder.value);
     }
-    if (verbParams[AT_TTL] != null) builder.ttl = int.parse(verbParams[AT_TTL]);
-    if (verbParams[AT_TTB] != null) builder.ttb = int.parse(verbParams[AT_TTB]);
-    if (verbParams[AT_TTR] != null) builder.ttr = int.parse(verbParams[AT_TTR]);
+    if (verbParams[AT_TTL] != null) {
+      builder.atKey.metadata!.ttl = int.parse(verbParams[AT_TTL]);
+    }
+    if (verbParams[AT_TTB] != null) {
+      builder.atKey.metadata!.ttb = int.parse(verbParams[AT_TTB]);
+    }
+    if (verbParams[AT_TTR] != null) {
+      builder.atKey.metadata!.ttr = int.parse(verbParams[AT_TTR]);
+    }
     if (verbParams[CCD] != null) {
-      builder.ccd = _getBoolVerbParams(verbParams[CCD]);
+      builder.atKey.metadata!.ccd = _getBoolVerbParams(verbParams[CCD]);
     }
     if (verbParams[PUBLIC_DATA_SIGNATURE] != null) {
-      builder.dataSignature = verbParams[PUBLIC_DATA_SIGNATURE];
+      builder.atKey.metadata!.dataSignature = verbParams[PUBLIC_DATA_SIGNATURE];
     }
     if (verbParams[IS_BINARY] != null) {
-      builder.isBinary = _getBoolVerbParams(verbParams[IS_BINARY]);
+      builder.atKey.metadata!.isBinary =
+          _getBoolVerbParams(verbParams[IS_BINARY]);
     }
     if (verbParams[IS_ENCRYPTED] != null) {
-      builder.isEncrypted = _getBoolVerbParams(verbParams[IS_ENCRYPTED]);
+      builder.atKey.metadata!.isEncrypted =
+          _getBoolVerbParams(verbParams[IS_ENCRYPTED]);
     }
     return builder;
+  }
+
+  String _getMetadataCommand(Metadata? metadata) {
+    String metadataCommand = '';
+    if (metadata == null) {
+      return '';
+    }
+    if (metadata.ttl != null) {
+      metadataCommand += 'ttl:${metadata.ttl}:';
+    }
+    if (metadata.ttb != null) {
+      metadataCommand += 'ttb:${metadata.ttb}:';
+    }
+    if (metadata.ttr != null) {
+      metadataCommand += 'ttr:${metadata.ttr}:';
+    }
+    if (metadata.ccd != null) {
+      metadataCommand += 'ccd:${metadata.ccd}:';
+    }
+    if (metadata.dataSignature != null) {
+      metadataCommand += 'dataSignature:${metadata.dataSignature}:';
+    }
+    if (metadata.isBinary) {
+      metadataCommand += 'isBinary:${metadata.isBinary}:';
+    }
+    if (metadata.isEncrypted) {
+      metadataCommand += 'isEncrypted:${metadata.isEncrypted}:';
+    }
+    return metadataCommand;
   }
 
   @override
   bool checkParams() {
     var isValid = true;
-    if ((atKey == null || value == null) ||
-        (isPublic == true && sharedWith != null)) {
+    if ((value == null) ||
+        (atKey.metadata!.isPublic == true && atKey.sharedWith != null)) {
       isValid = false;
     }
     return isValid;
