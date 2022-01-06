@@ -59,3 +59,5 @@ const String MESSAGE_TYPE = 'messageType';
 const String PAGE = 'page';
 const String commitLogCompactionKey = 'privatekey:commitLogCompactionStats';
 const String accessLogCompactionKey = 'privatekey:accessLogCompactionStats';
+const String notificationCompactionKey =
+    'privatekey:notificationCompactionStats';
