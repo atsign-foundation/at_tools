@@ -9,22 +9,27 @@ import 'package:at_commons/src/verb/verb_util.dart';
 /// var builder = PlookupVerbBuilder()..key=’phone’..atSign=’alice’;
 /// ```
 class PLookupVerbBuilder implements VerbBuilder {
-  late AtKey atkey;
+  /// Key of the [sharedBy] to lookup. [atKey] must have public access.
+  String? atKey;
+
+  /// atSign of the secondary server on which plookup has to be executed.
+  String? sharedBy;
 
   String? operation;
 
   @override
   String buildCommand() {
-    var command = 'plookup:';
+    var command;
     if (operation != null) {
-      command += '$operation:';
+      command = 'plookup:$operation:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
+    } else {
+      command = 'plookup:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
     }
-    command += '${atkey.key}${VerbUtil.formatAtSign(atkey.sharedBy)}\n';
     return command;
   }
 
   @override
   bool checkParams() {
-    return atkey.sharedBy != null;
+    return atKey != null && sharedBy != null;
   }
 }

@@ -1,4 +1,3 @@
-import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
 import 'package:at_commons/src/verb/verb_util.dart';
 
@@ -16,7 +15,11 @@ import 'package:at_commons/src/verb/verb_util.dart';
 /// var builder = LookupVerbBuilder()..key=’phone’..atSign=’bob’;
 /// ```
 class LookupVerbBuilder implements VerbBuilder {
-  late AtKey atKey;
+  /// the key of [atKey] to lookup. [atKey] should not have private access.
+  String? atKey;
+
+  /// atSign of the secondary server on which lookup has to be executed.
+  String? sharedBy;
 
   /// Flag to specify whether to run this builder with or without auth.
   bool auth = false;
@@ -25,20 +28,17 @@ class LookupVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    var command = 'lookup:';
+    String command;
     if (operation != null) {
-      command += '$operation:';
+      command = 'lookup:$operation:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
+    } else {
+      command = 'lookup:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
     }
-    if (atKey.namespace != null && atKey.namespace!.isNotEmpty &&
-        (atKey.metadata != null && atKey.metadata!.namespaceAware)) {
-      atKey.key += '.${atKey.namespace}';
-    }
-    command += '${atKey.key}${VerbUtil.formatAtSign(atKey.sharedBy)}\n';
     return command;
   }
 
   @override
   bool checkParams() {
-    return atKey.sharedBy != null;
+    return atKey != null && sharedBy != null;
   }
 }

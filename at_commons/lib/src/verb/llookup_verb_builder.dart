@@ -16,20 +16,18 @@ import 'package:at_commons/src/verb/verb_util.dart';
 /// // Lookup a credit card number that is accessible only by Bob
 ///    var builder = LlookupVerbBuilder()..key=’@bob:credit_card’..atSign=’bob’;
 class LLookupVerbBuilder implements VerbBuilder {
-  late AtKey atKey;
+  /// the key of [atKey] to llookup. [atKey] can have either public, private or shared access.
+  String? atKey;
 
-  // /// the key of [atKey] to llookup. [atKey] can have either public, private or shared access.
-  // String? atKey;
-  //
-  // /// atSign of the secondary server on which llookup has to be executed.
-  // String? sharedBy;
-  //
-  // /// atSign of the secondary server for whom [atKey] is shared
-  // String? sharedWith;
-  //
-  // bool isPublic = false;
-  //
-  // bool isCached = false;
+  /// atSign of the secondary server on which llookup has to be executed.
+  String? sharedBy;
+
+  /// atSign of the secondary server for whom [atKey] is shared
+  String? sharedWith;
+
+  bool isPublic = false;
+
+  bool isCached = false;
 
   String? operation;
 
@@ -39,21 +37,21 @@ class LLookupVerbBuilder implements VerbBuilder {
     if (operation != null) {
       command += '$operation:';
     }
-    if (atKey.metadata != null && atKey.metadata!.isCached) {
+    if (isCached) {
       command += 'cached:';
     }
-    if (atKey.metadata != null && atKey.metadata!.isPublic) {
+    if (isPublic) {
       command += 'public:';
     }
-    if (atKey.sharedWith != null && atKey.sharedWith!.isNotEmpty) {
-      command += '${atKey.sharedWith}:';
+    if (sharedWith != null && sharedWith!.isNotEmpty) {
+      command += '$sharedWith:';
     }
-    command += atKey.key;
-    return '$command${VerbUtil.formatAtSign(atKey.sharedBy)}\n';
+    command += atKey!;
+    return '$command${VerbUtil.formatAtSign(sharedBy)}\n';
   }
 
   @override
   bool checkParams() {
-    return atKey.sharedBy!.isNotEmpty;
+    return atKey != null && sharedBy != null;
   }
 }
