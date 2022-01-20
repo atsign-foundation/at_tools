@@ -9,28 +9,48 @@ class AtMetadataUtil {
 
   AtMetadataUtil._internal();
 
-  static int? validateTTL(String? ttl) {
-    var ttl_ms;
-    if (ttl != null) {
-      ttl_ms = int.parse(ttl);
-      if (ttl_ms <= 0) {
-        throw InvalidSyntaxException(
-            'Valid value for TTL should be greater than or equal to 1');
-      }
+  /// Accepts a string which represents the MillisecondsSinceEpoch
+  /// Returns [ttlMs] which is time_to_live in MilliSecondsSinceEpoch
+  /// Method ensures [ttl] has a valid value
+  static int validateTTL(String? ttl) {
+    int ttlMs = 0;
+    if (ttl == null || ttl.trim().isEmpty) {
+      return ttlMs;
     }
-    return ttl_ms;
+    try {
+      ttlMs = int.parse(ttl);
+    } on FormatException {
+      throw InvalidSyntaxException(
+          'Valid value for TTL should be greater than or equal to 0');
+    }
+    // TTL cannot have a negative value.
+    if (ttlMs < 0) {
+      throw InvalidSyntaxException(
+          'Valid value for TTL should be greater than or equal to 0');
+    }
+    return ttlMs;
   }
 
-  static int? validateTTB(String? ttb) {
-    var ttb_ms;
-    if (ttb != null) {
-      ttb_ms = int.parse(ttb);
-      if (ttb_ms <= 0) {
-        throw InvalidSyntaxException(
-            'Valid value for TTB should be greater than or equal to 1');
-      }
+  /// Accepts a string which represents the MillisecondsSinceEpoch
+  /// Returns [ttlMs] which is time_to_birth in MilliSecondsSinceEpoch
+  /// Method ensures [ttb] has a valid value
+  static int validateTTB(String? ttb) {
+    int ttbMs = 0;
+    if (ttb == null || ttb.trim().isEmpty) {
+      return ttbMs;
     }
-    return ttb_ms;
+    try {
+      ttbMs = int.parse(ttb);
+    } on FormatException {
+      throw InvalidSyntaxException(
+          'Valid value for TTB should be greater than or equal to 0');
+    }
+    // TTB cannot have a negative value.
+    if (ttbMs < 0) {
+      throw InvalidSyntaxException(
+          'Valid value for TTB should be greater than or equal to 0');
+    }
+    return ttbMs;
   }
 
   static int? validateTTR(int? ttr_ms) {
