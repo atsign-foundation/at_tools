@@ -84,9 +84,9 @@ void main() {
     });
 
     test('Validate the hidden key builder', () {
-      HiddenKeyBuilder hiddenKeyBuilder =
-          AtKey.hidden('phone', namespace: 'wavi');
-      expect(hiddenKeyBuilder, isA<HiddenKeyBuilder>());
+      PrivateKeyBuilder hiddenKeyBuilder =
+          AtKey.private('phone', namespace: 'wavi');
+      expect(hiddenKeyBuilder, isA<PrivateKeyBuilder>());
     });
   });
 
@@ -111,8 +111,8 @@ void main() {
     });
 
     test('Test to verify the hidden key', () {
-      AtKey selfKey = AtKey.hidden('phone', namespace: 'wavi').build();
-      expect(selfKey, isA<HiddenKey>());
+      AtKey selfKey = AtKey.private('phone', namespace: 'wavi').build();
+      expect(selfKey, isA<PrivateKey>());
     });
   });
 

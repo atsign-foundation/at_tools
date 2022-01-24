@@ -69,7 +69,7 @@ class AtKey {
   /// ```dart
   /// AtKey hiddenKey = AtKey.hidden('phone', 'wavi').build();
   /// ```
-  static PrivateKeyBuilder hidden(String key, {String? namespace}) {
+  static PrivateKeyBuilder private(String key, {String? namespace}) {
     return PrivateKeyBuilder()
       ..key(key)
       ..namespace(namespace);
