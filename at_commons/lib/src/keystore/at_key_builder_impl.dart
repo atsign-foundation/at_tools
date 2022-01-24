@@ -39,7 +39,7 @@ abstract class AbstractKeyBuilder implements KeyBuilder {
 
   @override
   void validate() {
-    if (_atKey.key.isEmpty) {
+    if (_atKey.key!.isEmpty) {
       throw AtException("Key cannot be empty");
     }
 
@@ -119,9 +119,9 @@ class SelfKeyBuilder extends AbstractKeyBuilder {
 }
 
 /// Builder to build the hidden keys
-class HiddenKeyBuilder extends AbstractKeyBuilder {
-  HiddenKeyBuilder() : super() {
-    _atKey = HiddenKey();
+class PrivateKeyBuilder extends AbstractKeyBuilder {
+  PrivateKeyBuilder() : super() {
+    _atKey = PrivateKey();
     _meta.isHidden = true;
     _meta.isPublic = false;
   }

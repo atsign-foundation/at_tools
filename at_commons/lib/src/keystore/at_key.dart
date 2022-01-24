@@ -2,7 +2,7 @@ import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/keystore/at_key_builder_impl.dart';
 
 class AtKey {
-  late String key;
+  String? key;
   String? sharedWith;
   String? sharedBy;
   String? namespace;
@@ -62,15 +62,15 @@ class AtKey {
       ..namespace(namespace);
   }
 
-  /// Builds a hidden key and returns a [HiddenKeyBuilder]. Hidden key are not
+  /// Builds a hidden key and returns a [PrivateKeyBuilder]. Hidden key are not
   /// returned when fetched for key's of atSign.
   ///
   /// Example: _phone.wavi@alice
   /// ```dart
   /// AtKey hiddenKey = AtKey.hidden('phone', 'wavi').build();
   /// ```
-  static HiddenKeyBuilder hidden(String key, {String? namespace}) {
-    return HiddenKeyBuilder()
+  static PrivateKeyBuilder hidden(String key, {String? namespace}) {
+    return PrivateKeyBuilder()
       ..key(key)
       ..namespace(namespace);
   }
@@ -125,11 +125,11 @@ class AtKey {
       }
     }
     //remove namespace
-    if (atKey.key != null && atKey.key.contains('.')) {
-      var namespaceIndex = atKey.key.lastIndexOf('.');
+    if (atKey.key != null && atKey.key!.contains('.')) {
+      var namespaceIndex = atKey.key!.lastIndexOf('.');
       if (namespaceIndex > -1) {
-        atKey.namespace = atKey.key.substring(namespaceIndex + 1);
-        atKey.key = atKey.key.substring(0, namespaceIndex);
+        atKey.namespace = atKey.key!.substring(namespaceIndex + 1);
+        atKey.key = atKey.key!.substring(0, namespaceIndex);
       }
     } else {
       metaData.namespaceAware = false;
@@ -163,8 +163,8 @@ class SharedKey extends AtKey {
 }
 
 /// Represents a Hidden key.
-class HiddenKey extends AtKey {
-  HiddenKey() {
+class PrivateKey extends AtKey {
+  PrivateKey() {
     super.metadata = Metadata();
     super.metadata?.isHidden = true;
   }
@@ -182,11 +182,11 @@ class Metadata {
   DateTime? updatedAt;
   String? dataSignature;
   String? sharedKeyStatus;
-  bool isPublic = false;
+  bool? isPublic = false;
   bool isHidden = false;
   bool namespaceAware = true;
-  bool isBinary = false;
-  bool isEncrypted = false;
+  bool? isBinary = false;
+  bool? isEncrypted;
   bool isCached = false;
 
   @override
