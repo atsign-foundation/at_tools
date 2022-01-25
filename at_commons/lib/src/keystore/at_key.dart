@@ -14,7 +14,9 @@ class AtKey {
     return 'AtKey{key: $key, sharedWith: $sharedWith, sharedBy: $sharedBy, namespace: $namespace, metadata: $metadata, isRef: $isRef}';
   }
 
-  ///Builds a public key and returns a [PublicKeyBuilder]
+  /// Public keys are visible to everyone and shown in an authenticated/unauthenticated scan
+  ///
+  /// Builds a public key and returns a [PublicKeyBuilder]
   ///
   ///Example: public:phone.wavi@alice.
   ///```dart
@@ -26,6 +28,9 @@ class AtKey {
       ..namespace(namespace);
   }
 
+  /// Shared Keys are shared with other atSign. The owner can see the keys on
+  /// authenticated scan. The SharedWith atSign can lookup the value of the key.
+  ///
   ///Builds a sharedWith key and returns a [SharedKeyBuilder]. Optionally the key
   ///can be cached on the [AtKey.sharedWith] atSign.
   ///
@@ -47,10 +52,11 @@ class AtKey {
       ..namespace(namespace);
   }
 
+  /// Self keys that are created by the owner of the atSign and the keys can be
+  /// accessed by the owner of the atSign only.
+  ///
   /// Builds a self key and returns a [SelfKeyBuilder].
   ///
-  /// Self keys are the private key's which are only accessed by the owner of the
-  /// atSign.
   ///
   /// Example: phone.wavi@alice
   /// ```dart
@@ -62,6 +68,9 @@ class AtKey {
       ..namespace(namespace);
   }
 
+  /// Private key's that are created by the owner of the atSign and these keys
+  /// are not shown in the scan.
+  ///
   /// Builds a private key and returns a [PrivateKeyBuilder]. Private key's are not
   /// returned when fetched for key's of atSign.
   ///
@@ -71,7 +80,7 @@ class AtKey {
   /// ```
   static PrivateKeyBuilder private(String key, {String? namespace}) {
     return PrivateKeyBuilder()
-      ..key('privatekey:$key')
+      ..key(key)
       ..namespace(namespace);
   }
 
@@ -162,7 +171,7 @@ class SharedKey extends AtKey {
   }
 }
 
-/// Represents a Hidden key.
+/// Represents a Private key.
 class PrivateKey extends AtKey {
   PrivateKey() {
     super.metadata = Metadata();
