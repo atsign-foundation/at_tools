@@ -50,7 +50,7 @@ class AtKey {
   /// Builds a self key and returns a [SelfKeyBuilder].
   ///
   /// Self keys are the private key's which are only accessed by the owner of the
-  /// keys.
+  /// atSign.
   ///
   /// Example: phone.wavi@alice
   /// ```dart
