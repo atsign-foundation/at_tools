@@ -62,16 +62,16 @@ class AtKey {
       ..namespace(namespace);
   }
 
-  /// Builds a hidden key and returns a [PrivateKeyBuilder]. Hidden key are not
+  /// Builds a private key and returns a [PrivateKeyBuilder]. Private key's are not
   /// returned when fetched for key's of atSign.
   ///
-  /// Example: _phone.wavi@alice
+  /// Example: privatekey:phone.wavi@alice
   /// ```dart
-  /// AtKey hiddenKey = AtKey.hidden('phone', 'wavi').build();
+  /// AtKey privateKey = AtKey.private('phone', 'wavi').build();
   /// ```
   static PrivateKeyBuilder private(String key, {String? namespace}) {
     return PrivateKeyBuilder()
-      ..key(key)
+      ..key('privatekey:$key')
       ..namespace(namespace);
   }
 
@@ -166,7 +166,6 @@ class SharedKey extends AtKey {
 class PrivateKey extends AtKey {
   PrivateKey() {
     super.metadata = Metadata();
-    super.metadata?.isHidden = true;
   }
 }
 
