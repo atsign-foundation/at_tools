@@ -1,5 +1,5 @@
-import 'package:at_commons/src/verb/verb_util.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
+import 'package:at_commons/src/verb/verb_util.dart';
 
 /// Lookup verb builder generates a command to lookup [atKey] on either the client user's secondary server(without authentication)
 /// or secondary server of [sharedBy] (with authentication).
@@ -28,7 +28,7 @@ class LookupVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    var command;
+    String command;
     if (operation != null) {
       command = 'lookup:$operation:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
     } else {

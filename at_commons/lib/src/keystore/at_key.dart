@@ -1,4 +1,5 @@
 import 'package:at_commons/at_commons.dart';
+import 'package:at_commons/src/keystore/at_key_builder_impl.dart';
 
 class AtKey {
   String? key;
@@ -11,6 +12,76 @@ class AtKey {
   @override
   String toString() {
     return 'AtKey{key: $key, sharedWith: $sharedWith, sharedBy: $sharedBy, namespace: $namespace, metadata: $metadata, isRef: $isRef}';
+  }
+
+  /// Public keys are visible to everyone and shown in an authenticated/unauthenticated scan
+  ///
+  /// Builds a public key and returns a [PublicKeyBuilder]
+  ///
+  ///Example: public:phone.wavi@alice.
+  ///```dart
+  ///AtKey publicKey = AtKey.public('phone', 'wavi').build();
+  ///```
+  static PublicKeyBuilder public(String key, {String? namespace}) {
+    return PublicKeyBuilder()
+      ..key(key)
+      ..namespace(namespace);
+  }
+
+  /// Shared Keys are shared with other atSign. The owner can see the keys on
+  /// authenticated scan. The SharedWith atSign can lookup the value of the key.
+  ///
+  ///Builds a sharedWith key and returns a [SharedKeyBuilder]. Optionally the key
+  ///can be cached on the [AtKey.sharedWith] atSign.
+  ///
+  ///Example: @bob:phone.wavi@alice.
+  ///```dart
+  ///AtKey sharedKey = (AtKey.shared('phone', 'wavi')
+  ///     ..sharedWith('@bob')).build();
+  ///```
+  /// To cache a key on the @bob atSign.
+  /// ```dart
+  ///AtKey atKey = (AtKey.shared('phone', 'wavi')
+  ///  ..sharedWith('bob')
+  ///  ..cache(1000, true))
+  ///  .build();
+  /// ```
+  static SharedKeyBuilder shared(String key, {String? namespace}) {
+    return SharedKeyBuilder()
+      ..key(key)
+      ..namespace(namespace);
+  }
+
+  /// Self keys that are created by the owner of the atSign and the keys can be
+  /// accessed by the owner of the atSign only.
+  ///
+  /// Builds a self key and returns a [SelfKeyBuilder].
+  ///
+  ///
+  /// Example: phone.wavi@alice
+  /// ```dart
+  /// AtKey selfKey = AtKey.self('phone', 'wavi').build();
+  /// ```
+  static SelfKeyBuilder self(String key, {String? namespace}) {
+    return SelfKeyBuilder()
+      ..key(key)
+      ..namespace(namespace);
+  }
+
+  /// Private key's that are created by the owner of the atSign and these keys
+  /// are not shown in the scan.
+  ///
+  /// Builds a private key and returns a [PrivateKeyBuilder]. Private key's are not
+  /// returned when fetched for key's of atSign.
+  ///
+  /// Example: privatekey:phone.wavi@alice
+  /// ```dart
+  /// AtKey privateKey = AtKey.private('phone', 'wavi').build();
+  /// ```
+  static PrivateKeyBuilder private(String key, {String? namespace}) {
+    return PrivateKeyBuilder()
+      ..key(key)
+      ..namespace(namespace);
   }
 
   static AtKey fromString(String key) {
@@ -74,6 +145,36 @@ class AtKey {
     }
     atKey.metadata = metaData;
     return atKey;
+  }
+}
+
+/// Represents a public key.
+class PublicKey extends AtKey {
+  PublicKey() {
+    super.metadata = Metadata();
+    super.metadata!.isPublic = true;
+  }
+}
+
+///Represents a Self key.
+class SelfKey extends AtKey {
+  SelfKey() {
+    super.metadata = Metadata();
+    super.metadata?.isPublic = false;
+  }
+}
+
+/// Represents a key shared to another atSign.
+class SharedKey extends AtKey {
+  SharedKey() {
+    super.metadata = Metadata();
+  }
+}
+
+/// Represents a Private key.
+class PrivateKey extends AtKey {
+  PrivateKey() {
+    super.metadata = Metadata();
   }
 }
 

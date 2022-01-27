@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:crypto/crypto.dart';
+
 import 'package:at_commons/at_commons.dart';
+import 'package:crypto/crypto.dart';
 
 /// Utility class for atSign operations
 class AtUtils {
@@ -74,10 +75,16 @@ class AtUtils {
   /// Return AtSign by appending '@' at the beginning if not present
   static String? formatAtSign(String? atSign) {
     // verify whether atSign started with '@' or not
-    if (atSign != null && !atSign.startsWith('@')) {
-      atSign = '@$atSign';
+    if (atSign == null) {
+      return '';
     }
-    return atSign;
+    if (atSign.startsWith('@')) {
+      return atSign;
+    }
+    if (!atSign.startsWith('@')) {
+      return '@$atSign';
+    }
+    return '';
   }
 
   static String getShaForAtSign(String atsign) {
