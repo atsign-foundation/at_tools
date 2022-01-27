@@ -1,3 +1,5 @@
+## 3.0.3
+- Add static factor methods for AtKey creation
 ## 3.0.2
 - added constants for compaction and notification expiry
 ## 3.0.1
