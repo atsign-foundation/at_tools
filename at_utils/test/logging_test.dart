@@ -5,21 +5,21 @@ import 'package:test/test.dart';
 
 void main() {
   group('A group of fixAtSign tests', () {
-    test('Test file logging', () => test_console_logging());
+    test('Test file logging', () => testConsoleLogging());
   });
 }
 
-void delete_file(filename) {
+void deleteFile(filename) {
   var file = File(filename);
   if (file.existsSync()) {
     file.deleteSync();
   }
 }
 
-void test_console_logging() {
+void testConsoleLogging() {
   var records = <LogRecord>[];
-  var test_logger = AtSignLogger('test_console_logging');
-  test_logger.logger.onRecord.listen(records.add);
-  test_logger.info('hello');
+  var testLogger = AtSignLogger('test_console_logging');
+  testLogger.logger.onRecord.listen(records.add);
+  testLogger.info('hello');
   expect(records[0].message, 'hello');
 }
