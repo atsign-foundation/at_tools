@@ -127,5 +127,10 @@ void main() {
               e.message ==
                   'invalid @sign: must not include control characters')));
     });
+
+    test('Test to validate when atSign is null', () {
+      var atSign = AtUtils.formatAtSign(null);
+      expect(atSign, null);
+    });
   });
 }
