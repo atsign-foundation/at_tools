@@ -75,16 +75,10 @@ class AtUtils {
   /// Return AtSign by appending '@' at the beginning if not present
   static String? formatAtSign(String? atSign) {
     // verify whether atSign started with '@' or not
-    if (atSign == null) {
-      return '';
+    if ((atSign != null && atSign.isNotEmpty) && !atSign.startsWith('@')) {
+      atSign = '@$atSign';
     }
-    if (atSign.startsWith('@')) {
-      return atSign;
-    }
-    if (!atSign.startsWith('@')) {
-      return '@$atSign';
-    }
-    return '';
+    return atSign;
   }
 
   static String getShaForAtSign(String atsign) {
