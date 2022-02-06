@@ -113,3 +113,8 @@ class KeyNotFoundException extends AtException {
 class IllegalArgumentException extends AtException {
   IllegalArgumentException(message) : super(message);
 }
+
+/// Throws when no response is received before timeout duration
+class TimeoutException extends AtException {
+  TimeoutException(message) : super(message);
+}
