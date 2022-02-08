@@ -1,3 +1,5 @@
+## 3.0.4
+- Add TimeoutException
 ## 3.0.3
 - Add static factor methods for AtKey creation
 ## 3.0.2
