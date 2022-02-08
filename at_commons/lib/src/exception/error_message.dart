@@ -1,3 +1,4 @@
+// ignore: constant_identifier_names
 const Map error_codes = {
   'AtServerException': 'AT0001',
   'DataStoreException': 'AT0002',
@@ -17,9 +18,10 @@ const Map error_codes = {
   'KeyNotFoundException': 'AT0015',
   'SecondaryConnectException': 'AT0021',
   'IllegalArgumentException': 'AT0022',
-  'TimeoutException': 'AT0023'
+  'AtTimeoutException': 'AT0023'
 };
 
+// ignore: constant_identifier_names
 const Map error_description = {
   'AT0001': 'Server exception',
   'AT0002': 'DataStore exception',
