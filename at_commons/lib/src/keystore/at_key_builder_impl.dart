@@ -68,6 +68,7 @@ class PublicKeyBuilder extends CachedKeyBuilder {
     _atKey = PublicKey();
     _meta.isPublic = true;
     _meta.isHidden = false;
+    _meta.isEncrypted = false;
   }
 
   @override

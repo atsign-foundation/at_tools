@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/keystore/at_key_builder_impl.dart';
 import 'package:test/expect.dart';
@@ -10,6 +12,7 @@ void main() {
       expect(atKey.key, 'phone');
       expect(atKey.sharedBy, 'bob');
       expect(atKey.metadata!.isPublic, true);
+      expect(atKey.metadata!.isEncrypted, false);
       expect(atKey.metadata!.namespaceAware, false);
     });
 
@@ -94,6 +97,7 @@ void main() {
     test('Test to verify the public key', () {
       AtKey atKey = AtKey.public('phone', namespace: 'wavi').build();
       expect(atKey, isA<PublicKey>());
+      expect(atKey.metadata?.isEncrypted, false);
     });
 
     test('Test to verify the shared key', () {
@@ -149,6 +153,7 @@ void main() {
       expect(atKey.metadata!.ttl, equals(null));
       expect(atKey.metadata!.ttb, equals(null));
       expect(atKey.metadata!.isPublic, equals(true));
+      expect(atKey.metadata!.isEncrypted, equals(false));
       expect(atKey.metadata!.isBinary, equals(false));
       expect(atKey.metadata!.isCached, equals(false));
     });
@@ -164,7 +169,7 @@ void main() {
       expect(atKey.metadata!.ttl, equals(1000));
       expect(atKey.metadata!.ttb, equals(2000));
       expect(atKey.metadata!.isPublic, equals(true));
-      expect(atKey.metadata!.isPublic, equals(true));
+      expect(atKey.metadata!.isEncrypted, equals(false));
       expect(atKey.metadata!.isBinary, equals(false));
       expect(atKey.metadata!.isCached, equals(false));
     });
@@ -181,6 +186,7 @@ void main() {
       expect(atKey.metadata!.ttl, equals(null));
       expect(atKey.metadata!.ttb, equals(null));
       expect(atKey.metadata!.isPublic, equals(false));
+      expect(atKey.metadata!.isEncrypted, equals(true));
       expect(atKey.metadata!.isBinary, equals(false));
       expect(atKey.metadata!.isCached, equals(false));
     });
@@ -199,6 +205,7 @@ void main() {
       expect(atKey.metadata!.ttl, equals(null));
       expect(atKey.metadata!.ttb, equals(null));
       expect(atKey.metadata!.isPublic, equals(false));
+      expect(atKey.metadata!.isEncrypted, equals(true));
       expect(atKey.metadata!.isBinary, equals(false));
       expect(atKey.metadata!.isCached, equals(true));
     });

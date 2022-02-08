@@ -110,8 +110,9 @@ class AtKey {
       atKey.key = keyParts[0].split('@')[0];
     } else {
       // Example key: public:phone@bob
-      if (keyParts[0] == 'public') {
+      if (keyParts[0] == PUBLIC) {
         metaData.isPublic = true;
+        metaData.isEncrypted = false;
       }
       // Example key: cached:@alice:phone@bob
       else if (keyParts[0] == CACHED) {
@@ -153,6 +154,7 @@ class PublicKey extends AtKey {
   PublicKey() {
     super.metadata = Metadata();
     super.metadata!.isPublic = true;
+    super.metadata!.isEncrypted = false;
   }
 }
 
@@ -190,11 +192,13 @@ class Metadata {
   DateTime? updatedAt;
   String? dataSignature;
   String? sharedKeyStatus;
-  bool? isPublic = false;
+  bool isPublic = false;
   bool isHidden = false;
   bool namespaceAware = true;
   bool? isBinary = false;
-  bool? isEncrypted;
+  @Deprecated(
+      'As of every key-values are encrypted by default, this is no longer required.  It\'s value is always true')
+  bool isEncrypted = true;
   bool isCached = false;
 
   @override

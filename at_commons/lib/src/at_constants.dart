@@ -40,6 +40,7 @@ const String UPDATE_JSON = 'update:json';
 const String VALUE = 'value';
 const String UPDATE_ALL = 'all';
 const String CCD = 'ccd';
+const String PUBLIC = 'public';
 const String CACHED = 'cached';
 const String REFRESH_AT = 'refreshAt';
 const String IS_BINARY = 'isBinary';
