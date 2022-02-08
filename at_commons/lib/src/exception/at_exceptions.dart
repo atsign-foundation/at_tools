@@ -1,4 +1,5 @@
 class AtException implements Exception {
+  // ignore: prefer_typing_uninitialized_variables
   var message;
 
   AtException(this.message);
@@ -115,6 +116,6 @@ class IllegalArgumentException extends AtException {
 }
 
 /// Throws when no response is received before timeout duration
-class TimeoutException extends AtException {
-  TimeoutException(message) : super(message);
+class AtTimeoutException extends AtException {
+  AtTimeoutException(message) : super(message);
 }
