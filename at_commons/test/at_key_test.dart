@@ -1,6 +1,8 @@
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/keystore/at_key_builder_impl.dart';
-import 'package:test/expect.dart';
+import 'package:at_commons/src/keystore/key_type.dart';
+import 'package:at_commons/src/validators/at_key_validation.dart';
+import 'package:at_commons/src/validators/at_key_validation_impl.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -201,6 +203,158 @@ void main() {
       expect(atKey.metadata!.isPublic, equals(false));
       expect(atKey.metadata!.isBinary, equals(false));
       expect(atKey.metadata!.isCached, equals(true));
+    });
+  });
+
+  group('A group of tests to validate the public keys', () {
+    test('validate a public key with namespace', () {
+      var validationResult = AtKeyValidators.get()
+          .validate('public:phone.me@alice', ValidationContext('@alice'));
+      expect(validationResult.isValid, true);
+    });
+
+    test('validate a public key with setting validation context', () {
+      var validationResult = AtKeyValidators.get().validate(
+          'public:phone.me@alice',
+          ValidationContext('@alice')..type = KeyType.publicKey);
+      expect(validationResult.isValid, true);
+    });
+  });
+
+  group('A group of tests to validate the self keys', () {
+    test('validate a self key with namespace', () {
+      var validationResult = AtKeyValidators.get()
+          .validate('phone.me@alice', ValidationContext('@alice'));
+      expect(validationResult.isValid, true);
+    });
+
+    test('validate a self key with setting validation context', () {
+      var validationResult = AtKeyValidators.get().validate('phone.me@alice',
+          ValidationContext('@alice')..type = KeyType.selfKey);
+      expect(validationResult.isValid, true);
+    });
+
+    test('validate a self key with sharedWith populated', () {
+      var validationResult = AtKeyValidators.get().validate(
+          '@alice:phone.me@alice',
+          ValidationContext('@alice')..type = KeyType.selfKey);
+      expect(validationResult.isValid, true);
+    });
+  });
+
+  group('A group of tests to validate the shared keys', () {
+    test('validate a shared key with namespace', () {
+      var validationResult = AtKeyValidators.get()
+          .validate('@bob:phone.me@alice', ValidationContext('@alice'));
+      expect(validationResult.isValid, true);
+    });
+
+    test('validate a shared key with setting validation context', () {
+      var validationResult = AtKeyValidators.get().validate(
+          '@bob:phone.me@alice',
+          ValidationContext('@alice')..type = KeyType.sharedKey);
+      expect(validationResult.isValid, true);
+    });
+
+    test('Verify a shared key without sharedWith populated throws error', () {
+      var validationResult = AtKeyValidators.get().validate('phone.me@alice',
+          ValidationContext('@alice')..type = KeyType.sharedKey);
+      expect(validationResult.isValid, false);
+    });
+  });
+
+  group('A group of tests to validate the cached shared keys', () {
+    test('validate a cached shared key with namespace', () {
+      var validationResult = AtKeyValidators.get().validate(
+          'cached:@bob:phone.me@alice',
+          ValidationContext('@alice')..atSign = '@bob');
+      expect(validationResult.isValid, true);
+    });
+
+    test('validate a cached shared key with setting validation context', () {
+      var validationResult = AtKeyValidators.get().validate(
+          'cached:@bob:phone.me@alice',
+          ValidationContext('@bob')..type = KeyType.cachedSharedKey);
+      expect(validationResult.isValid, true);
+    });
+
+    test(
+        'validate a cached shared key throws error when owner is currentAtSign',
+        () {
+      var validationResult = AtKeyValidators.get().validate(
+          'cached:@bob:phone.me@alice',
+          ValidationContext('@alice')..type = KeyType.cachedSharedKey);
+      expect(validationResult.isValid, false);
+      expect(validationResult.failureReason,
+          'Owner of the key alice should not be same as the the current @sign alice for a cached key');
+    });
+
+    test('Verify a cached shared key without sharedWith populated throws error',
+        () {
+      var validationResult = AtKeyValidators.get().validate(
+          'cached:phone.me@alice',
+          ValidationContext('@alice')..type = KeyType.cachedSharedKey);
+      expect(validationResult.isValid, false);
+    });
+  });
+
+  group('A group of tests to validate the cached public keys', () {
+    test('validate a cached public key with namespace', () {
+      var validationResult = AtKeyValidators.get().validate(
+          'cached:public:@bob:phone.me@alice', ValidationContext('@bob'));
+      expect(validationResult.isValid, true);
+    });
+
+    test('validate a cached shared key with setting validation context', () {
+      var validationResult = AtKeyValidators.get().validate(
+          'cached:@bob:phone.me@alice',
+          ValidationContext('@bob')..type = KeyType.cachedSharedKey);
+      expect(validationResult.isValid, true);
+    });
+
+    test(
+        'validate a cached shared key throws error when owner is currentAtSign',
+        () {
+      var validationResult = AtKeyValidators.get().validate(
+          'cached:@bob:phone.me@alice',
+          ValidationContext('@alice')..type = KeyType.cachedSharedKey);
+      expect(validationResult.isValid, false);
+      expect(validationResult.failureReason,
+          'Owner of the key alice should not be same as the the current @sign alice for a cached key');
+    });
+
+    test('Verify a cached shared key without sharedWith populated throws error',
+        () {
+      var validationResult = AtKeyValidators.get().validate(
+          'cached:phone.me@alice',
+          ValidationContext('@alice')..type = KeyType.cachedSharedKey);
+      expect(validationResult.isValid, false);
+    });
+  });
+
+  group('A group of tests to validate the reserved keys', () {
+    test('Test to verify self encryption key reserved key is not created', () {
+      var validationResult = AtKeyValidators.get().validate(
+          '@bob:shared_key.me@alice',
+          ValidationContext('@alice')..type = KeyType.sharedKey);
+      expect(validationResult.isValid, false);
+      expect(validationResult.failureReason, 'Reserved key cannot be created');
+    });
+
+    test('Test to verify creation of encryption public key fails', () {
+      var validationResult = AtKeyValidators.get().validate(
+          'public:publickey.me@alice',
+          ValidationContext('@alice')..type = KeyType.publicKey);
+      expect(validationResult.isValid, false);
+      expect(validationResult.failureReason, 'Reserved key cannot be created');
+    });
+
+    test('Test to verify creation of encryption public key fails', () {
+      var validationResult = AtKeyValidators.get().validate(
+          'signing_privatekey.me@alice',
+          ValidationContext('@alice')..type = KeyType.selfKey);
+      expect(validationResult.isValid, false);
+      expect(validationResult.failureReason, 'Reserved key cannot be created');
     });
   });
 }
