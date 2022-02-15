@@ -102,6 +102,10 @@ class TestKeys {
     invalidPublicKeys.add("public:pho#ne.b@bob");
     // Valid and invalid punctuations together
     invalidPublicKeys.add("public:pho#n____-____e.b@bob");
+    // Key with no atsign
+    invalidPublicKeys.add("public:pho#n____-____e.b");
+    // key without entity
+    invalidPublicKeys.add("public:@bob");
   }
 
   _initNonBobPrivateKeys() {
