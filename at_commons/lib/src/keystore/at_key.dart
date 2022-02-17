@@ -11,7 +11,36 @@ class AtKey {
 
   @override
   String toString() {
-    return 'AtKey{key: $key, sharedWith: $sharedWith, sharedBy: $sharedBy, namespace: $namespace, metadata: $metadata, isRef: $isRef}';
+    // If metadata.isPublic is true and metadata.isCached is true,
+    // return cached public key
+    if (key!.startsWith('cached:public:') ||
+        (metadata != null &&
+            (metadata!.isPublic != null && metadata!.isPublic!) &&
+            (metadata!.isCached))) {
+      return 'cached:public:$key$sharedBy';
+    }
+    // If metadata.isPublic is true, return public key
+    if (key!.startsWith('public:') ||
+        (metadata != null &&
+            metadata!.isPublic != null &&
+            metadata!.isPublic!)) {
+      return 'public:$key$sharedBy';
+    }
+    //If metadata.isCached is true, return shared cached key
+    if (key!.startsWith('cached:') ||
+        (metadata != null && metadata!.isCached)) {
+      return 'cached:$sharedWith:$key$sharedBy';
+    }
+    // If key starts with privatekey:, return private key
+    if (key!.startsWith('privatekey:')) {
+      return '$key';
+    }
+    //If sharedWith is not null, return sharedKey
+    if (sharedWith != null && sharedWith!.isNotEmpty) {
+      return '$sharedWith:$key$sharedBy';
+    }
+    // Defaults to return a self key.
+    return '$key$sharedBy';
   }
 
   /// Public keys are visible to everyone and shown in an authenticated/unauthenticated scan
@@ -154,6 +183,11 @@ class PublicKey extends AtKey {
     super.metadata = Metadata();
     super.metadata!.isPublic = true;
   }
+
+  @override
+  String toString() {
+    return 'public:$key$sharedBy';
+  }
 }
 
 ///Represents a Self key.
@@ -162,6 +196,17 @@ class SelfKey extends AtKey {
     super.metadata = Metadata();
     super.metadata?.isPublic = false;
   }
+
+  @override
+  String toString() {
+    // If sharedWith is populated and sharedWith is equal to sharedBy, then
+    // keys is a self key.
+    // @alice:phone@alice or phone@alice
+    if (sharedWith != null && sharedWith!.isNotEmpty) {
+      return '$sharedWith:$key$sharedBy';
+    }
+    return '$key$sharedBy';
+  }
 }
 
 /// Represents a key shared to another atSign.
@@ -169,12 +214,22 @@ class SharedKey extends AtKey {
   SharedKey() {
     super.metadata = Metadata();
   }
+
+  @override
+  String toString() {
+    return '$sharedWith:$key$sharedBy';
+  }
 }
 
 /// Represents a Private key.
 class PrivateKey extends AtKey {
   PrivateKey() {
     super.metadata = Metadata();
+  }
+
+  @override
+  String toString() {
+    return 'privatekey:$key';
   }
 }
 

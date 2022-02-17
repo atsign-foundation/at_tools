@@ -357,4 +357,95 @@ void main() {
       expect(validationResult.failureReason, 'Reserved key cannot be created');
     });
   });
+
+  group('A group of tests to verify toString method', () {
+    // public keys
+    test('A test to verify a public key creation', () {
+      var atKey = AtKey()
+        ..key = 'phone'
+        ..sharedBy = '@alice'
+        ..metadata = (Metadata()..isPublic = true);
+      expect('public:phone@alice', atKey.toString());
+    });
+    test(
+        'A test to verify a public-key creation on a public key factory method',
+        () {
+      var atKey = PublicKey()
+        ..key = 'phone'
+        ..sharedBy = '@alice';
+      expect('public:phone@alice', atKey.toString());
+    });
+    // Shared keys
+    test('A test to verify a sharedWith key creation', () {
+      var atKey = AtKey()
+        ..key = 'phone'
+        ..sharedWith = '@bob'
+        ..sharedBy = '@alice';
+      expect('@bob:phone@alice', atKey.toString());
+    });
+    test(
+        'A test to verify a sharedWith key creation with static factory method',
+        () {
+      var atKey = SharedKey()
+        ..key = 'phone'
+        ..sharedWith = '@bob'
+        ..sharedBy = '@alice';
+      expect('@bob:phone@alice', atKey.toString());
+    });
+    // Self keys
+    test('A test to verify a self key creation', () {
+      var atKey = AtKey()
+        ..key = 'phone'
+        ..sharedWith = '@alice'
+        ..sharedBy = '@alice';
+      expect('@alice:phone@alice', atKey.toString());
+    });
+    test('A test to verify a self key creation with static factory method', () {
+      var atKey = SelfKey()
+        ..key = 'phone'
+        ..sharedWith = '@alice'
+        ..sharedBy = '@alice';
+      expect('@alice:phone@alice', atKey.toString());
+    });
+    test('Verify a self key creation without sharedWith using static factory',
+        () {
+      var atKey = SelfKey()
+        ..key = 'phone'
+        ..sharedBy = '@alice';
+      expect('phone@alice', atKey.toString());
+    });
+    test('Verify a self key creation without sharedWith', () {
+      var atKey = AtKey()
+        ..key = 'phone'
+        ..sharedBy = '@alice';
+      expect('phone@alice', atKey.toString());
+    });
+    // Cached keys
+    test('Verify a cached key creation', () {
+      var atKey = AtKey()
+        ..key = 'phone'
+        ..sharedWith = '@bob'
+        ..sharedBy = '@alice'
+        ..metadata = (Metadata()..isCached = true);
+      expect('cached:@bob:phone@alice', atKey.toString());
+    });
+    test('Verify a public cached key creation', () {
+      var atKey = AtKey()
+        ..key = 'phone'
+        ..sharedBy = '@alice'
+        ..metadata = (Metadata()
+          ..isCached = true
+          ..isPublic = true);
+      expect('cached:public:phone@alice', atKey.toString());
+    });
+    //Private keys
+    test('Verify a privatekey creation using static factory method', () {
+      var atKey = PrivateKey()..key = 'at_secret';
+      expect('privatekey:at_secret', atKey.toString());
+    });
+    test('Verify a privatekey creation', () {
+      var atKey = AtKey()..key = 'privatekey:at_secret';
+      expect('privatekey:at_secret', atKey.toString());
+    });
+  });
 }
