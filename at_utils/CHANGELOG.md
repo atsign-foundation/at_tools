@@ -1,3 +1,5 @@
+## 3.0.6
+- at_commons version change for AtTimeoutException
 ## 3.0.5
 - Fix formatAtSign bug for null value
 ## 3.0.4
