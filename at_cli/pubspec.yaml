@@ -1,6 +1,6 @@
 name: at_cli
 description: A command line utility for at protocol commands.
-version: 2.0.0
+version: 3.0.0
 repository: https://github.com/atsign-foundation/at_tools
 homepage: https://atsign.dev
 
@@ -9,8 +9,8 @@ environment:
 
 dependencies:
   args: ^2.1.1
-  at_lookup: ^2.0.4
-  at_client: ^2.0.3
+  at_lookup: ^3.0.7
+  at_client: ^3.0.9
   crypton: ^2.0.1
   encrypt: ^5.0.0
 

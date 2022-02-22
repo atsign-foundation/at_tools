@@ -1,3 +1,7 @@
+## 3.0.5
+- Rename TimeoutException to AtTimeoutException to prevent confusion with Dart async's TimeoutException
+## 3.0.4
+- Add TimeoutException
 ## 3.0.3
 - Add static factor methods for AtKey creation
 ## 3.0.2
