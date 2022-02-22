@@ -94,21 +94,22 @@ void main() {
 
   group('A group of tests to validate the AtKey instances', () {
     test('Test to verify the public key', () {
-      AtKey atKey = AtKey.public('phone', namespace: 'wavi').build();
+      AtKey atKey =
+          AtKey.public('phone', namespace: 'wavi', sharedBy: '@alice').build();
       expect(atKey, isA<PublicKey>());
     });
 
     test('Test to verify the shared key', () {
-      AtKey atKey = (AtKey.shared(
-        'image',
-        namespace: 'wavi',
-      )..sharedWith('bob'))
-          .build();
+      AtKey atKey =
+          (AtKey.shared('image', namespace: 'wavi', sharedBy: '@alice')
+                ..sharedWith('bob'))
+              .build();
       expect(atKey, isA<SharedKey>());
     });
 
     test('Test to verify the self key', () {
-      AtKey selfKey = AtKey.self('phone', namespace: 'wavi').build();
+      AtKey selfKey =
+          AtKey.self('phone', namespace: 'wavi', sharedBy: '@alice').build();
       expect(selfKey, isA<SelfKey>());
     });
 
@@ -134,19 +135,29 @@ void main() {
     });
 
     test(
-        'Test to verify AtException is thrown when sharedWith is populated for sharedKey',
+        'Test to verify AtException is thrown when sharedWith is not populated for sharedKey',
         () {
       expect(
-          () => (AtKey.shared('phone', namespace: 'wavi')).build(),
+          () => (AtKey.shared('phone', namespace: 'wavi', sharedBy: '@alice'))
+              .build(),
           throwsA(predicate((dynamic e) =>
               e is AtException && e.message == 'sharedWith cannot be empty')));
+    });
+
+    test(
+        'Test to verify AtException is thrown when sharedBy is not populated for public key',
+        () {
+      expect(() => (AtKey.public('phone', namespace: 'wavi')).build(),
+          throwsA(predicate((dynamic e) => e is AtException && e.message == 'SharedBy cannot be empty')));
     });
   });
 
   group('Test public key creation', () {
     test('Test key and namespace with no ttl and ttb', () {
-      AtKey atKey = AtKey.public('phone', namespace: 'wavi').build();
+      AtKey atKey =
+          AtKey.public('phone', namespace: 'wavi', sharedBy: '@alice').build();
       expect(atKey.key, equals('phone'));
+      expect(atKey.sharedBy, equals('@alice'));
       expect(atKey.namespace, equals('wavi'));
       expect(atKey.metadata!.ttl, equals(null));
       expect(atKey.metadata!.ttb, equals(null));
@@ -156,12 +167,14 @@ void main() {
     });
 
     test('Test key and namespace with ttl and ttb', () {
-      AtKey atKey = (AtKey.public('phone', namespace: 'wavi')
-            ..timeToLive(1000)
-            ..timeToBirth(2000))
-          .build();
+      AtKey atKey =
+          (AtKey.public('phone', namespace: 'wavi', sharedBy: '@alice')
+                ..timeToLive(1000)
+                ..timeToBirth(2000))
+              .build();
 
       expect(atKey.key, equals('phone'));
+      expect(atKey.sharedBy, equals('@alice'));
       expect(atKey.namespace, equals('wavi'));
       expect(atKey.metadata!.ttl, equals(1000));
       expect(atKey.metadata!.ttb, equals(2000));
@@ -175,9 +188,12 @@ void main() {
   group('Test shared key creation', () {
     test('Test shared key without caching', () {
       AtKey atKey =
-          (AtKey.shared('phone', namespace: 'wavi')..sharedWith('bob')).build();
+          (AtKey.shared('phone', namespace: 'wavi', sharedBy: '@alice')
+                ..sharedWith('bob'))
+              .build();
 
       expect(atKey.key, equals('phone'));
+      expect(atKey.sharedBy, equals('@alice'));
       expect(atKey.namespace, equals('wavi'));
       expect(atKey.sharedWith, equals('bob'));
       expect(atKey.metadata!.ttl, equals(null));
@@ -188,12 +204,14 @@ void main() {
     });
 
     test('Test shared key with caching', () {
-      AtKey atKey = (AtKey.shared('phone', namespace: 'wavi')
-            ..sharedWith('bob')
-            ..cache(1000, true))
-          .build();
+      AtKey atKey =
+          (AtKey.shared('phone', namespace: 'wavi', sharedBy: '@alice')
+                ..sharedWith('bob')
+                ..cache(1000, true))
+              .build();
 
       expect(atKey.key, equals('phone'));
+      expect(atKey.sharedBy, equals('@alice'));
       expect(atKey.namespace, equals('wavi'));
       expect(atKey.sharedWith, equals('bob'));
       expect(atKey.metadata!.ttr, equals(1000));
@@ -370,10 +388,9 @@ void main() {
     test(
         'A test to verify a public-key creation on a public key factory method',
         () {
-      var atKey = PublicKey()
-        ..key = 'phone'
-        ..sharedBy = '@alice';
-      expect('public:phone@alice', atKey.toString());
+      var atKey =
+          AtKey.public('phone', namespace: 'wavi', sharedBy: '@alice').build();
+      expect('public:phone.wavi@alice', atKey.toString());
     });
     // Shared keys
     test('A test to verify a sharedWith key creation', () {
@@ -386,11 +403,10 @@ void main() {
     test(
         'A test to verify a sharedWith key creation with static factory method',
         () {
-      var atKey = SharedKey()
-        ..key = 'phone'
-        ..sharedWith = '@bob'
-        ..sharedBy = '@alice';
-      expect('@bob:phone@alice', atKey.toString());
+      var atKey = (AtKey.shared('phone', namespace: 'wavi', sharedBy: '@alice')
+            ..sharedWith('@bob'))
+          .build();
+      expect('@bob:phone.wavi@alice', atKey.toString());
     });
     // Self keys
     test('A test to verify a self key creation', () {
@@ -401,18 +417,17 @@ void main() {
       expect('@alice:phone@alice', atKey.toString());
     });
     test('A test to verify a self key creation with static factory method', () {
-      var atKey = SelfKey()
-        ..key = 'phone'
-        ..sharedWith = '@alice'
-        ..sharedBy = '@alice';
-      expect('@alice:phone@alice', atKey.toString());
+      var atKey =
+          AtKey.self('phone', namespace: 'wavi', sharedBy: '@alice').build();
+      expect('phone.wavi@alice', atKey.toString());
     });
     test('Verify a self key creation without sharedWith using static factory',
         () {
       var atKey = SelfKey()
         ..key = 'phone'
-        ..sharedBy = '@alice';
-      expect('phone@alice', atKey.toString());
+        ..sharedBy = '@alice'
+        ..namespace = 'wavi';
+      expect('phone.wavi@alice', atKey.toString());
     });
     test('Verify a self key creation without sharedWith', () {
       var atKey = AtKey()

@@ -23,4 +23,8 @@ abstract class KeyBuilder {
   /// Set this value to set time after which the key should be available in milliseconds.
   /// Time until availability
   void timeToBirth(int ttb);
+
+  /// Set the current AtSign
+  /// This is required.
+  void sharedBy(String atSign);
 }

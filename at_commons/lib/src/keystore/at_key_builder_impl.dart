@@ -46,6 +46,15 @@ abstract class AbstractKeyBuilder implements KeyBuilder {
     if (_atKey.namespace == null || _atKey.namespace!.isEmpty) {
       throw AtException("Namespace cannot be empty");
     }
+
+    if (_atKey is! PrivateKey && _atKey.sharedBy!.isEmpty) {
+      throw AtException('SharedBy cannot be empty');
+    }
+  }
+
+  @override
+  void sharedBy(String atSign) {
+    _atKey.sharedBy = atSign;
   }
 }
 

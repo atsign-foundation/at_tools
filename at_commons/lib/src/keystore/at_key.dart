@@ -49,12 +49,14 @@ class AtKey {
   ///
   ///Example: public:phone.wavi@alice.
   ///```dart
-  ///AtKey publicKey = AtKey.public('phone', 'wavi').build();
+  ///AtKey publicKey = AtKey.public('phone', namespace: 'wavi', sharedBy: '@alice').build();
   ///```
-  static PublicKeyBuilder public(String key, {String? namespace}) {
+  static PublicKeyBuilder public(String key,
+      {String? namespace, String sharedBy = ''}) {
     return PublicKeyBuilder()
       ..key(key)
-      ..namespace(namespace);
+      ..namespace(namespace)
+      ..sharedBy(sharedBy);
   }
 
   /// Shared Keys are shared with other atSign. The owner can see the keys on
@@ -70,15 +72,17 @@ class AtKey {
   ///```
   /// To cache a key on the @bob atSign.
   /// ```dart
-  ///AtKey atKey = (AtKey.shared('phone', 'wavi')
+  ///AtKey atKey = (AtKey.shared('phone', namespace: 'wavi', sharedBy: '@alice')
   ///  ..sharedWith('bob')
   ///  ..cache(1000, true))
   ///  .build();
   /// ```
-  static SharedKeyBuilder shared(String key, {String? namespace}) {
+  static SharedKeyBuilder shared(String key,
+      {String? namespace, String sharedBy = ''}) {
     return SharedKeyBuilder()
       ..key(key)
-      ..namespace(namespace);
+      ..namespace(namespace)
+      ..sharedBy(sharedBy);
   }
 
   /// Self keys that are created by the owner of the atSign and the keys can be
@@ -89,12 +93,14 @@ class AtKey {
   ///
   /// Example: phone.wavi@alice
   /// ```dart
-  /// AtKey selfKey = AtKey.self('phone', 'wavi').build();
+  /// AtKey selfKey = AtKey.self('phone', namespace: 'wavi', sharedBy: '@alice').build();
   /// ```
-  static SelfKeyBuilder self(String key, {String? namespace}) {
+  static SelfKeyBuilder self(String key,
+      {String? namespace, String sharedBy = ''}) {
     return SelfKeyBuilder()
       ..key(key)
-      ..namespace(namespace);
+      ..namespace(namespace)
+      ..sharedBy(sharedBy);
   }
 
   /// Private key's that are created by the owner of the atSign and these keys
@@ -105,7 +111,7 @@ class AtKey {
   ///
   /// Example: privatekey:phone.wavi@alice
   /// ```dart
-  /// AtKey privateKey = AtKey.private('phone', 'wavi').build();
+  /// AtKey privateKey = AtKey.private('phone', namespace: 'wavi').build();
   /// ```
   static PrivateKeyBuilder private(String key, {String? namespace}) {
     return PrivateKeyBuilder()
@@ -186,7 +192,7 @@ class PublicKey extends AtKey {
 
   @override
   String toString() {
-    return 'public:$key$sharedBy';
+    return 'public:$key.$namespace$sharedBy';
   }
 }
 
@@ -203,9 +209,9 @@ class SelfKey extends AtKey {
     // keys is a self key.
     // @alice:phone@alice or phone@alice
     if (sharedWith != null && sharedWith!.isNotEmpty) {
-      return '$sharedWith:$key$sharedBy';
+      return '$sharedWith:$key.$namespace$sharedBy';
     }
-    return '$key$sharedBy';
+    return '$key.$namespace$sharedBy';
   }
 }
 
@@ -217,7 +223,7 @@ class SharedKey extends AtKey {
 
   @override
   String toString() {
-    return '$sharedWith:$key$sharedBy';
+    return '$sharedWith:$key.$namespace$sharedBy';
   }
 }
 
