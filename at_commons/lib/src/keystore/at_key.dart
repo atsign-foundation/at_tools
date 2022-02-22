@@ -17,19 +17,19 @@ class AtKey {
         (metadata != null &&
             (metadata!.isPublic != null && metadata!.isPublic!) &&
             (metadata!.isCached))) {
-      return 'cached:public:$key$sharedBy';
+      return 'cached:public:$key.$namespace$sharedBy';
     }
     // If metadata.isPublic is true, return public key
     if (key!.startsWith('public:') ||
         (metadata != null &&
             metadata!.isPublic != null &&
             metadata!.isPublic!)) {
-      return 'public:$key$sharedBy';
+      return 'public:$key.$namespace$sharedBy';
     }
     //If metadata.isCached is true, return shared cached key
     if (key!.startsWith('cached:') ||
         (metadata != null && metadata!.isCached)) {
-      return 'cached:$sharedWith:$key$sharedBy';
+      return 'cached:$sharedWith:$key.$namespace$sharedBy';
     }
     // If key starts with privatekey:, return private key
     if (key!.startsWith('privatekey:')) {
@@ -37,10 +37,10 @@ class AtKey {
     }
     //If sharedWith is not null, return sharedKey
     if (sharedWith != null && sharedWith!.isNotEmpty) {
-      return '$sharedWith:$key$sharedBy';
+      return '$sharedWith:$key.$namespace$sharedBy';
     }
     // Defaults to return a self key.
-    return '$key$sharedBy';
+    return '$key.$namespace$sharedBy';
   }
 
   /// Public keys are visible to everyone and shown in an authenticated/unauthenticated scan

@@ -147,8 +147,10 @@ void main() {
     test(
         'Test to verify AtException is thrown when sharedBy is not populated for public key',
         () {
-      expect(() => (AtKey.public('phone', namespace: 'wavi')).build(),
-          throwsA(predicate((dynamic e) => e is AtException && e.message == 'SharedBy cannot be empty')));
+      expect(
+          () => (AtKey.public('phone', namespace: 'wavi')).build(),
+          throwsA(predicate((dynamic e) =>
+              e is AtException && e.message == 'SharedBy cannot be empty')));
     });
   });
 
@@ -382,8 +384,9 @@ void main() {
       var atKey = AtKey()
         ..key = 'phone'
         ..sharedBy = '@alice'
-        ..metadata = (Metadata()..isPublic = true);
-      expect('public:phone@alice', atKey.toString());
+        ..metadata = (Metadata()..isPublic = true)
+        ..namespace = 'wavi';
+      expect('public:phone.wavi@alice', atKey.toString());
     });
     test(
         'A test to verify a public-key creation on a public key factory method',
@@ -397,8 +400,9 @@ void main() {
       var atKey = AtKey()
         ..key = 'phone'
         ..sharedWith = '@bob'
-        ..sharedBy = '@alice';
-      expect('@bob:phone@alice', atKey.toString());
+        ..sharedBy = '@alice'
+        ..namespace = 'wavi';
+      expect('@bob:phone.wavi@alice', atKey.toString());
     });
     test(
         'A test to verify a sharedWith key creation with static factory method',
@@ -413,8 +417,9 @@ void main() {
       var atKey = AtKey()
         ..key = 'phone'
         ..sharedWith = '@alice'
-        ..sharedBy = '@alice';
-      expect('@alice:phone@alice', atKey.toString());
+        ..sharedBy = '@alice'
+        ..namespace = 'wavi';
+      expect('@alice:phone.wavi@alice', atKey.toString());
     });
     test('A test to verify a self key creation with static factory method', () {
       var atKey =
@@ -432,8 +437,9 @@ void main() {
     test('Verify a self key creation without sharedWith', () {
       var atKey = AtKey()
         ..key = 'phone'
-        ..sharedBy = '@alice';
-      expect('phone@alice', atKey.toString());
+        ..sharedBy = '@alice'
+        ..namespace = 'wavi';
+      expect('phone.wavi@alice', atKey.toString());
     });
     // Cached keys
     test('Verify a cached key creation', () {
@@ -441,8 +447,9 @@ void main() {
         ..key = 'phone'
         ..sharedWith = '@bob'
         ..sharedBy = '@alice'
-        ..metadata = (Metadata()..isCached = true);
-      expect('cached:@bob:phone@alice', atKey.toString());
+        ..metadata = (Metadata()..isCached = true)
+        ..namespace = 'wavi';
+      expect('cached:@bob:phone.wavi@alice', atKey.toString());
     });
     test('Verify a public cached key creation', () {
       var atKey = AtKey()
@@ -450,8 +457,9 @@ void main() {
         ..sharedBy = '@alice'
         ..metadata = (Metadata()
           ..isCached = true
-          ..isPublic = true);
-      expect('cached:public:phone@alice', atKey.toString());
+          ..isPublic = true)
+        ..namespace = 'wavi';
+      expect('cached:public:phone.wavi@alice', atKey.toString());
     });
     //Private keys
     test('Verify a privatekey creation using static factory method', () {
