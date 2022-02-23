@@ -42,14 +42,11 @@ abstract class AbstractKeyBuilder implements KeyBuilder {
     if (_atKey.key!.isEmpty) {
       throw AtException("Key cannot be empty");
     }
-
-    if (_atKey.namespace == null || _atKey.namespace!.isEmpty) {
-      throw AtException("Namespace cannot be empty");
-    }
-
-    if (_atKey is! PrivateKey && _atKey.sharedBy!.isEmpty) {
-      throw AtException('SharedBy cannot be empty');
-    }
+    // validate the atKey
+    // Setting the validateOwnership to false to skip KeyOwnerShip validation and
+    // KeyShare validation. These validation will be performed on put and get of the key.
+    AtKeyValidators.get()
+        .validate(toString(), ValidationContext()..validateOwnership = false);
   }
 
   @override
