@@ -196,10 +196,12 @@ class Metadata {
   bool? isBinary = false;
   bool? isEncrypted;
   bool isCached = false;
+  String? sharedKeyEncrypted;
+  String? pubKeyChecksum;
 
   @override
   String toString() {
-    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : $isBinary, isEncrypted : $isEncrypted, isCached : $isCached, dataSignature: $dataSignature, sharedKeyStatus: $sharedKeyStatus}';
+    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : $isBinary, isEncrypted : $isEncrypted, isCached : $isCached, dataSignature: $dataSignature, sharedKeyStatus: $sharedKeyStatus, encryptedSharedKey: $sharedKeyEncrypted, pubKeyCheckSum: $pubKeyChecksum}';
   }
 
   Map toJson() {
@@ -218,6 +220,8 @@ class Metadata {
     map[IS_ENCRYPTED] = isEncrypted;
     map[PUBLIC_DATA_SIGNATURE] = dataSignature;
     map[SHARED_KEY_STATUS] = sharedKeyStatus;
+    map[SHARED_KEY_ENCRYPTED] = sharedKeyEncrypted;
+    map[SHARED_WITH_PUBLIC_KEY_CHECK_SUM] = pubKeyChecksum;
     return map;
   }
 
@@ -265,6 +269,8 @@ class Metadata {
       metaData.isPublic = json[IS_PUBLIC];
       metaData.dataSignature = json[PUBLIC_DATA_SIGNATURE];
       metaData.sharedKeyStatus = json[SHARED_KEY_STATUS];
+      metaData.sharedKeyEncrypted = json[SHARED_KEY_ENCRYPTED];
+      metaData.pubKeyChecksum = json[SHARED_WITH_PUBLIC_KEY_CHECK_SUM];
     } catch (error) {
       print('AtMetaData.fromJson error: ' + error.toString());
     }
