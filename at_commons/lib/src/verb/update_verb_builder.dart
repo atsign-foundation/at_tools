@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
-import 'package:at_commons/src/verb/verb_util.dart';
 
 /// Update builder generates a command to update [value] for a key [atKey] in the secondary server of [sharedBy].
 /// Use [getBuilder] method if you want to convert command to a builder.
@@ -99,7 +98,7 @@ class UpdateVerbBuilder implements VerbBuilder {
       metadata.ccd = ccd;
       metadata.isPublic = isPublic;
       metadata.sharedKeyStatus = sharedKeyStatus;
-      metadata.sharedKeyEncrypted = sharedKeyEncrypted;
+      metadata.sharedKeyEnc = sharedKeyEncrypted;
       metadata.sharedKeyStatus = sharedKeyStatus;
       updateParams.metadata = metadata;
       var json = updateParams.toJson();
