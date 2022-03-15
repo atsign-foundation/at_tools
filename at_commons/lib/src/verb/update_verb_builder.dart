@@ -181,10 +181,10 @@ class UpdateVerbBuilder implements VerbBuilder {
       command += ':isEncrypted:$isEncrypted';
     }
     if (sharedKeyEncrypted != null) {
-      command += ':$SHARED_KEY_ENCRYPTED:$sharedKeyEncrypted:';
+      command += ':$SHARED_KEY_ENCRYPTED:$sharedKeyEncrypted';
     }
     if (pubKeyChecksum != null) {
-      command += ':$SHARED_WITH_PUBLIC_KEY_CHECK_SUM:$pubKeyChecksum:';
+      command += ':$SHARED_WITH_PUBLIC_KEY_CHECK_SUM:$pubKeyChecksum';
     }
     command += '\n';
     return command;

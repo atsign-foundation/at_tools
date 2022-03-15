@@ -72,5 +72,17 @@ void main() {
       expect(updateBuilder.buildCommandForMeta(),
           'update:meta:phone@alice:ttb:80000\n');
     });
+
+    test('verify isEncrypted and sharedkey metadata', () {
+      var updateBuilder = UpdateVerbBuilder()
+        ..isEncrypted = true
+        ..atKey = 'phone'
+        ..sharedBy = 'alice'
+        ..sharedWith = 'bob'
+        ..pubKeyChecksum = '123'
+        ..sharedKeyEncrypted = 'abc';
+      expect(updateBuilder.buildCommandForMeta(),
+          'update:meta:@bob:phone@alice:isEncrypted:true:sharedKeyEnc:abc:pubKeyCS:123\n');
+    });
   });
 }
