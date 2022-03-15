@@ -1,8 +1,8 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
-import 'package:at_commons/src/verb/verb_util.dart';
 
 /// Update builder generates a command to update [value] for a key [atKey] in the secondary server of [sharedBy].
 /// Use [getBuilder] method if you want to convert command to a builder.
@@ -173,7 +173,7 @@ class UpdateVerbBuilder implements VerbBuilder {
 
   static UpdateVerbBuilder? getBuilder(String command) {
     var builder = UpdateVerbBuilder();
-    var verbParams;
+    HashMap<String, String?>? verbParams;
     if (command.contains(UPDATE_META)) {
       verbParams = VerbUtil.getVerbParam(VerbSyntax.update_meta, command);
       builder.operation = UPDATE_META;
@@ -191,20 +191,26 @@ class UpdateVerbBuilder implements VerbBuilder {
     if (builder.value is String) {
       builder.value = VerbUtil.replaceNewline(builder.value);
     }
-    if (verbParams[AT_TTL] != null) builder.ttl = int.parse(verbParams[AT_TTL]);
-    if (verbParams[AT_TTB] != null) builder.ttb = int.parse(verbParams[AT_TTB]);
-    if (verbParams[AT_TTR] != null) builder.ttr = int.parse(verbParams[AT_TTR]);
+    if (verbParams[AT_TTL] != null) {
+      builder.ttl = int.parse(verbParams[AT_TTL]!);
+    }
+    if (verbParams[AT_TTB] != null) {
+      builder.ttb = int.parse(verbParams[AT_TTB]!);
+    }
+    if (verbParams[AT_TTR] != null) {
+      builder.ttr = int.parse(verbParams[AT_TTR]!);
+    }
     if (verbParams[CCD] != null) {
-      builder.ccd = _getBoolVerbParams(verbParams[CCD]);
+      builder.ccd = _getBoolVerbParams(verbParams[CCD]!);
     }
     if (verbParams[PUBLIC_DATA_SIGNATURE] != null) {
       builder.dataSignature = verbParams[PUBLIC_DATA_SIGNATURE];
     }
     if (verbParams[IS_BINARY] != null) {
-      builder.isBinary = _getBoolVerbParams(verbParams[IS_BINARY]);
+      builder.isBinary = _getBoolVerbParams(verbParams[IS_BINARY]!);
     }
     if (verbParams[IS_ENCRYPTED] != null) {
-      builder.isEncrypted = _getBoolVerbParams(verbParams[IS_ENCRYPTED]);
+      builder.isEncrypted = _getBoolVerbParams(verbParams[IS_ENCRYPTED]!);
     }
     return builder;
   }
