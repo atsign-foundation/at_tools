@@ -20,6 +20,7 @@ class VerbSyntax {
       r'^sync:from:(?<from_commit_seq>[0-9]+|-1)(:limit:(?<limit>\d+))(:(?<regex>.+))?$';
   static const update =
       r'^update:json:(?<json>.+)$|^update:(?:ttl:(?<ttl>\d+):)?(?:ttb:(?<ttb>\d+):)?(?:ttr:(?<ttr>(-?)\d+):)?(ccd:(?<ccd>true|false):)?(?:dataSignature:(?<dataSignature>[^:@]+):)?(?:sharedKeyStatus:(?<sharedKeyStatus>[^:@]+):)?(isBinary:(?<isBinary>true|false):)?(isEncrypted:(?<isEncrypted>true|false):)?(priority:(?<priority>low|medium|high):)?((?:public:)|(@(?<forAtSign>[^@:\s]*):))?(?<atKey>[^:@]((?!:{2})[^@])+)(?:@(?<atSign>[^@\s]*))? (?<value>.+$)';
+  // ignore: constant_identifier_names
   static const update_meta =
       r'^update:meta:((?:public:)|((?<forAtSign>@?[^@\s]*):))?(?<atKey>((?!:{2})[^@])+)@(?<atSign>[^@:\s]*)(:ttl:(?<ttl>\d+))?(:ttb:(?<ttb>\d+))?(:ttr:(?<ttr>\d+))?(:ccd:(?<ccd>true|false))?(?:sharedKeyStatus:(?<sharedKeyStatus>[^:@]+):)?(:isBinary:(?<isBinary>true|false))?(:isEncrypted:(?<isEncrypted>true|false))?$';
   static const delete =
@@ -35,4 +36,6 @@ class VerbSyntax {
   static const notifyAll =
       r'^notify:all:((?<operation>update|delete):)?(messageType:((?<messageType>key|text):))?(?:ttl:(?<ttl>\d+):)?(?:ttb:(?<ttb>\d+):)?(?:ttr:(?<ttr>-?\d+):)?(?:ccd:(?<ccd>true|false+):)?(?<forAtSign>(([^:\s])+)?(,([^:\s]+))*)(:(?<atKey>[^@:\s]+))(@(?<atSign>[^@:\s]+))?(:(?<value>.+))?$';
   static const batch = r'^batch:(?<json>.+)$';
+  static const info = r'^info$';
+  static const noOp = r'^noop:(?<delayMillis>\d+)$';
 }

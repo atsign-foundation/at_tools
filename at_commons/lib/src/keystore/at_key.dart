@@ -120,13 +120,13 @@ class AtKey {
       } else {
         atKey.sharedWith = keyParts[0];
       }
-      var keyArr;
+      List<String> keyArr = [];
       if (keyParts[0] == CACHED) {
         keyArr = keyParts[2].split('@');
       } else {
         keyArr = keyParts[1].split('@');
       }
-      if (keyArr != null && keyArr.length == 2) {
+      if (keyArr.length == 2) {
         atKey.sharedBy = keyArr[1];
         atKey.key = keyArr[0];
       } else {
