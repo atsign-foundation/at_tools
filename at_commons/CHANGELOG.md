@@ -1,5 +1,5 @@
 ## 3.0.6
-- Add shared key to metadata
+- Added encryption shared key and public key checksum to metadata
 ## 3.0.5
 - Rename TimeoutException to AtTimeoutException to prevent confusion with Dart async's TimeoutException
 ## 3.0.4
