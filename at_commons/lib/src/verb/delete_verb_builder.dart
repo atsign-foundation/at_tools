@@ -1,6 +1,5 @@
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
-import 'package:at_commons/src/verb/verb_util.dart';
 
 /// Delete verb builder generates a command to delete a [atKey] from the secondary server.
 /// ```

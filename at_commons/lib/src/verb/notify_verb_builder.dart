@@ -1,6 +1,5 @@
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
-import 'package:at_commons/src/verb/verb_util.dart';
 
 class NotifyVerbBuilder implements VerbBuilder {
   /// Key that represents a user's information. e.g phone, location, email etc.,
