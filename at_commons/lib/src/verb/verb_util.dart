@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 class VerbUtil {
-  static const String NEW_LINE_REPLACE_PATTERN = '~NL~';
+  static const String newLineReplacePattern = '~NL~';
   static Iterable<RegExpMatch> _getMatches(RegExp regex, String command) {
     var matches = regex.allMatches(command);
     return matches;
@@ -10,11 +10,11 @@ class VerbUtil {
   static HashMap<String, String?> _processMatches(
       Iterable<RegExpMatch> matches) {
     var paramsMap = HashMap<String, String?>();
-    matches.forEach((f) {
+    for (var f in matches) {
       for (var name in f.groupNames) {
         paramsMap.putIfAbsent(name, () => f.namedGroup(name));
       }
-    });
+    }
     return paramsMap;
   }
 
@@ -36,10 +36,10 @@ class VerbUtil {
   }
 
   static String replaceNewline(String value) {
-    return value.replaceAll('\n', NEW_LINE_REPLACE_PATTERN);
+    return value.replaceAll('\n', newLineReplacePattern);
   }
 
   static String getFormattedValue(String value) {
-    return value.replaceAll(NEW_LINE_REPLACE_PATTERN, '\n');
+    return value.replaceAll(newLineReplacePattern, '\n');
   }
 }
