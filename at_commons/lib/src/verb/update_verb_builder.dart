@@ -66,6 +66,12 @@ class UpdateVerbBuilder implements VerbBuilder {
 
   String? sharedKeyStatus;
 
+  /// Will be set only when [sharedWith] is set. Will be encrypted using the public key of [sharedWith] atsign
+  String? sharedKeyEncrypted;
+
+  /// checksum of the the public key of [sharedWith] atsign. Will be set only when [sharedWith] is set.
+  String? pubKeyChecksum;
+
   @override
   String buildCommand() {
     if (isJson) {
@@ -82,7 +88,7 @@ class UpdateVerbBuilder implements VerbBuilder {
       updateParams.value = value;
       updateParams.sharedBy = sharedBy;
       updateParams.sharedWith = sharedWith;
-      var metadata = Metadata();
+      final metadata = Metadata();
       metadata.ttr = ttr;
       metadata.ttb = ttb;
       metadata.ttl = ttl;
@@ -92,6 +98,8 @@ class UpdateVerbBuilder implements VerbBuilder {
       }
       metadata.ccd = ccd;
       metadata.isPublic = isPublic;
+      metadata.sharedKeyStatus = sharedKeyStatus;
+      metadata.sharedKeyEnc = sharedKeyEncrypted;
       metadata.sharedKeyStatus = sharedKeyStatus;
       updateParams.metadata = metadata;
       var json = updateParams.toJson();
@@ -120,6 +128,12 @@ class UpdateVerbBuilder implements VerbBuilder {
     }
     if (isEncrypted != null) {
       command += 'isEncrypted:$isEncrypted:';
+    }
+    if (sharedKeyEncrypted != null) {
+      command += '$SHARED_KEY_ENCRYPTED:$sharedKeyEncrypted:';
+    }
+    if (pubKeyChecksum != null) {
+      command += '$SHARED_WITH_PUBLIC_KEY_CHECK_SUM:$pubKeyChecksum:';
     }
     if (isPublic) {
       command += 'public:';
@@ -167,6 +181,12 @@ class UpdateVerbBuilder implements VerbBuilder {
     if (isEncrypted != null) {
       command += ':isEncrypted:$isEncrypted';
     }
+    if (sharedKeyEncrypted != null) {
+      command += ':$SHARED_KEY_ENCRYPTED:$sharedKeyEncrypted';
+    }
+    if (pubKeyChecksum != null) {
+      command += ':$SHARED_WITH_PUBLIC_KEY_CHECK_SUM:$pubKeyChecksum';
+    }
     command += '\n';
     return command;
   }
@@ -211,6 +231,12 @@ class UpdateVerbBuilder implements VerbBuilder {
     }
     if (verbParams[IS_ENCRYPTED] != null) {
       builder.isEncrypted = _getBoolVerbParams(verbParams[IS_ENCRYPTED]!);
+    }
+    if (verbParams[SHARED_KEY_ENCRYPTED] != null) {
+      builder.sharedKeyEncrypted = verbParams[SHARED_KEY_ENCRYPTED];
+    }
+    if (verbParams[SHARED_WITH_PUBLIC_KEY_CHECK_SUM] != null) {
+      builder.sharedKeyEncrypted = verbParams[SHARED_WITH_PUBLIC_KEY_CHECK_SUM];
     }
     return builder;
   }

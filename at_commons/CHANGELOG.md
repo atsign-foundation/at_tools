@@ -1,3 +1,5 @@
+## 3.0.7
+- Added encryption shared key and public key checksum to metadata
 ## 3.0.6
 - Added syntax regexes for new verbs 'info' and 'noop'
 ## 3.0.5
