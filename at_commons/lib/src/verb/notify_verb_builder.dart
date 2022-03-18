@@ -50,6 +50,12 @@ class NotifyVerbBuilder implements VerbBuilder {
 
   bool? ccd;
 
+  /// Will be set only when [sharedWith] is set. Will be encrypted using the public key of [sharedWith] atsign
+  String? sharedKeyEncrypted;
+
+  /// checksum of the the public key of [sharedWith] atsign. Will be set only when [sharedWith] is set.
+  String? pubKeyChecksum;
+
   @override
   String buildCommand() {
     var command = 'notify:';
@@ -83,6 +89,14 @@ class NotifyVerbBuilder implements VerbBuilder {
       ccd ??= false;
       command += 'ttr:$ttr:ccd:$ccd:';
     }
+
+    if (sharedKeyEncrypted != null) {
+      command += '$SHARED_KEY_ENCRYPTED:$sharedKeyEncrypted:';
+    }
+    if (pubKeyChecksum != null) {
+      command += '$SHARED_WITH_PUBLIC_KEY_CHECK_SUM:$pubKeyChecksum:';
+    }
+
     if (sharedWith != null) {
       command += '${VerbUtil.formatAtSign(sharedWith)}:';
     }

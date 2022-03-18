@@ -1,3 +1,5 @@
+## 3.0.8
+- Support for encryption shared key and public key in notify verb
 ## 3.0.7
 - Added encryption shared key and public key checksum to metadata
 ## 3.0.6
