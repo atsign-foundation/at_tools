@@ -7,7 +7,7 @@ void main() {
   group('A group of tests to verify notify verb regex', () {
     test('Test to verify notify verb with encryptedSharedKey and checksum', () {
       var command =
-          'notify:update:priority:low:strategy:all:latestN:1:sharedKeyEnc:GxIjM8e/nsga3:pubKeyCS:5d52f6f2868:@murali:phone.wavi@sitaram:989745456';
+          'notify:update:priority:low:strategy:all:latestN:1:sharedKeyEnc:GxIjM8e/nsga3:pubKeyCS:5d52f6f2868:@bob:phone.wavi@alice:989745456';
       var verbParams = _getVerbParams(VerbSyntax.notify, command);
       expect(verbParams[SHARED_KEY_ENCRYPTED], 'GxIjM8e/nsga3');
       expect(verbParams[SHARED_WITH_PUBLIC_KEY_CHECK_SUM], '5d52f6f2868');
