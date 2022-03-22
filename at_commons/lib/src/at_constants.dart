@@ -63,3 +63,5 @@ const String commitLogCompactionKey = 'privatekey:commitLogCompactionStats';
 const String accessLogCompactionKey = 'privatekey:accessLogCompactionStats';
 const String notificationCompactionKey =
     'privatekey:notificationCompactionStats';
+const String notifyWithId = 'NotifyWithId';
+const String notifyWithoutId = 'NotifyWithoutId';
