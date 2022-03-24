@@ -33,7 +33,7 @@ void main() {
         ..pubKeyChecksum = '123'
         ..sharedKeyEncrypted = 'abc';
       expect(notifyVerbBuilder.buildCommand(),
-          'notify:notifier:SYSTEM:sharedKeyEnc:abc:pubKeyCS:123@bob:email@alice:alice@atsign.com\n');
+          'notify:notifier:SYSTEM:sharedKeyEnc:abc:pubKeyCS:123:@bob:email@alice:alice@atsign.com\n');
     });
   });
 }
