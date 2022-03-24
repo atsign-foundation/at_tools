@@ -2,6 +2,9 @@ import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
 
 class NotifyVerbBuilder implements VerbBuilder {
+  /// id for each notification.
+  late String id;
+
   /// Key that represents a user's information. e.g phone, location, email etc.,
   String? atKey;
 
@@ -58,7 +61,7 @@ class NotifyVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    var command = 'notify:';
+    var command = 'notify:id:$id:';
 
     if (operation != null) {
       command += '${getOperationName(operation)}:';
