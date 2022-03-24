@@ -94,7 +94,7 @@ class NotifyVerbBuilder implements VerbBuilder {
       command += '$SHARED_KEY_ENCRYPTED:$sharedKeyEncrypted:';
     }
     if (pubKeyChecksum != null) {
-      command += '$SHARED_WITH_PUBLIC_KEY_CHECK_SUM:$pubKeyChecksum:';
+      command += '$SHARED_WITH_PUBLIC_KEY_CHECK_SUM:$pubKeyChecksum';
     }
 
     if (sharedWith != null) {

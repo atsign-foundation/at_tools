@@ -1,3 +1,5 @@
+## 3.0.9
+- Bug fix in notify verb builder
 ## 3.0.8
 - Support for encryption shared key and public key in notify verb
 ## 3.0.7
