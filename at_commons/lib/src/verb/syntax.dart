@@ -38,4 +38,5 @@ class VerbSyntax {
   static const batch = r'^batch:(?<json>.+)$';
   static const info = r'^info$';
   static const noOp = r'^noop:(?<delayMillis>\d+)$';
+  static const notifyDelete = r'notify:delete:(?<id>[\w\d\-\_]+)';
 }
