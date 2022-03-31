@@ -17,6 +17,20 @@ void main() {
       expect(verbParams[STRATEGY],'all');
     });
   });
+
+  group('A group of tests to verify notify delete verb', () {
+    test('Valid id sent to notify delete', () {
+      var command = 'notify:delete:abcd-1234';
+      var verbParams = _getVerbParams(VerbSyntax.notifyDelete, command);
+      expect(verbParams[ID], 'abcd-1234');
+    });
+
+    test('id not sent to notify delete', () {
+      var command = 'notify:delete:';
+      var verbParams = _getVerbParams(VerbSyntax.notifyDelete, command);
+      expect(verbParams.isEmpty, true);
+    });
+  });
 }
 
 Map _getVerbParams(String regex, String command) {
