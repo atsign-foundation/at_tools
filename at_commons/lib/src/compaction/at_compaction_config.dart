@@ -8,7 +8,8 @@ class AtCompactionConfig {
   // Frequency interval in which the logs are compacted
   int? compactionFrequencyMins;
 
-  AtCompactionConfig(this.sizeInKB, this.timeInDays, this.compactionPercentage, this.compactionFrequencyMins);
+  AtCompactionConfig(this.sizeInKB, this.timeInDays, this.compactionPercentage,
+      this.compactionFrequencyMins);
 
   bool timeBasedCompaction() {
     return timeInDays != -1;

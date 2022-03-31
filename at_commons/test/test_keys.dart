@@ -1,5 +1,4 @@
 class TestKeys {
-
   List<String> validPublicKeys = [];
   List<String> invalidPublicKeys = [];
   List<String> validPrivateKeys = [];
@@ -36,8 +35,7 @@ class TestKeys {
     _initValidCachedSharedKeys();
     _initInvalidCachedSharedKeys();
 
-
-    if(includeNonBobKeys) {
+    if (includeNonBobKeys) {
       _initNonBobPublicKeys();
       _initNonBobPrivateKeys();
       _initNonBobCachedPublicKeys();
@@ -45,7 +43,6 @@ class TestKeys {
       _initNonBobSharedKeys();
       _initNonBobCachedSharedKeys();
     }
-
   }
 
   _initNonBobPublicKeys() {
@@ -164,15 +161,15 @@ class TestKeys {
     validCachedPublicKeys.add(
         "cached:public:@bob0123456789012345678901234567890123456789012345:phone.buzz@bob0123456789012345678901234567890123456789012345");
     //  cached public key with valid punctuations in the @sign
-    validCachedPublicKeys.add(
-        "cached:public:@jagann_a-d_h:phone.buzz@jagann_a-d_h");
+    validCachedPublicKeys
+        .add("cached:public:@jagann_a-d_h:phone.buzz@jagann_a-d_h");
     //  cached public key with emoji's in @sign
     validCachedPublicKeys.add("cached:public:@bob💙:phone.buzz@bob💙");
     // cached public public in both @sign and entity
     validCachedPublicKeys.add("cached:public:@bob💙:phone😀.buzz@bob💙");
     //  Invalid and valid punctuations in the @sign
-    invalidCachedPublicKeys.add(
-        "cached:public:@jagan_____na#dh💙:phone.buzz@bob💙");
+    invalidCachedPublicKeys
+        .add("cached:public:@jagan_____na#dh💙:phone.buzz@bob💙");
   }
 
   _initValidCachedPublicKeys() {
@@ -241,7 +238,6 @@ class TestKeys {
     validSelfKeys.add("pho_-n________e.b@bob");
     //  Self key with emoji's in entity
     validSelfKeys.add("@bob:phone😀.buzz@bob");
-
   }
 
   _initInvalidSelfKeys() {
@@ -332,7 +328,6 @@ class TestKeys {
         "cached:@alice0123456789012345678901234567890123456789012345:phone.buzz@alice");
     //  Cached shared key with emoji's in entity
     validCachedSharedKeys.add("cached:@alice:phone😀.buzz@alice");
-
   }
 
   _initInvalidCachedSharedKeys() {

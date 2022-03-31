@@ -1,3 +1,5 @@
+## 3.0.10
+- Added syntax regex for 'notifyDelete' verb
 ## 3.0.9
 - Bug fix in notify verb syntax
 ## 3.0.8

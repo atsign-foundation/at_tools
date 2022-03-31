@@ -12,9 +12,9 @@ void main() {
       expect(verbParams[SHARED_KEY_ENCRYPTED], 'GxIjM8e/nsga3');
       expect(verbParams[SHARED_WITH_PUBLIC_KEY_CHECK_SUM], '5d52f6f2868');
       expect(verbParams[PRIORITY], 'low');
-      expect(verbParams[LATEST_N],'1');
-      expect(verbParams[VALUE],'989745456');
-      expect(verbParams[STRATEGY],'all');
+      expect(verbParams[LATEST_N], '1');
+      expect(verbParams[VALUE], '989745456');
+      expect(verbParams[STRATEGY], 'all');
     });
   });
 
