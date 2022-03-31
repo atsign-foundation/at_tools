@@ -1,6 +1,6 @@
 ## 3.0.7
 - at_commons version change for Info and NoOp verb
-- at_commons version change for notifyDelete verb
+- at_commons version change for NotifyDelete verb
 ## 3.0.6
 - at_commons version change for AtTimeoutException
 ## 3.0.5
