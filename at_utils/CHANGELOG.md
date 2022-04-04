@@ -1,3 +1,5 @@
+## 3.0.8
+- at_commons version change for renaming NotifyDelete verb to NotifyRemove
 ## 3.0.7
 - at_commons version change for Info and NoOp verb
 - at_commons version change for NotifyDelete verb
