@@ -1,11 +1,11 @@
 import 'package:at_commons/at_builders.dart';
 
-class NotifyDeleteVerbBuilder implements VerbBuilder {
+class NotifyRemoveVerbBuilder implements VerbBuilder {
   late String id;
 
   @override
   String buildCommand() {
-    return 'notify:delete:$id\n';
+    return 'notify:remove:$id\n';
   }
 
   @override

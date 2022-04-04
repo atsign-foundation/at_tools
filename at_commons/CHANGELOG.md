@@ -1,3 +1,5 @@
+## 3.0.11
+- Rename 'NotifyDelete' to 'NotifyRemove' since 'notify:delete' is already in use.
 ## 3.0.10
 - Added syntax regex for 'notifyDelete' verb
 ## 3.0.9
