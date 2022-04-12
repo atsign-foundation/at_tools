@@ -36,7 +36,7 @@ class VerbSyntax {
   static const notifyAll =
       r'^notify:all:((?<operation>update|delete):)?(messageType:((?<messageType>key|text):))?(?:ttl:(?<ttl>\d+):)?(?:ttb:(?<ttb>\d+):)?(?:ttr:(?<ttr>-?\d+):)?(?:ccd:(?<ccd>true|false+):)?(?<forAtSign>(([^:\s])+)?(,([^:\s]+))*)(:(?<atKey>[^@:\s]+))(@(?<atSign>[^@:\s]+))?(:(?<value>.+))?$';
   static const batch = r'^batch:(?<json>.+)$';
-  static const info = r'^info$';
+  static const info = r'^info(:brief)?$';
   static const noOp = r'^noop:(?<delayMillis>\d+)$';
   static const notifyRemove = r'notify:remove:(?<id>[\w\d\-\_]+)';
 }
