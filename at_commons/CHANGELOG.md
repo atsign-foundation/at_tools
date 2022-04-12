@@ -1,3 +1,5 @@
+## 3.0.12
+- Added optional parameter to info verb. Valid syntax is now either 'info' or 'info:brief'
 ## 3.0.11
 - Rename 'NotifyDelete' to 'NotifyRemove' since 'notify:delete' is already in use.
 ## 3.0.10
