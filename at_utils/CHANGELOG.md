@@ -1,3 +1,5 @@
+## 3.0.9
+- Changed at_commons dependency from 3.0.11 to ^3.0.11
 ## 3.0.8
 - at_commons version change for renaming NotifyDelete verb to NotifyRemove
 ## 3.0.7
