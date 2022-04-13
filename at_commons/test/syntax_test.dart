@@ -8,7 +8,7 @@ void main() {
     test('Test to verify notify verb with encryptedSharedKey and checksum', () {
       var command =
           'notify:update:priority:low:strategy:all:latestN:1:sharedKeyEnc:GxIjM8e/nsga3:pubKeyCS:5d52f6f2868:@bob:phone.wavi@alice:989745456';
-      var verbParams = _getVerbParams(VerbSyntax.notify, command);
+      var verbParams = getVerbParams(VerbSyntax.notify, command);
       expect(verbParams[OPERATION], 'update');
       expect(verbParams[SHARED_KEY_ENCRYPTED], 'GxIjM8e/nsga3');
       expect(verbParams[SHARED_WITH_PUBLIC_KEY_CHECK_SUM], '5d52f6f2868');
@@ -21,7 +21,7 @@ void main() {
     test('Test to verify notify verb with delete operation', () {
       var command =
           'notify:delete:priority:low:strategy:all:latestN:1:sharedKeyEnc:GxIjM8e/nsga3:pubKeyCS:5d52f6f2868:@bob:phone.wavi@alice:989745456';
-      var verbParams = _getVerbParams(VerbSyntax.notify, command);
+      var verbParams = getVerbParams(VerbSyntax.notify, command);
       expect(verbParams[OPERATION], 'delete');
       expect(verbParams[SHARED_KEY_ENCRYPTED], 'GxIjM8e/nsga3');
       expect(verbParams[SHARED_WITH_PUBLIC_KEY_CHECK_SUM], '5d52f6f2868');
@@ -35,19 +35,19 @@ void main() {
   group('A group of tests to verify notify delete verb', () {
     test('Valid id sent to notify delete', () {
       var command = 'notify:remove:abcd-1234';
-      var verbParams = _getVerbParams(VerbSyntax.notifyRemove, command);
+      var verbParams = getVerbParams(VerbSyntax.notifyRemove, command);
       expect(verbParams[ID], 'abcd-1234');
     });
 
     test('id not sent to notify delete', () {
       var command = 'notify:remove:';
-      var verbParams = _getVerbParams(VerbSyntax.notifyRemove, command);
+      var verbParams = getVerbParams(VerbSyntax.notifyRemove, command);
       expect(verbParams.isEmpty, true);
     });
   });
 }
 
-Map _getVerbParams(String regex, String command) {
+Map getVerbParams(String regex, String command) {
   var regExp = RegExp(regex, caseSensitive: false);
   var regexMatches = regExp.allMatches(command);
   var paramsMap = HashMap<String, String?>();

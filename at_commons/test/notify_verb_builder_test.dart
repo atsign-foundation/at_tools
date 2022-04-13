@@ -1,5 +1,8 @@
 import 'package:at_commons/at_builders.dart';
+import 'package:at_commons/at_commons.dart';
 import 'package:test/test.dart';
+
+import 'syntax_test.dart';
 
 void main() {
   group('A group of notify verb builder tests to check notify command', () {
@@ -37,6 +40,31 @@ void main() {
         ..sharedKeyEncrypted = 'abc';
       expect(notifyVerbBuilder.buildCommand(),
           'notify:id:123:notifier:SYSTEM:sharedKeyEnc:abc:pubKeyCS:123:@bob:email@alice:alice@atsign.com\n');
+    });
+  });
+
+  group('A group of tests to verify notification id generation', () {
+    test('Test to verify default notification id is generated', () {
+      var verbHandler = NotifyVerbBuilder()
+        ..atKey = 'phone'
+        ..sharedWith = '@alice'
+        ..sharedBy = '@bob';
+
+      var notifyCommand = verbHandler.buildCommand();
+      var verbParams = getVerbParams(VerbSyntax.notify, notifyCommand.trim());
+      expect(verbParams[ID] != null, true);
+    });
+
+    test('Test to verify custom set notification id to verb builder', () {
+      var verbHandler = NotifyVerbBuilder()
+        ..id = 'abc-123'
+        ..atKey = 'phone'
+        ..sharedWith = '@alice'
+        ..sharedBy = '@bob';
+
+      var notifyCommand = verbHandler.buildCommand();
+      var verbParams = getVerbParams(VerbSyntax.notify, notifyCommand.trim());
+      expect(verbParams[ID], 'abc-123');
     });
   });
 }

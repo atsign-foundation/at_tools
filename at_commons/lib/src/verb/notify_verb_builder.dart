@@ -1,9 +1,10 @@
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
+import 'package:uuid/uuid.dart';
 
 class NotifyVerbBuilder implements VerbBuilder {
   /// id for each notification.
-  late String id;
+  String id = Uuid().v4();
 
   /// Key that represents a user's information. e.g phone, location, email etc.,
   String? atKey;
