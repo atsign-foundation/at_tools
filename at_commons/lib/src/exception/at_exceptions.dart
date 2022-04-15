@@ -86,7 +86,7 @@ class SecondaryConnectException extends AtException {
   SecondaryConnectException(message) : super(message);
 }
 
-/// Exception thrown
+/// Exception thrown when from-pol handshake fails between two secondary servers
 class HandShakeException extends AtConnectException {
   HandShakeException(message) : super(message);
 }
@@ -128,27 +128,32 @@ class IllegalArgumentException extends AtException {
   IllegalArgumentException(message) : super(message);
 }
 
-/// Throws when no response is received before the timeout duration
+/// Exception thrown when no response is received before the timeout duration
 class AtTimeoutException extends AtException {
   AtTimeoutException(message) : super(message);
 }
 
+/// Exception thrown when there is an issue connecting to root server
 class RootServerConnectivityException extends AtConnectException {
   RootServerConnectivityException(message) : super(message);
 }
 
+/// Exception thrown when there is an issue connecting to secondary server
 class SecondaryServerConnectivityException extends AtConnectException {
   SecondaryServerConnectivityException(message) : super(message);
 }
 
+/// Exception thrown when request to secondary server is invalid
 class InvalidRequestException extends AtException {
   InvalidRequestException(message) : super(message);
 }
 
+/// Exception thrown when response from secondary server is invalid e.g invalid json format
 class InvalidResponseException extends AtException {
   InvalidResponseException(message) : super(message);
 }
 
+/// Exception thrown when security certification validation on root or secondary server fails
 class AtCertificateValidationException extends AtException {
   AtCertificateValidationException(message) : super(message);
 }
