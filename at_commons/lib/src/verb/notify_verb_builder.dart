@@ -1,8 +1,11 @@
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
-import 'package:at_commons/src/verb/verb_util.dart';
+import 'package:uuid/uuid.dart';
 
 class NotifyVerbBuilder implements VerbBuilder {
+  /// id for each notification.
+  String id = Uuid().v4();
+
   /// Key that represents a user's information. e.g phone, location, email etc.,
   String? atKey;
 
@@ -51,9 +54,15 @@ class NotifyVerbBuilder implements VerbBuilder {
 
   bool? ccd;
 
+  /// Will be set only when [sharedWith] is set. Will be encrypted using the public key of [sharedWith] atsign
+  String? sharedKeyEncrypted;
+
+  /// checksum of the the public key of [sharedWith] atsign. Will be set only when [sharedWith] is set.
+  String? pubKeyChecksum;
+
   @override
   String buildCommand() {
-    var command = 'notify:';
+    var command = 'notify:id:$id:';
 
     if (operation != null) {
       command += '${getOperationName(operation)}:';
@@ -84,6 +93,14 @@ class NotifyVerbBuilder implements VerbBuilder {
       ccd ??= false;
       command += 'ttr:$ttr:ccd:$ccd:';
     }
+
+    if (sharedKeyEncrypted != null) {
+      command += '$SHARED_KEY_ENCRYPTED:$sharedKeyEncrypted:';
+    }
+    if (pubKeyChecksum != null) {
+      command += '$SHARED_WITH_PUBLIC_KEY_CHECK_SUM:$pubKeyChecksum:';
+    }
+
     if (sharedWith != null) {
       command += '${VerbUtil.formatAtSign(sharedWith)}:';
     }

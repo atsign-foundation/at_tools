@@ -1,3 +1,19 @@
+## 3.0.13
+- Generate default notification id
+## 3.0.12
+- Added optional parameter to info verb. Valid syntax is now either 'info' or 'info:brief'
+## 3.0.11
+- Rename 'NotifyDelete' to 'NotifyRemove' since 'notify:delete' is already in use.
+## 3.0.10
+- Added syntax regex for 'notifyDelete' verb
+## 3.0.9
+- Bug fix in notify verb syntax
+## 3.0.8
+- Support for encryption shared key and public key in notify verb
+## 3.0.7
+- Added encryption shared key and public key checksum to metadata
+## 3.0.6
+- Added syntax regexes for new verbs 'info' and 'noop'
 ## 3.0.5
 - Rename TimeoutException to AtTimeoutException to prevent confusion with Dart async's TimeoutException
 ## 3.0.4

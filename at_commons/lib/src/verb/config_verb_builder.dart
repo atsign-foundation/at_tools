@@ -21,8 +21,9 @@ class ConfigVerbBuilder implements VerbBuilder {
       command += '$operation:';
     }
     if (atSigns != null && atSigns!.isNotEmpty) {
-      atSigns!
-          .forEach((atSign) => command += '${VerbUtil.formatAtSign(atSign)}');
+      for (var atSign in atSigns!) {
+        command += '${VerbUtil.formatAtSign(atSign)}';
+      }
     }
     command = command.trim();
     command = command + '\n';

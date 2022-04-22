@@ -1,8 +1,8 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/verb/verb_builder.dart';
-import 'package:at_commons/src/verb/verb_util.dart';
 
 /// Update builder generates a command to update [value] for a key [atKey] in the secondary server of [sharedBy].
 /// Use [getBuilder] method if you want to convert command to a builder.
@@ -66,6 +66,12 @@ class UpdateVerbBuilder implements VerbBuilder {
 
   String? sharedKeyStatus;
 
+  /// Will be set only when [sharedWith] is set. Will be encrypted using the public key of [sharedWith] atsign
+  String? sharedKeyEncrypted;
+
+  /// checksum of the the public key of [sharedWith] atsign. Will be set only when [sharedWith] is set.
+  String? pubKeyChecksum;
+
   @override
   String buildCommand() {
     if (isJson) {
@@ -82,7 +88,7 @@ class UpdateVerbBuilder implements VerbBuilder {
       updateParams.value = value;
       updateParams.sharedBy = sharedBy;
       updateParams.sharedWith = sharedWith;
-      var metadata = Metadata();
+      final metadata = Metadata();
       metadata.ttr = ttr;
       metadata.ttb = ttb;
       metadata.ttl = ttl;
@@ -92,6 +98,8 @@ class UpdateVerbBuilder implements VerbBuilder {
       }
       metadata.ccd = ccd;
       metadata.isPublic = isPublic;
+      metadata.sharedKeyStatus = sharedKeyStatus;
+      metadata.sharedKeyEnc = sharedKeyEncrypted;
       metadata.sharedKeyStatus = sharedKeyStatus;
       updateParams.metadata = metadata;
       var json = updateParams.toJson();
@@ -120,6 +128,12 @@ class UpdateVerbBuilder implements VerbBuilder {
     }
     if (isEncrypted != null) {
       command += 'isEncrypted:$isEncrypted:';
+    }
+    if (sharedKeyEncrypted != null) {
+      command += '$SHARED_KEY_ENCRYPTED:$sharedKeyEncrypted:';
+    }
+    if (pubKeyChecksum != null) {
+      command += '$SHARED_WITH_PUBLIC_KEY_CHECK_SUM:$pubKeyChecksum:';
     }
     if (isPublic) {
       command += 'public:';
@@ -167,13 +181,19 @@ class UpdateVerbBuilder implements VerbBuilder {
     if (isEncrypted != null) {
       command += ':isEncrypted:$isEncrypted';
     }
+    if (sharedKeyEncrypted != null) {
+      command += ':$SHARED_KEY_ENCRYPTED:$sharedKeyEncrypted';
+    }
+    if (pubKeyChecksum != null) {
+      command += ':$SHARED_WITH_PUBLIC_KEY_CHECK_SUM:$pubKeyChecksum';
+    }
     command += '\n';
     return command;
   }
 
   static UpdateVerbBuilder? getBuilder(String command) {
     var builder = UpdateVerbBuilder();
-    var verbParams;
+    HashMap<String, String?>? verbParams;
     if (command.contains(UPDATE_META)) {
       verbParams = VerbUtil.getVerbParam(VerbSyntax.update_meta, command);
       builder.operation = UPDATE_META;
@@ -191,20 +211,32 @@ class UpdateVerbBuilder implements VerbBuilder {
     if (builder.value is String) {
       builder.value = VerbUtil.replaceNewline(builder.value);
     }
-    if (verbParams[AT_TTL] != null) builder.ttl = int.parse(verbParams[AT_TTL]);
-    if (verbParams[AT_TTB] != null) builder.ttb = int.parse(verbParams[AT_TTB]);
-    if (verbParams[AT_TTR] != null) builder.ttr = int.parse(verbParams[AT_TTR]);
+    if (verbParams[AT_TTL] != null) {
+      builder.ttl = int.parse(verbParams[AT_TTL]!);
+    }
+    if (verbParams[AT_TTB] != null) {
+      builder.ttb = int.parse(verbParams[AT_TTB]!);
+    }
+    if (verbParams[AT_TTR] != null) {
+      builder.ttr = int.parse(verbParams[AT_TTR]!);
+    }
     if (verbParams[CCD] != null) {
-      builder.ccd = _getBoolVerbParams(verbParams[CCD]);
+      builder.ccd = _getBoolVerbParams(verbParams[CCD]!);
     }
     if (verbParams[PUBLIC_DATA_SIGNATURE] != null) {
       builder.dataSignature = verbParams[PUBLIC_DATA_SIGNATURE];
     }
     if (verbParams[IS_BINARY] != null) {
-      builder.isBinary = _getBoolVerbParams(verbParams[IS_BINARY]);
+      builder.isBinary = _getBoolVerbParams(verbParams[IS_BINARY]!);
     }
     if (verbParams[IS_ENCRYPTED] != null) {
-      builder.isEncrypted = _getBoolVerbParams(verbParams[IS_ENCRYPTED]);
+      builder.isEncrypted = _getBoolVerbParams(verbParams[IS_ENCRYPTED]!);
+    }
+    if (verbParams[SHARED_KEY_ENCRYPTED] != null) {
+      builder.sharedKeyEncrypted = verbParams[SHARED_KEY_ENCRYPTED];
+    }
+    if (verbParams[SHARED_WITH_PUBLIC_KEY_CHECK_SUM] != null) {
+      builder.sharedKeyEncrypted = verbParams[SHARED_WITH_PUBLIC_KEY_CHECK_SUM];
     }
     return builder;
   }

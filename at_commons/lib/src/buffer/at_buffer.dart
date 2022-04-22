@@ -9,6 +9,7 @@ abstract class AtBuffer<T> {
   int? capacity;
 
   /// Define terminatingChar to indicate end of buffer
+  // ignore: prefer_typing_uninitialized_variables
   var terminatingChar;
 
   /// Returns the message stored in the buffer

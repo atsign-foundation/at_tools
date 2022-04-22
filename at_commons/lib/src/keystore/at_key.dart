@@ -155,13 +155,13 @@ class AtKey {
       } else {
         atKey.sharedWith = keyParts[0];
       }
-      var keyArr;
+      List<String> keyArr = [];
       if (keyParts[0] == CACHED) {
         keyArr = keyParts[2].split('@');
       } else {
         keyArr = keyParts[1].split('@');
       }
-      if (keyArr != null && keyArr.length == 2) {
+      if (keyArr.length == 2) {
         atKey.sharedBy = keyArr[1];
         atKey.key = keyArr[0];
       } else {
@@ -257,10 +257,12 @@ class Metadata {
   bool? isBinary = false;
   bool? isEncrypted;
   bool isCached = false;
+  String? sharedKeyEnc;
+  String? pubKeyCS;
 
   @override
   String toString() {
-    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : $isBinary, isEncrypted : $isEncrypted, isCached : $isCached, dataSignature: $dataSignature, sharedKeyStatus: $sharedKeyStatus}';
+    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : $isBinary, isEncrypted : $isEncrypted, isCached : $isCached, dataSignature: $dataSignature, sharedKeyStatus: $sharedKeyStatus, encryptedSharedKey: $sharedKeyEnc, pubKeyCheckSum: $pubKeyCS}';
   }
 
   Map toJson() {
@@ -279,6 +281,8 @@ class Metadata {
     map[IS_ENCRYPTED] = isEncrypted;
     map[PUBLIC_DATA_SIGNATURE] = dataSignature;
     map[SHARED_KEY_STATUS] = sharedKeyStatus;
+    map[SHARED_KEY_ENCRYPTED] = sharedKeyEnc;
+    map[SHARED_WITH_PUBLIC_KEY_CHECK_SUM] = pubKeyCS;
     return map;
   }
 
@@ -326,6 +330,8 @@ class Metadata {
       metaData.isPublic = json[IS_PUBLIC];
       metaData.dataSignature = json[PUBLIC_DATA_SIGNATURE];
       metaData.sharedKeyStatus = json[SHARED_KEY_STATUS];
+      metaData.sharedKeyEnc = json[SHARED_KEY_ENCRYPTED];
+      metaData.pubKeyCS = json[SHARED_WITH_PUBLIC_KEY_CHECK_SUM];
     } catch (error) {
       print('AtMetaData.fromJson error: ' + error.toString());
     }

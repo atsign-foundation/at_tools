@@ -1,7 +1,7 @@
 import 'package:at_commons/at_builders.dart';
 
 class SyncVerbBuilder implements VerbBuilder {
-  late var commitId;
+  late int commitId;
 
   String? regex;
 

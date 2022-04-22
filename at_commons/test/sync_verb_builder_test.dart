@@ -1,5 +1,4 @@
 import 'package:at_commons/at_builders.dart';
-import 'package:at_commons/src/verb/sync_verb_builder.dart';
 import 'package:test/test.dart';
 
 void main() {
