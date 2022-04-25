@@ -104,7 +104,6 @@ class UpdateVerbBuilder implements VerbBuilder {
       updateParams.metadata = metadata;
       var json = updateParams.toJson();
       var command = 'update:json:${jsonEncode(json)}\n';
-      print('update json:$command');
       return command;
     }
     var command = 'update:';
