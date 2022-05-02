@@ -148,7 +148,6 @@ class AtTimeoutException extends AtException {
   AtTimeoutException(message) : super(message);
 }
 
-
 /// Exception thrown when request to secondary server is invalid
 class InvalidRequestException extends AtException {
   InvalidRequestException(message) : super(message);
@@ -158,5 +157,3 @@ class InvalidRequestException extends AtException {
 class InvalidResponseException extends AtException {
   InvalidResponseException(message) : super(message);
 }
-
-
