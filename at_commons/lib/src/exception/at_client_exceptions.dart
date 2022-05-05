@@ -1,22 +1,23 @@
 import 'package:at_commons/src/exception/at_exceptions.dart';
 
 class AtClientException extends AtException {
-  // Adding error code to preserve backward compatibility.
-  static String errorCode = 'NA';
-
+  /// The default constructor to preserve the backward compatibility.
   AtClientException(errorCode, message) : super(message);
+
+  /// The named constructor that takes only message
+  AtClientException.message(message) : super(message);
 }
 
 class AtKeyException extends AtClientException {
-  AtKeyException(message) : super(AtClientException.errorCode, message);
+  AtKeyException(message) : super.message(message);
 }
 
 class AtValueException extends AtClientException {
-  AtValueException(message) : super(AtClientException.errorCode, message);
+  AtValueException(message) : super.message(message);
 }
 
 class AtEncryptionException extends AtClientException {
-  AtEncryptionException(message) : super(AtClientException.errorCode, message);
+  AtEncryptionException(message) : super.message(message);
 }
 
 class AtPublicKeyChangeException extends AtEncryptionException {
@@ -28,5 +29,5 @@ class AtPublicKeyNotFoundException extends AtEncryptionException {
 }
 
 class AtDecryptionException extends AtClientException {
-  AtDecryptionException(message) : super(AtClientException.errorCode, message);
+  AtDecryptionException(message) : super.message(message);
 }
