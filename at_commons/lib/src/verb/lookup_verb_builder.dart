@@ -26,15 +26,20 @@ class LookupVerbBuilder implements VerbBuilder {
 
   String? operation;
 
+  // if set to true, returns the value of key on the remote server instead of the cached copy
+  bool byPassCache = false;
+
   @override
   String buildCommand() {
-    String command;
-    if (operation != null) {
-      command = 'lookup:$operation:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
-    } else {
-      command = 'lookup:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
+    String command = 'lookup:';
+    if (byPassCache == true) {
+      command += 'bypass_cache:$byPassCache:';
     }
-    return command;
+    if (operation != null) {
+      command += '$operation:';
+    }
+    command += atKey!;
+    return '$command${VerbUtil.formatAtSign(sharedBy)}\n';
   }
 
   @override
