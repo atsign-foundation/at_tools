@@ -1,3 +1,5 @@
+## 3.0.14
+- Remove unnecessary print statements
 ## 3.0.13
 - Generate default notification id
 ## 3.0.12
