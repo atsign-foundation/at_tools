@@ -1,3 +1,4 @@
+import 'package:at_commons/src/keystore/at_key.dart';
 import 'package:at_commons/src/keystore/key_type.dart';
 
 /// Implement a validation on a key
@@ -14,10 +15,14 @@ abstract class AtKeyValidator {
 /// Represents context of a validation
 /// See [AtKeyValidator]
 class ValidationContext {
-  late String atSign;
+  // Set it to the currentAtSign
+  String? atSign;
+
+  // It is being set in _initParams
   KeyType? type;
 
-  ValidationContext(this.atSign);
+  // validate the ownership of the key
+  bool validateOwnership = true;
 }
 
 /// Represents outcome of a key validation

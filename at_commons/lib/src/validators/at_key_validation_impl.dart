@@ -1,7 +1,6 @@
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/keystore/key_type.dart';
 import 'package:at_commons/src/utils/at_key_regex_utils.dart';
-import 'package:at_commons/src/validators/at_key_validation.dart';
 
 /// Returns an instance of [AtKeyValidator]
 class AtKeyValidators {
@@ -23,15 +22,19 @@ class _AtKeyValidatorImpl extends AtKeyValidator {
     List<Validation> validations = [];
     validations.add(KeyLengthValidation(key));
     validations.add(KeyFormatValidation(key, _regex, _type));
-    Map<String, String?> matches = RegexUtil.matchesByGroup(_regex, key);
-    // If sharedWith is not specified default it to empty string.
-    String sharedWith = matches[RegexGroup.sharedWith.name()] ?? '';
-    // If owner is not specified set it to a empty string
-    String owner = matches[RegexGroup.owner.name()] ?? '';
-    String entity = matches[RegexGroup.entity.name()] ?? '';
-    validations.add(ReservedEntityValidation(entity));
-    validations.add(KeyOwnershipValidation(owner, context.atSign, _type));
-    validations.add(KeyShareValidation(owner, sharedWith, _type));
+    if (context.validateOwnership) {
+      if (context.atSign == null || context.atSign!.isEmpty) {
+        throw AtException(
+            'atSign should be set to perform ownership validation');
+      }
+      Map<String, String?> matches = RegexUtil.matchesByGroup(_regex, key);
+      // If sharedWith is not specified default it to empty string.
+      String sharedWith = matches[RegexGroup.sharedWith.name()] ?? '';
+      // If owner is not specified set it to a empty string
+      String owner = matches[RegexGroup.owner.name()] ?? '';
+      validations.add(KeyOwnershipValidation(owner, context.atSign!, _type));
+      validations.add(KeyShareValidation(owner, sharedWith, _type));
+    }
 
     for (var i = 0; i < validations.length; i++) {
       var result = validations[i].doValidate();
@@ -44,9 +47,7 @@ class _AtKeyValidatorImpl extends AtKeyValidator {
 
   void _initParams(String key, ValidationContext context) {
     // If the atSign is passed with @ remove it.
-    if (context.atSign.startsWith("@")) {
-      context.atSign = context.atSign.replaceFirst("@", "");
-    }
+    context.atSign = context.atSign?.replaceFirst('@', '');
     // If context.type is null, setType and regex.
     if (context.type == null) {
       _setTypeAndRegex(key);

@@ -5,7 +5,7 @@ import 'package:at_commons/src/keystore/key_type.dart';
 class Regexes {
   static const _charsInNamespace = r'([\w])+';
   static const _charsInAtSign = r'[\w\-_]';
-  static const _charsInEntity = r'''[\w\.\-_'"]''';
+  static const _charsInEntity = r'''[\w\.\-_'*"]''';
   static const _allowedEmoji =
       r'''((\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff]))''';
 
