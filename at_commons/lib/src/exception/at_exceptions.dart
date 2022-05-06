@@ -7,11 +7,31 @@ class AtException implements Exception {
   /// Represents error message that details the cause of the exception
   var message;
 
+  ContextParams? contextParams;
+
   AtException(this.message);
 
   @override
   String toString() {
     return 'Exception: $message';
+  }
+
+  String format() {
+    String formattedMessage = message;
+    if (formattedMessage.contains('{key}')) {
+      formattedMessage =
+          formattedMessage.replaceAll('{key}', contextParams!.key);
+    }
+    if (formattedMessage.contains('{currentAtSign}')) {
+      formattedMessage = formattedMessage.replaceAll(
+          '{currentAtSign}', contextParams!.currentAtSign);
+    }
+    if (formattedMessage.contains('{receiverAtSign}') &&
+        contextParams!.receiverAtSign != null) {
+      formattedMessage = formattedMessage.replaceAll(
+          '{receiverAtSign}', contextParams!.receiverAtSign!);
+    }
+    return formattedMessage;
   }
 }
 
@@ -156,4 +176,27 @@ class InvalidRequestException extends AtException {
 /// Exception thrown when response from secondary server is invalid e.g invalid json format
 class InvalidResponseException extends AtException {
   InvalidResponseException(message) : super(message);
+}
+
+class ContextParams {
+  late String currentAtSign;
+  String? receiverAtSign;
+  late String key;
+  late ExceptionScenario exceptionScenario;
+}
+
+enum ExceptionScenario {
+  noNetworkConnectivity,
+  rootServerNotReachable,
+  secondaryServerNotReachable,
+  invalidValueProvided,
+  valueExceedingBufferLimit,
+  noNamespaceProvided,
+  invalidKeyFormed,
+  invalidMetadataProvided,
+  keyNotFound,
+  encryptionFailed,
+  decryptionFailed,
+  remoteVerbExecutionFailed,
+  localVerbExecutionFailed
 }
