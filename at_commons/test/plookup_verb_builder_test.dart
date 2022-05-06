@@ -31,7 +31,7 @@ void main() {
         ..atKey = 'email'
         ..sharedBy = 'alice';
       expect(updateBuilder.buildCommand(),
-          'plookup:bypass_cache:true:email@alice\n');
+          'plookup:bypassCache:true:email@alice\n');
     });
   });
 }
