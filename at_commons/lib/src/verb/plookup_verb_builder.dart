@@ -24,7 +24,7 @@ class PLookupVerbBuilder implements VerbBuilder {
   String buildCommand() {
     String command = 'plookup:';
     if (byPassCache == true) {
-      command += 'bypass_cache:$byPassCache:';
+      command += 'bypassCache:$byPassCache:';
     }
     if (operation != null) {
       command += '$operation:';
