@@ -4,42 +4,42 @@ import 'package:at_commons/at_commons.dart';
 class AtExceptionUtils {
   /// Returns the instance of exception for the given error code.
   /// Defaults to return an instance of [AtException]
-  static AtException get(String errorCode) {
+  static AtException get(String errorCode, String errorDescription) {
     switch (errorCode) {
       case 'AT0001':
-        return AtServerException('');
+        return AtServerException(errorDescription);
       case 'AT0003':
-        return InvalidSyntaxException('');
+        return InvalidSyntaxException(errorDescription);
       case 'AT0005':
-        return BufferOverFlowException('');
+        return BufferOverFlowException(errorDescription);
       case 'AT0006':
-        return OutboundConnectionLimitException('');
+        return OutboundConnectionLimitException(errorDescription);
       case 'AT0007':
-        return SecondaryNotFoundException('');
+        return SecondaryNotFoundException(errorDescription);
       case 'AT0008':
-        return HandShakeException('');
+        return HandShakeException(errorDescription);
       case 'AT0009':
-        return UnAuthorizedException('');
+        return UnAuthorizedException(errorDescription);
       case 'AT0010':
-        return InternalServerError('');
+        return InternalServerError(errorDescription);
       case 'AT0011':
-        return InternalServerException('');
+        return InternalServerException(errorDescription);
       case 'AT0012':
-        return InboundConnectionLimitException('');
+        return InboundConnectionLimitException(errorDescription);
       case 'AT0013':
-        return BlockedConnectionException('');
+        return BlockedConnectionException(errorDescription);
       case 'AT0015':
-        return KeyNotFoundException('');
+        return KeyNotFoundException(errorDescription);
       case 'AT0021':
-        return SecondaryConnectException('');
+        return SecondaryConnectException(errorDescription);
       case 'AT0022':
-        return IllegalArgumentException('');
+        return IllegalArgumentException(errorDescription);
       case 'AT0023':
-        return AtTimeoutException('');
+        return AtTimeoutException(errorDescription);
       case 'AT0401':
-        return UnAuthenticatedException('');
+        return UnAuthenticatedException(errorDescription);
       default:
-        return AtException('');
+        return AtException(errorDescription);
     }
   }
 }
