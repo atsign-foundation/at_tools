@@ -1,6 +1,6 @@
 import 'package:at_commons/src/verb/verb_builder.dart';
 
-class SetVerbBuilder implements VerbBuilder {
+class ConfigSetVerbBuilder implements VerbBuilder {
   //name of the configuration that is to be modified
   String? configName;
 
@@ -9,7 +9,7 @@ class SetVerbBuilder implements VerbBuilder {
 
   @override
   String buildCommand() {
-    return 'set:' + configName! + ':' + configValue! + '\n';
+    return 'cset:' + configName! + ':' + configValue! + '\n';
   }
 
   @override
