@@ -1,5 +1,5 @@
 ## 3.0.15
-- Support for bypass cache in lookup and plookup verbs
+- FEAT: support to bypass cache in lookup and plookup verbs
 ## 3.0.14
 - Remove unnecessary print statements
 ## 3.0.13
