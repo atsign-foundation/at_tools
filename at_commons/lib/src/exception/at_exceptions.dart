@@ -8,9 +8,17 @@ class AtException implements Exception {
   /// Represents error message that details the cause of the exception
   var message;
 
+  Intent? intent;
+
+  ExceptionScenario? exceptionScenario;
+
   AtExceptionStack _traceStack = AtExceptionStack();
 
-  AtException(this.message);
+  AtException(this.message, {this.intent, this.exceptionScenario}) {
+    if (intent != null && exceptionScenario != null) {
+      _traceStack.add(AtChainedException(intent!, exceptionScenario!, message));
+    }
+  }
 
   AtException fromException(AtException atException) {
     _traceStack = atException._traceStack;
@@ -188,7 +196,8 @@ enum ExceptionScenario {
   decryptionFailed,
   remoteVerbExecutionFailed,
   localVerbExecutionFailed,
-  atSignDoesNotExist
+  atSignDoesNotExist,
+  fetchEncryptionKeys
 }
 
 enum Intent {
@@ -196,5 +205,11 @@ enum Intent {
   fetchData,
   validateKey,
   validateAtSign,
-  remoteVerbExecution
+  remoteVerbExecution,
+  notifyData,
+  decryptData,
+  fetchEncryptionPublicKey,
+  fetchEncryptionPrivateKey,
+  fetchEncryptionSharedKey,
+  fetchSelfEncryptionKey
 }

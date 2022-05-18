@@ -21,7 +21,7 @@ class AtExceptionStack implements Comparable<AtChainedException> {
         '${getIntentMessage(_exceptionList.first.intent)} caused by\n';
     for (AtChainedException element in _exceptionList) {
       size--;
-      fullMessage += '${element.atException.message}';
+      fullMessage += element.message;
       if (size != 0) {
         fullMessage += ' caused by\n';
       }
@@ -37,13 +37,16 @@ class AtExceptionStack implements Comparable<AtChainedException> {
     if (intent == Intent.shareData) {
       return 'Failed to share data';
     }
+    if(intent == Intent.decryptData) {
+      return 'Failed to decrypt the data';
+    }
     return 'Failed to notify data';
   }
 
   @override
   int compareTo(AtChainedException atChainedException) {
     for (var element in _exceptionList) {
-      if (element.atException == atChainedException.atException) {
+      if (element.message == atChainedException.message) {
         return 0;
       }
     }
@@ -54,7 +57,7 @@ class AtExceptionStack implements Comparable<AtChainedException> {
 class AtChainedException {
   late Intent intent;
   late ExceptionScenario exceptionScenario;
-  late AtException atException;
+  late String message;
 
-  AtChainedException(this.intent, this.exceptionScenario, this.atException);
+  AtChainedException(this.intent, this.exceptionScenario, this.message);
 }
