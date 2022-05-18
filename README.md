@@ -1,13 +1,11 @@
-<img src="https://atsign.dev/assets/img/@dev.png?sanitize=true">
-
-### Now for a little internet optimism
+<img width=250px src="https://atsign.dev/assets/img/@platform_logo_grey.svg?sanitize=true">
 
 [![Build Status](https://github.com/atsign-foundation/at_tools/actions/workflows/at_tools.yaml/badge.svg)](https://github.com/atsign-foundation/at_tools/actions/workflows/at_tools.yaml)
 [![GitHub License](https://img.shields.io/badge/license-BSD3-blue.svg)](./LICENSE)
 
 ## at_tools
 
-This repository contains @protocol tools and  libraries for developers
+This repository contains @protocol tools and libraries for developers
 building @platform applications who wish to utilize the authentication
 methods and commonly used components of the @protocol:
 
