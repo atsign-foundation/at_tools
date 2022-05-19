@@ -17,15 +17,20 @@ class PLookupVerbBuilder implements VerbBuilder {
 
   String? operation;
 
+  // if set to true, returns the value of key on the remote server instead of the cached copy
+  bool byPassCache = false;
+
   @override
   String buildCommand() {
-    String command;
-    if (operation != null) {
-      command = 'plookup:$operation:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
-    } else {
-      command = 'plookup:$atKey${VerbUtil.formatAtSign(sharedBy)}\n';
+    String command = 'plookup:';
+    if (byPassCache == true) {
+      command += 'bypassCache:$byPassCache:';
     }
-    return command;
+    if (operation != null) {
+      command += '$operation:';
+    }
+    command += atKey!;
+    return '$command${VerbUtil.formatAtSign(sharedBy)}\n';
   }
 
   @override
