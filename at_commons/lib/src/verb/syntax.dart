@@ -13,6 +13,7 @@ class VerbSyntax {
       r'^scan$|scan(:(?<forAtSign>@[^:@\s]+))?(:page:(?<page>\d+))?( (?<regex>\S+))?$';
   static const config =
       r'^config:block:(?<operation>add|remove|show|set|reset|print)(?:(?<=show)\s?$|(?:(?<=add|remove):(?<atSign>(?:@[^\s@]+)( (?:@[^\s@]+))*$))|(?:(?<=set):)(?<setType>global|connection):(?<config>.+)=(?<configValue>.+)$|(?:(?<=reset|print)$))';
+  static const set = r'^set:(?<config>.+):(?<value>.+)';
   static const stats =
       r'^stats(?<statId>:((?!0)\d+)?(,(\d+))*)?(:(?<regex>(?<=:3:).+))?$';
   static const sync = r'^sync:(?<from_commit_seq>[0-9]+|-1)(:(?<regex>.+))?$';
