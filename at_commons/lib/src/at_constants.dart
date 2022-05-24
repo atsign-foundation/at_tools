@@ -37,6 +37,7 @@ const String KEY = 'key';
 const String EPOCH_MILLIS = 'epochMillis';
 const String ID = 'id';
 const String OPERATION = 'operation';
+const String SET_OPERATION = 'setOperation';
 const String UPDATE_META = 'meta';
 const String UPDATE_JSON = 'update:json';
 const String VALUE = 'value';
