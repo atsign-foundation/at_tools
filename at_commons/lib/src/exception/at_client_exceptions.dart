@@ -5,29 +5,65 @@ class AtClientException extends AtException {
   AtClientException(errorCode, message) : super(message);
 
   /// The named constructor that takes only message
-  AtClientException.message(message) : super(message);
+  AtClientException.message(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super(message, intent: intent, exceptionScenario: exceptionScenario);
 }
 
 class AtKeyException extends AtClientException {
-  AtKeyException(message) : super.message(message);
+  AtKeyException(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super.message(message,
+            intent: intent, exceptionScenario: exceptionScenario);
 }
 
 class AtValueException extends AtClientException {
-  AtValueException(message) : super.message(message);
+  AtValueException(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super.message(message,
+            intent: intent, exceptionScenario: exceptionScenario);
 }
 
 class AtEncryptionException extends AtClientException {
-  AtEncryptionException(message) : super.message(message);
+  AtEncryptionException(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super.message(message,
+            intent: intent, exceptionScenario: exceptionScenario);
 }
 
 class AtPublicKeyChangeException extends AtEncryptionException {
-  AtPublicKeyChangeException(message) : super(message);
+  AtPublicKeyChangeException(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super(message, intent: intent, exceptionScenario: exceptionScenario);
 }
 
 class AtPublicKeyNotFoundException extends AtEncryptionException {
-  AtPublicKeyNotFoundException(message) : super(message);
+  AtPublicKeyNotFoundException(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super(message, intent: intent, exceptionScenario: exceptionScenario);
 }
 
 class AtDecryptionException extends AtClientException {
-  AtDecryptionException(message) : super.message(message);
+  AtDecryptionException(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super.message(message,
+            intent: intent, exceptionScenario: exceptionScenario);
+}
+
+class AtPrivateKeyNotFoundException extends AtDecryptionException {
+  AtPrivateKeyNotFoundException(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super(message, intent: intent, exceptionScenario: exceptionScenario);
+}
+
+class SharedKeyNotFoundException extends AtDecryptionException {
+  SharedKeyNotFoundException(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super(message, intent: intent, exceptionScenario: exceptionScenario);
+}
+
+class SelfKeyNotFoundException extends AtDecryptionException {
+  SelfKeyNotFoundException(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super(message, intent: intent, exceptionScenario: exceptionScenario);
 }

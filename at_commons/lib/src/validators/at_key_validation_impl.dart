@@ -198,7 +198,7 @@ class KeyOwnershipValidation extends Validation {
     if ((type != KeyType.cachedPublicKey && type != KeyType.cachedSharedKey) &&
         owner != atSign) {
       return ValidationResult(
-          'Owner of the key $owner should be same as current @sign atSign');
+          'Owner of the key $owner should be same as current @sign $atSign');
     }
     return ValidationResult.noFailure();
   }

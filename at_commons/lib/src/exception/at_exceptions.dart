@@ -1,3 +1,4 @@
+import 'package:at_commons/src/exception/at_exception_stack.dart';
 import 'package:at_commons/src/keystore/at_key.dart';
 
 /// The class [AtException] and its subclasses represents various exceptions that can arise
@@ -7,11 +8,34 @@ class AtException implements Exception {
   /// Represents error message that details the cause of the exception
   var message;
 
-  AtException(this.message);
+  Intent? intent;
+
+  ExceptionScenario? exceptionScenario;
+
+  AtExceptionStack _traceStack = AtExceptionStack();
+
+  AtException(this.message, {this.intent, this.exceptionScenario}) {
+    if (intent != null && exceptionScenario != null) {
+      _traceStack.add(AtChainedException(intent!, exceptionScenario!, message));
+    }
+  }
+
+  AtException fromException(AtException atException) {
+    _traceStack = atException._traceStack;
+    return atException;
+  }
 
   @override
   String toString() {
     return 'Exception: $message';
+  }
+
+  void stack(AtChainedException atChainedException) {
+    _traceStack.add(atChainedException);
+  }
+
+  String getTraceMessage() {
+    return _traceStack.getTraceMessage();
   }
 }
 
@@ -156,4 +180,36 @@ class InvalidRequestException extends AtException {
 /// Exception thrown when response from secondary server is invalid e.g invalid json format
 class InvalidResponseException extends AtException {
   InvalidResponseException(message) : super(message);
+}
+
+enum ExceptionScenario {
+  noNetworkConnectivity,
+  rootServerNotReachable,
+  secondaryServerNotReachable,
+  invalidValueProvided,
+  valueExceedingBufferLimit,
+  noNamespaceProvided,
+  invalidKeyFormed,
+  invalidMetadataProvided,
+  keyNotFound,
+  encryptionFailed,
+  decryptionFailed,
+  remoteVerbExecutionFailed,
+  localVerbExecutionFailed,
+  atSignDoesNotExist,
+  fetchEncryptionKeys
+}
+
+enum Intent {
+  shareData,
+  fetchData,
+  validateKey,
+  validateAtSign,
+  remoteVerbExecution,
+  notifyData,
+  decryptData,
+  fetchEncryptionPublicKey,
+  fetchEncryptionPrivateKey,
+  fetchEncryptionSharedKey,
+  fetchSelfEncryptionKey
 }
