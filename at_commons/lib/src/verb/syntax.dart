@@ -12,7 +12,7 @@ class VerbSyntax {
   static const scan =
       r'^scan$|scan(:(?<forAtSign>@[^:@\s]+))?(:page:(?<page>\d+))?( (?<regex>\S+))?$';
   static const config =
-      r'^config:(?:(?<=config:)block:(?<operation>add|remove|show)(?:(?<=show)\s?$|(?:(?<=add|remove):(?<atSign>(?:@[^\s@]+)( (?:@[^\s@]+))*$)))|(?:(?<=config:)(?<setOperation>set|reset|print):(?<configName>.+)=(?<configValue>.*)$))';
+      r'^config:(?:(?<=config:)block:(?<operation>add|remove|show)(?:(?<=show)\s?$|(?:(?<=add|remove):(?<atSign>(?:@[^\s@]+)( (?:@[^\s@]+))$)))|(?:(?<=config:)(?<setOperation>set|reset|print):(?<configNew>.+)$))';
   static const stats =
       r'^stats(?<statId>:((?!0)\d+)?(,(\d+))*)?(:(?<regex>(?<=:3:).+))?$';
   static const sync = r'^sync:(?<from_commit_seq>[0-9]+|-1)(:(?<regex>.+))?$';
