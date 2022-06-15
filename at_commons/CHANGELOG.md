@@ -1,3 +1,5 @@
+## 3.0.17
+- Introduce exception hierarchy and new AtException subclasses
 ## 3.0.16
 - Hide at_client_exceptions.dart to prevent at_client_exception being referred from at_commons
 ## 3.0.15
