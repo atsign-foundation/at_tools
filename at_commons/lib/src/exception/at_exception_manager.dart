@@ -9,7 +9,7 @@ class AtExceptionManager {
       return atException;
     }
     // Else wrap the atException into AtClientException and return.
-    return (AtClientException.message(atException.message))..fromException(atException);
-
+    return (AtClientException.message(atException.message))
+      ..fromException(atException);
   }
 }

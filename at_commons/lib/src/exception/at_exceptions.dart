@@ -4,9 +4,8 @@ import 'package:at_commons/src/keystore/at_key.dart';
 /// The class [AtException] and its subclasses represents various exceptions that can arise
 /// while using the @ protocol.
 class AtException implements Exception {
-  // ignore: prefer_typing_uninitialized_variables
   /// Represents error message that details the cause of the exception
-  var message;
+  String message;
 
   Intent? intent;
 

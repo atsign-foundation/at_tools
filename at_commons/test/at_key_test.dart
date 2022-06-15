@@ -211,8 +211,7 @@ void main() {
   group('A group of tests to validate the public keys', () {
     test('validate a public key with namespace', () {
       var validationResult = AtKeyValidators.get().validate(
-          'public:phone.me@alice',
-          ValidationContext()..atSign = '@alice');
+          'public:phone.me@alice', ValidationContext()..atSign = '@alice');
       expect(validationResult.isValid, true);
     });
 
@@ -228,8 +227,8 @@ void main() {
 
   group('A group of tests to validate the self keys', () {
     test('validate a self key with namespace', () {
-      var validationResult = AtKeyValidators.get().validate(
-          'phone.me@alice', ValidationContext()..atSign = '@alice');
+      var validationResult = AtKeyValidators.get()
+          .validate('phone.me@alice', ValidationContext()..atSign = '@alice');
       expect(validationResult.isValid, true);
     });
 
@@ -255,8 +254,7 @@ void main() {
   group('A group of tests to validate the shared keys', () {
     test('validate a shared key with namespace', () {
       var validationResult = AtKeyValidators.get().validate(
-          '@bob:phone.me@alice',
-          ValidationContext()..atSign = '@alice');
+          '@bob:phone.me@alice', ValidationContext()..atSign = '@alice');
       expect(validationResult.isValid, true);
     });
 
