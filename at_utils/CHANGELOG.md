@@ -1,3 +1,5 @@
+# 3.0.10
+- at_commons version change to 3.0.17 for AtException hierarchy and introducing new AtException subclasses
 ## 3.0.9
 - Changed at_commons dependency from 3.0.11 to ^3.0.11
 ## 3.0.8
