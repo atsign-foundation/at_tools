@@ -6,7 +6,7 @@
 ## at_tools
 
 This repository contains atProtocol tools and libraries for developers
-building atPlatformapplications who wish to utilize the authentication
+building atPlatform applications who wish to utilize the authentication
 methods and commonly used components of the atProtocol:
 
 (These libraries can also be found on pub.dev as linked)
