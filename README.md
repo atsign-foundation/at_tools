@@ -5,19 +5,19 @@
 
 ## at_tools
 
-This repository contains @protocol tools and libraries for developers
-building @platform applications who wish to utilize the authentication
-methods and commonly used components of the @protocol:
+This repository contains atProtocol tools and libraries for developers
+building atPlatform applications who wish to utilize the authentication
+methods and commonly used components of the atProtocol:
 
 (These libraries can also be found on pub.dev as linked)
 
 ### pub.dev packages
 
 [at_commons](https://pub.dev/packages/at_commons)- at_commons library
-is used for commonly used components in implementation of the @protocol.
+is used for commonly used components in implementation of the atProtocol.
 
 [at_utils](https://pub.dev/packages/at_utils)- This is the Utility library
-for @protocol projects. It contains utility classes for atsign, atmetadata,
+for atProtocol projects. It contains utility classes for atsign, atmetadata,
 configuration and logger.
 
 
@@ -26,13 +26,13 @@ configuration and logger.
 [at_cli](./at_cli)- A command line tool to execute verbs on the @platform.
 
 [at_cram](./at_cram)- The challenge–response authentication mechanism of the
-@protocol.
+atProtocol.
 
 [at_dump_atKeys](./at_dump_atKeys)- A command line tool to dump keys from a
 .atKeys file.
 
 [at_pkam](./at_pkam)- The public key authentication mechanism of the
-@protocol.
+atProtocol.
 
 [at_ve_doctor](./at_ve_doctor)- A very simple way to test the status of the
 secondaries running in the Virtual Environment. Using the
