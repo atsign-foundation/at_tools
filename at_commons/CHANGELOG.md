@@ -1,3 +1,5 @@
+## 3.0.18
+- Add 'showHidden' to scan regex to display hidden keys when set to true
 ## 3.0.17
 - Introduce exception hierarchy and new AtException subclasses
 ## 3.0.16

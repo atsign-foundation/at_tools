@@ -64,3 +64,4 @@ const String accessLogCompactionKey = 'privatekey:accessLogCompactionStats';
 const String notificationCompactionKey =
     'privatekey:notificationCompactionStats';
 const String byPassCache = 'bypassCache';
+const String showHidden = 'showhidden';
