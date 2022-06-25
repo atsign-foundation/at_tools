@@ -26,6 +26,16 @@ For example when using VE
 
 [![asciicast](https://asciinema.org/a/4YBCRUt4duFs9u4fAEfmMhhAS.svg)](https://asciinema.org/a/4YBCRUt4duFs9u4fAEfmMhhAS)
 
+### at_cram_single
+The `at_cram_single` dart program can cram digest all in a single command. Simply:
+1. `dart bin/at_cram_single.dart <cramSecret> <challenge>`
+2. Program will output digest (Use the digest via `cram:<digest>` in the @protocol)
+
+Or compile the program:
+1. Compile `dart compile exe bin/at_cram_single.dart -o cram`
+2. Run `./cram <cramSecret> <digest>`
+3. Program will output digest (Use the digest via `cram:<digest>` in the @protocol)
+
 Here we connect to the @colin🛠  secondary on port 25004 using openssl and then issue the from: verb with
 @colin🛠 as the argument, the challenge is given back in return. This challenge is then put into the
 at_cram tool and a digest given back. This digest in then entered using the cram: verb and it is successful 
