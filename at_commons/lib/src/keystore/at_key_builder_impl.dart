@@ -96,7 +96,6 @@ class SharedKeyBuilder extends CachedKeyBuilder {
   void cache(int ttr, bool ccd) {
     _meta.ttr = ttr;
     _meta.ccd = ccd;
-    _meta.isCached = (ttr != 0);
   }
 
   /// Accepts a string which represents an atSign for the key is created.
