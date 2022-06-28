@@ -1,4 +1,4 @@
-<img width=250px src="https://atsign.dev/assets/img/@platform_logo_grey.svg?sanitize=true">
+<img width=250px src="https://atsign.dev/assets/img/atPlatform_logo_gray.svg?sanitize=true">
 
 [![Build Status](https://github.com/atsign-foundation/at_tools/actions/workflows/at_tools.yaml/badge.svg)](https://github.com/atsign-foundation/at_tools/actions/workflows/at_tools.yaml)
 [![GitHub License](https://img.shields.io/badge/license-BSD3-blue.svg)](./LICENSE)
