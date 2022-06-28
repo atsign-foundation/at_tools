@@ -204,7 +204,6 @@ void main() {
       expect(atKey.metadata!.ttb, equals(null));
       expect(atKey.metadata!.isPublic, equals(false));
       expect(atKey.metadata!.isBinary, equals(false));
-      expect(atKey.metadata!.isCached, equals(true));
     });
   });
 
