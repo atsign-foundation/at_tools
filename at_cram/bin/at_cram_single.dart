@@ -18,18 +18,32 @@ import 'package:crypto/crypto.dart';
 /// in openssl, you can now do `cram:<digest>`
 
 void main(List<String> arguments) {
-  if (arguments.length != 2) {
-    print('Invalid usage! CRAM <cramSecret> <from challenge>');
+  if (arguments.length != 4) {
+    _printInstructions();
     return;
   }
-  var cramSecret = arguments[0];
-  var challenge = arguments[1];
+  var parser = ArgParser();
+  parser.addOption('cramSecret', abbr: 'k', mandatory: true, help: 'CRAM secret initially retrieved upon receiving an atSign.');
+  parser.addOption('challenge',
+      abbr: 'c', mandatory: true, help: 'The challenge received after doing `from:@myatsign`, you get: `data:<challenge>` where <challenge> is the challenge.');
+  var results = parser.parse(arguments);
+  var cramSecret = results['cramSecret'];
+  var challenge = results['challenge'];
   cramSecret = cramSecret.trim();
   challenge = challenge.trim();
+  stdout.write('\ncramSecret: $cramSecret\n');
+  stdout.write('challenge: $challenge\n');
   var combo = '$cramSecret$challenge';
   var bytes = utf8.encode(combo);
   var digest = sha512.convert(bytes);
   stdout.write('\n');
-  stdout.write(digest);
+  stdout.write('digest: $digest');
   stdout.write('\n');
+}
+
+void _printInstructions() {
+  stdout.write('\nCRAM digesting in one single line\n');
+  stdout.write('  --cramSecret -k \t| cramSecret received when you initially get an @ sign (usually in the form of a QR code)\n');
+  stdout.write('  --challenge -c \t| the challenge response you receive after doing `from:@youratsign`, will respond with `data:<challenge>`\n');
+  stdout.write('  Example: `dart bin/at_cram_single.dart -k cramSecret123 -c fromChallenge123`\n');
 }
