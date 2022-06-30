@@ -1,4 +1,4 @@
-<img width=250px src="https://atsign.dev/assets/img/@platform_logo_grey.svg?sanitize=true">
+<img width=250px src="https://atsign.dev/assets/img/atPlatform_logo_gray.svg?sanitize=true">
 
 # at_cli
 
@@ -144,7 +144,7 @@ dart run bin/main.dart -c llookup:firstname@alice -a true
 
 __plookup__
 
-The "plookup" verb, provides a proxied public lookups for a resolver that perhaps is behind a firewall. This will allow a resolver to contact a @ server and have the @ server lookup both public @ handles information.
+The "plookup" verb, provides a proxied public lookups for a resolver that perhaps is behind a firewall. This will allow a resolver to contact an atServer and have the atServer lookup both public atSign handles information.
 ```
 # To lookup the value of public:location@alice
  dart run bin/main.dart -v plookup -k location --atsign @alice -a true 

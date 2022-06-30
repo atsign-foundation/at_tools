@@ -1,21 +1,21 @@
-<img width=250px src="https://atsign.dev/assets/img/@platform_logo_grey.svg?sanitize=true">
+<img width=250px src="https://atsign.dev/assets/img/atPlatform_logo_gray.svg?sanitize=true">
 
 ## at_ve_doctor
 
 at_ve_doctor is a simple utility than can check the state of the secondaries
 running in the virtual environment (VE).  
-The virtual environment provides the full @platform stack including a @root
-server and a number of preconfigured @signs.
+The virtual environment provides the full atPlatform stack including a atRoot
+server and a number of preconfigured atSigns.
 
 Once the virtual environment is up and running the at_ve_doctor can be run
-and it will report back the state of each of the preconfigured @signs.
+and it will report back the state of each of the preconfigured atSigns.
 
-Before the @signs are paired with a device they will report as being in a
+Before the atSigns are paired with a device they will report as being in a
 "teapot" once paired and a pkam key is in place they will report as
 "activated".
 
 Activation can be done via the onboarding widget or if you prefer to
-activate all the @signs with predefined pkam keys the pkamLoad script
+activate all the atSigns with predefined pkam keys the pkamLoad script
 can be run on the supervisor Ui found at localhost:9001 when running the VE.
 
 ```
