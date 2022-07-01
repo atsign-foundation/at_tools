@@ -4,7 +4,7 @@
 
 at_ve_doctor is a simple utility than can check the state of the secondaries
 running in the virtual environment (VE).  
-The virtual environment provides the full atPlatform stack including a atRoot
+The virtual environment provides the full atPlatform stack including an atRoot
 server and a number of preconfigured atSigns.
 
 Once the virtual environment is up and running the at_ve_doctor can be run

@@ -33,7 +33,7 @@ as the @colin🛠@ prompt is returned.
 
 ## How this works
 
-The shared secret is know to the person and the secondary but we do not want to send it across the wire.
+The shared secret is known to the person and the secondary but we do not want to send it across the wire.
 The solution is adding the shared secret to the challenge and then sending over a SHA hash of the resulting string. This is what the at_cram binary does, it is not complex at all, but very effective.
 
 Created from templates made available by Stagehand under a BSD-style
