@@ -28,12 +28,12 @@ For example when using VE
 
 ### at_cram_single
 The `at_cram_single` dart program can cram digest all in a single command. Simply:
-1. `dart bin/at_cram_single.dart <cramSecret> <challenge>`
+1. `dart bin/at_cram_single.dart -k <cramSecret> -c <challenge>`
 2. Program will output digest (Use the digest via `cram:<digest>` in the @protocol)
 
 Or compile the program:
 1. Compile `dart compile exe bin/at_cram_single.dart -o cram`
-2. Run `./cram <cramSecret> <digest>`
+2. Run `./cram -k <cramSecret> -c <challenge>`
 3. Program will output digest (Use the digest via `cram:<digest>` in the @protocol)
 
 Here we connect to the @colin🛠  secondary on port 25004 using openssl and then issue the from: verb with
