@@ -1,5 +1,5 @@
 ## 3.0.19
-- Rename byPassCache to bypassCache in verb builder and at_constants
+- Rename byPassCache to bypassCache in lookup, plookup verb builders and at_constants
 ## 3.0.18
 - Add 'showHidden' to scan regex to display hidden keys when set to true
 ## 3.0.17
