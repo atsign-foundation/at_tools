@@ -27,7 +27,7 @@ void main() {
 
     test('verify plookup bypass cache command', () {
       var plookupVerbBuilder = PLookupVerbBuilder()
-        ..byPassCache = true
+        ..bypassCache = true
         ..atKey = 'email'
         ..sharedBy = 'alice';
       expect(plookupVerbBuilder.buildCommand(),

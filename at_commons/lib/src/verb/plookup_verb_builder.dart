@@ -18,13 +18,13 @@ class PLookupVerbBuilder implements VerbBuilder {
   String? operation;
 
   // if set to true, returns the value of key on the remote server instead of the cached copy
-  bool byPassCache = false;
+  bool bypassCache = false;
 
   @override
   String buildCommand() {
     String command = 'plookup:';
-    if (byPassCache == true) {
-      command += 'bypassCache:$byPassCache:';
+    if (bypassCache == true) {
+      command += 'bypassCache:$bypassCache:';
     }
     if (operation != null) {
       command += '$operation:';

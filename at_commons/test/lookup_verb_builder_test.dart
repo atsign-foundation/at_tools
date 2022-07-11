@@ -27,7 +27,7 @@ void main() {
 
     test('verify lookup bypass cache command', () {
       var lookupVerbBuilder = LookupVerbBuilder()
-        ..byPassCache = true
+        ..bypassCache = true
         ..atKey = 'email'
         ..sharedBy = 'alice';
       expect(lookupVerbBuilder.buildCommand(),
