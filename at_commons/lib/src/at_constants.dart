@@ -65,5 +65,5 @@ const String commitLogCompactionKey = 'privatekey:commitLogCompactionStats';
 const String accessLogCompactionKey = 'privatekey:accessLogCompactionStats';
 const String notificationCompactionKey =
     'privatekey:notificationCompactionStats';
-const String byPassCache = 'bypassCache';
+const String bypassCache = 'bypassCache';
 const String showHidden = 'showhidden';
