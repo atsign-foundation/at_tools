@@ -54,6 +54,10 @@ class NotifyVerbBuilder implements VerbBuilder {
 
   bool? ccd;
 
+  /// Represents if the [MessageTypeEnum.text] is encrypted or not. Setting to false to preserve
+  /// backward compatibility.
+  bool isTextMessageEncrypted = false;
+
   /// Will be set only when [sharedWith] is set. Will be encrypted using the public key of [sharedWith] atsign
   String? sharedKeyEncrypted;
 
@@ -92,6 +96,9 @@ class NotifyVerbBuilder implements VerbBuilder {
     if (ttr != null) {
       ccd ??= false;
       command += 'ttr:$ttr:ccd:$ccd:';
+    }
+    if (isTextMessageEncrypted) {
+      command += '$IS_ENCRYPTED:$isTextMessageEncrypted:';
     }
 
     if (sharedKeyEncrypted != null) {

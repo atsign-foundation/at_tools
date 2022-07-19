@@ -41,30 +41,68 @@ void main() {
       expect(notifyVerbBuilder.buildCommand(),
           'notify:id:123:notifier:SYSTEM:sharedKeyEnc:abc:pubKeyCS:123:@bob:email@alice:alice@atsign.com\n');
     });
-  });
 
-  group('A group of tests to verify notification id generation', () {
-    test('Test to verify default notification id is generated', () {
-      var verbHandler = NotifyVerbBuilder()
-        ..atKey = 'phone'
-        ..sharedWith = '@alice'
-        ..sharedBy = '@bob';
-
-      var notifyCommand = verbHandler.buildCommand();
-      var verbParams = getVerbParams(VerbSyntax.notify, notifyCommand.trim());
-      expect(verbParams[ID] != null, true);
-    });
-
-    test('Test to verify custom set notification id to verb builder', () {
-      var verbHandler = NotifyVerbBuilder()
-        ..id = 'abc-123'
-        ..atKey = 'phone'
-        ..sharedWith = '@alice'
-        ..sharedBy = '@bob';
-
-      var notifyCommand = verbHandler.buildCommand();
-      var verbParams = getVerbParams(VerbSyntax.notify, notifyCommand.trim());
-      expect(verbParams[ID], 'abc-123');
+    test('notify text message with isEncrypted set to true', () {
+      var notifyVerbBuilder = NotifyVerbBuilder()
+        ..id = '123'
+        ..value = 'alice@atsign.com'
+        ..atKey = 'email'
+        ..sharedBy = 'alice'
+        ..sharedWith = 'bob'
+        ..pubKeyChecksum = '123'
+        ..sharedKeyEncrypted = 'abc'
+        ..isTextMessageEncrypted = true;
+      expect(notifyVerbBuilder.buildCommand(),
+          'notify:id:123:notifier:SYSTEM:isEncrypted:true:sharedKeyEnc:abc:pubKeyCS:123:@bob:email@alice:alice@atsign.com\n');
     });
   });
+
+  try {
+    group('A group of tests to verify notification id generation', () {
+      // The below test validates the following:
+      //  1. custom notification id overrides default notification id
+      //  2. IsEncrypted flag when set true is added to verb params.
+      test('Test to verify all notify fields in the verb builder', () {
+        var verbHandler = NotifyVerbBuilder()
+          ..id = 'abc-123'
+          ..atKey = 'phone'
+          ..sharedWith = '@alice'
+          ..sharedBy = '@bob'
+          ..isTextMessageEncrypted = true;
+
+        var notifyCommand = verbHandler.buildCommand();
+        var verbParams = getVerbParams(VerbSyntax.notify, notifyCommand.trim());
+        expect(verbParams[ID], 'abc-123');
+        expect(verbParams[IS_ENCRYPTED], 'true');
+      });
+
+      // The below test validates the following:
+      //  1. Default notification id is generated
+      //  2. IsEncrypted flag is not set by default.
+      test('Test to verify default notification id is generated', () {
+        var verbHandler = NotifyVerbBuilder()
+          ..atKey = 'phone'
+          ..sharedWith = '@alice'
+          ..sharedBy = '@bob';
+
+        var notifyCommand = verbHandler.buildCommand();
+        var verbParams = getVerbParams(VerbSyntax.notify, notifyCommand.trim());
+        expect(verbParams[ID] != null, true);
+        expect(verbParams[IS_ENCRYPTED], null);
+      });
+      test('Test to verify custom set notification id to verb builder', () {
+        var verbHandler = NotifyVerbBuilder()
+          ..id = 'abc-123'
+          ..atKey = 'phone'
+          ..sharedWith = '@alice'
+          ..sharedBy = '@bob';
+
+        var notifyCommand = verbHandler.buildCommand();
+        var verbParams = getVerbParams(VerbSyntax.notify, notifyCommand.trim());
+        expect(verbParams[ID], 'abc-123');
+      });
+    });
+  } catch (e, s) {
+    print(s);
+  }
 }
