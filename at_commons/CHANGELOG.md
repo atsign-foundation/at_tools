@@ -1,3 +1,6 @@
+## 3.0.20
+- Enhance notify verb to include the isEncrypted field
+- Add intent and exception scenario to AtException sub-classes
 ## 3.0.19
 - Rename byPassCache to bypassCache in lookup, plookup verb builders and at_constants
 ## 3.0.18
