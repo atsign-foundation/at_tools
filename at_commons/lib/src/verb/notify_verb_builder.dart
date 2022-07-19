@@ -97,7 +97,7 @@ class NotifyVerbBuilder implements VerbBuilder {
       ccd ??= false;
       command += 'ttr:$ttr:ccd:$ccd:';
     }
-    if(isTextMessageEncrypted){
+    if (isTextMessageEncrypted) {
       command += '$IS_ENCRYPTED:$isTextMessageEncrypted:';
     }
 
