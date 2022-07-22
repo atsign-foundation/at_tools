@@ -1,4 +1,6 @@
 ## 3.0.20
+- Enhance notify verb to include the isEncrypted field
+- Add intent and exception scenario to AtException sub-classes
 - Introducing class SecureSocketConfig to store config params to create security context for secure sockets.
 ## 3.0.19
 - Rename byPassCache to bypassCache in lookup, plookup verb builders and at_constants
