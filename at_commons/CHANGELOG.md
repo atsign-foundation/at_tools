@@ -1,3 +1,5 @@
+## 3.0.20
+- Introducing class SecurityConfig to store config params to create security context for secure sockets.
 ## 3.0.19
 - Rename byPassCache to bypassCache in lookup, plookup verb builders and at_constants
 ## 3.0.18
