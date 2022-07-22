@@ -22,7 +22,7 @@ export 'package:at_commons/src/exception/at_server_exceptions.dart';
 export 'package:at_commons/src/exception/error_message.dart';
 export 'package:at_commons/src/keystore/at_key.dart';
 export 'package:at_commons/src/shared_key_status.dart';
-export 'package:at_commons/src/security/security_config.dart';
+export 'package:at_commons/src/security/secure_socket_config.dart';
 export 'package:at_commons/src/validators/at_key_validation.dart';
 export 'package:at_commons/src/validators/at_key_validation_impl.dart';
 export 'package:at_commons/src/verb/batch/batch_request.dart';
