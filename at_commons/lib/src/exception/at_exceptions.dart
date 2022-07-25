@@ -1,5 +1,4 @@
-import 'package:at_commons/src/exception/at_exception_stack.dart';
-import 'package:at_commons/src/keystore/at_key.dart';
+import 'package:at_commons/at_commons.dart';
 
 /// The class [AtException] and its subclasses represents various exceptions that can arise
 /// while using the @ protocol.
@@ -40,7 +39,9 @@ class AtException implements Exception {
 
 /// The class [AtConnectException] and its subclasses represent any issues that prevents an connection to the root or the secondary server
 class AtConnectException extends AtException {
-  AtConnectException(message) : super(message);
+  AtConnectException(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super(message, intent: intent, exceptionScenario: exceptionScenario);
 }
 
 /// Exception thrown when there is an issue connecting to root server
@@ -153,12 +154,16 @@ class InternalServerError extends AtException {
 /// Exception thrown when an atsign's secondary url cannot be reached or is unavailable
 /// Should this be extending AtConnectException?
 class SecondaryConnectException extends AtException {
-  SecondaryConnectException(message) : super(message);
+  SecondaryConnectException(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super(message, intent: intent, exceptionScenario: exceptionScenario);
 }
 
 /// Exception thrown when [AtKey.key] is not present in the keystore
 class KeyNotFoundException extends AtException {
-  KeyNotFoundException(message) : super(message);
+  KeyNotFoundException(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super(message, intent: intent, exceptionScenario: exceptionScenario);
 }
 
 /// Exception thrown when any parameter in a verb command is invalid
@@ -168,7 +173,9 @@ class IllegalArgumentException extends AtException {
 
 /// Exception thrown when no response is received before the timeout duration
 class AtTimeoutException extends AtException {
-  AtTimeoutException(message) : super(message);
+  AtTimeoutException(message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super(message, intent: intent, exceptionScenario: exceptionScenario);
 }
 
 /// Exception thrown when request to secondary server is invalid
