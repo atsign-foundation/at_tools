@@ -1,3 +1,5 @@
+## 3.0.21
+- Add constant for stats notification id
 ## 3.0.20
 - Enhance notify verb to include the isEncrypted field
 - Add intent and exception scenario to AtException sub-classes
