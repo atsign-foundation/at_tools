@@ -67,3 +67,4 @@ const String notificationCompactionKey =
     'privatekey:notificationCompactionStats';
 const String bypassCache = 'bypassCache';
 const String showHidden = 'showhidden';
+const String statsNotificationId = '_latestNotificationIdv2';
