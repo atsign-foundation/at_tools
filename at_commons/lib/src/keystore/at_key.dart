@@ -9,6 +9,13 @@ class AtKey {
   Metadata? metadata;
   bool isRef = false;
 
+  String _dotNamespaceIfPresent() {
+    if (namespace != null) {
+      return '.$namespace';
+    } else {
+      return '';
+    }
+  }
   @override
   String toString() {
     // If metadata.isPublic is true and metadata.isCached is true,
@@ -17,19 +24,19 @@ class AtKey {
         (metadata != null &&
             (metadata!.isPublic != null && metadata!.isPublic!) &&
             (metadata!.isCached))) {
-      return 'cached:public:$key.$namespace$sharedBy';
+      return 'cached:public:$key${_dotNamespaceIfPresent()}$sharedBy';
     }
     // If metadata.isPublic is true, return public key
     if (key!.startsWith('public:') ||
         (metadata != null &&
             metadata!.isPublic != null &&
             metadata!.isPublic!)) {
-      return 'public:$key.$namespace$sharedBy';
+      return 'public:$key${_dotNamespaceIfPresent()}$sharedBy';
     }
     //If metadata.isCached is true, return shared cached key
     if (key!.startsWith('cached:') ||
         (metadata != null && metadata!.isCached)) {
-      return 'cached:$sharedWith:$key.$namespace$sharedBy';
+      return 'cached:$sharedWith:$key${_dotNamespaceIfPresent()}$sharedBy';
     }
     // If key starts with privatekey:, return private key
     if (key!.startsWith('privatekey:')) {
@@ -37,10 +44,10 @@ class AtKey {
     }
     //If sharedWith is not null, return sharedKey
     if (sharedWith != null && sharedWith!.isNotEmpty) {
-      return '$sharedWith:$key.$namespace$sharedBy';
+      return '$sharedWith:$key${_dotNamespaceIfPresent()}$sharedBy';
     }
     // Defaults to return a self key.
-    return '$key.$namespace$sharedBy';
+    return '$key${_dotNamespaceIfPresent()}$sharedBy';
   }
 
   /// Public keys are visible to everyone and shown in an authenticated/unauthenticated scan
@@ -129,7 +136,7 @@ class AtKey {
       return atKey;
     } else if (key.startsWith(AT_ENCRYPTION_PRIVATE_KEY)) {
       atKey.key = key.split('@')[0];
-      atKey.sharedBy = key.split('@')[1];
+      atKey.sharedBy = '@${key.split('@')[1]}';
       atKey.metadata = metaData;
       return atKey;
     }
@@ -141,7 +148,7 @@ class AtKey {
     // If key does not contain ':' Ex: phone@bob; then keyParts length is 1
     // where phone is key and @bob is sharedBy
     if (keyParts.length == 1) {
-      atKey.sharedBy = keyParts[0].split('@')[1];
+      atKey.sharedBy = '@${keyParts[0].split('@')[1]}';
       atKey.key = keyParts[0].split('@')[0];
     } else {
       // Example key: public:phone@bob
@@ -155,14 +162,15 @@ class AtKey {
       } else {
         atKey.sharedWith = keyParts[0];
       }
+
       List<String> keyArr = [];
-      if (keyParts[0] == CACHED) {
-        keyArr = keyParts[2].split('@');
-      } else {
-        keyArr = keyParts[1].split('@');
+      if (keyParts[0] == CACHED) { //cached:@alice:phone@bob
+        keyArr = keyParts[2].split('@'); //phone@bob ==> 'phone', 'bob'
+      } else { // @alice:phone@bob
+        keyArr = keyParts[1].split('@'); // phone@bob ==> 'phone', 'bob'
       }
       if (keyArr.length == 2) {
-        atKey.sharedBy = keyArr[1];
+        atKey.sharedBy = '@${keyArr[1]}'; // keyArr[1] is 'bob' so sharedBy needs to be @bob
         atKey.key = keyArr[0];
       } else {
         atKey.key = keyArr[0];
@@ -192,7 +200,7 @@ class PublicKey extends AtKey {
 
   @override
   String toString() {
-    return 'public:$key.$namespace$sharedBy';
+    return 'public:$key${_dotNamespaceIfPresent()}$sharedBy';
   }
 }
 
@@ -209,9 +217,9 @@ class SelfKey extends AtKey {
     // keys is a self key.
     // @alice:phone@alice or phone@alice
     if (sharedWith != null && sharedWith!.isNotEmpty) {
-      return '$sharedWith:$key.$namespace$sharedBy';
+      return '$sharedWith:$key${_dotNamespaceIfPresent()}$sharedBy';
     }
-    return '$key.$namespace$sharedBy';
+    return '$key${_dotNamespaceIfPresent()}$sharedBy';
   }
 }
 
@@ -223,7 +231,7 @@ class SharedKey extends AtKey {
 
   @override
   String toString() {
-    return '$sharedWith:$key.$namespace$sharedBy';
+    return '$sharedWith:$key${_dotNamespaceIfPresent()}$sharedBy';
   }
 }
 
