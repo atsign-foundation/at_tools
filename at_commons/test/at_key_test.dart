@@ -5,6 +5,31 @@ import 'package:test/test.dart';
 
 void main() {
   group('A group of positive test to construct a atKey', () {
+    test('toString and fromString with namespace', () {
+      var fromAtsign = '@alice';
+      var toAtsign = '@bob';
+      var metaData = Metadata()
+        ..isPublic = false
+        ..isEncrypted = true
+        ..namespaceAware = true
+        ..ttr = -1
+        ..ttl = 10000;
+
+      var inKey = AtKey()
+        ..key = 'foo.bar'
+        ..sharedBy = fromAtsign
+        ..sharedWith = toAtsign
+        ..namespace = 'attalk'
+        ..metadata = metaData;
+
+      expect(inKey.toString(), "@bob:foo.bar.attalk@alice");
+
+      var outKey = AtKey.fromString(inKey.toString());
+      expect(outKey.toString(), inKey.toString());
+      expect(outKey.key, 'foo.bar');
+      expect(outKey.namespace, 'attalk');
+    });
+
     test('Test to verify a public key', () {
       var testKey = 'public:phone@bob';
       var atKey = AtKey.fromString(testKey);
