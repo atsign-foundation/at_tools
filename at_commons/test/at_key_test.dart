@@ -6,51 +6,63 @@ import 'package:test/test.dart';
 void main() {
   group('A group of positive test to construct a atKey', () {
     test('Test to verify a public key', () {
-      var atKey = AtKey.fromString('public:phone@bob');
+      var testKey = 'public:phone@bob';
+      var atKey = AtKey.fromString(testKey);
       expect(atKey.key, 'phone');
-      expect(atKey.sharedBy, 'bob');
+      expect(atKey.sharedBy, '@bob');
       expect(atKey.metadata!.isPublic, true);
       expect(atKey.metadata!.namespaceAware, false);
+      expect(atKey.toString(), testKey);
     });
 
     test('Test to verify protected key', () {
-      var atKey = AtKey.fromString('@alice:phone@bob');
+      var testKey = '@alice:phone@bob';
+      var atKey = AtKey.fromString(testKey);
       expect(atKey.key, 'phone');
-      expect(atKey.sharedBy, 'bob');
+      expect(atKey.sharedBy, '@bob');
       expect(atKey.sharedWith, '@alice');
+      expect(atKey.toString(), testKey);
     });
 
     test('Test to verify private key', () {
-      var atKey = AtKey.fromString('phone@bob');
+      var testKey = 'phone@bob';
+      var atKey = AtKey.fromString(testKey);
       expect(atKey.key, 'phone');
-      expect(atKey.sharedBy, 'bob');
+      expect(atKey.sharedBy, '@bob');
+      expect(atKey.toString(), testKey);
     });
 
     test('Test to verify cached key', () {
-      var atKey = AtKey.fromString('cached:@alice:phone@bob');
+      var testKey = 'cached:@alice:phone@bob';
+      var atKey = AtKey.fromString(testKey);
       expect(atKey.key, 'phone');
-      expect(atKey.sharedBy, 'bob');
+      expect(atKey.sharedBy, '@bob');
       expect(atKey.sharedWith, '@alice');
       expect(atKey.metadata!.isCached, true);
       expect(atKey.metadata!.namespaceAware, false);
+      expect(atKey.toString(), testKey);
     });
 
     test('Test to verify pkam private key', () {
       var atKey = AtKey.fromString(AT_PKAM_PRIVATE_KEY);
       expect(atKey.key, AT_PKAM_PRIVATE_KEY);
+      expect(atKey.toString(), AT_PKAM_PRIVATE_KEY);
     });
 
     test('Test to verify pkam private key', () {
       var atKey = AtKey.fromString(AT_PKAM_PUBLIC_KEY);
       expect(atKey.key, AT_PKAM_PUBLIC_KEY);
+      expect(atKey.toString(), AT_PKAM_PUBLIC_KEY);
     });
 
     test('Test to verify key with namespace', () {
-      var atKey = AtKey.fromString('@alice:phone.buzz@bob');
+      var testKey = '@alice:phone.buzz@bob';
+      var atKey = AtKey.fromString(testKey);
       expect(atKey.key, 'phone');
       expect(atKey.sharedWith, '@alice');
-      expect(atKey.sharedBy, 'bob');
+      expect(atKey.sharedBy, '@bob');
       expect(atKey.metadata!.namespaceAware, true);
+      expect(atKey.toString(), testKey);
     });
   });
 
@@ -70,23 +82,41 @@ void main() {
       PublicKeyBuilder publicKeyBuilder =
           AtKey.public('phone', namespace: 'wavi');
       expect(publicKeyBuilder, isA<PublicKeyBuilder>());
+      expect(publicKeyBuilder.build().toString(), 'public:phone.wavi');
+
+      publicKeyBuilder =
+          AtKey.public('phone', namespace: 'wavi', sharedBy: '@alice');
+      expect(publicKeyBuilder, isA<PublicKeyBuilder>());
+      expect(publicKeyBuilder.build().toString(), 'public:phone.wavi@alice');
     });
 
     test('Validate the shared key builder', () {
       SharedKeyBuilder sharedKeyBuilder =
           AtKey.shared('phone', namespace: 'wavi')..sharedWith('@bob');
       expect(sharedKeyBuilder, isA<SharedKeyBuilder>());
+      expect(sharedKeyBuilder.build().toString(), '@bob:phone.wavi');
+
+      sharedKeyBuilder =
+          AtKey.shared('phone', namespace: 'wavi', sharedBy: '@alice')..sharedWith('@bob');
+      expect(sharedKeyBuilder, isA<SharedKeyBuilder>());
+      expect(sharedKeyBuilder.build().toString(), '@bob:phone.wavi@alice');
     });
 
     test('Validate the self key builder', () {
       SelfKeyBuilder selfKeyBuilder = AtKey.self('phone', namespace: 'wavi');
       expect(selfKeyBuilder, isA<SelfKeyBuilder>());
+      expect(selfKeyBuilder.build().toString(), 'phone.wavi');
+
+      selfKeyBuilder = AtKey.self('phone', namespace: 'wavi', sharedBy: '@bob');
+      expect(selfKeyBuilder, isA<SelfKeyBuilder>());
+      expect(selfKeyBuilder.build().toString(), 'phone.wavi@bob');
     });
 
     test('Validate the hidden key builder', () {
       PrivateKeyBuilder hiddenKeyBuilder =
           AtKey.private('phone', namespace: 'wavi');
       expect(hiddenKeyBuilder, isA<PrivateKeyBuilder>());
+      expect(hiddenKeyBuilder.build().toString(), 'privatekey:phone.wavi');
     });
   });
 
@@ -95,25 +125,29 @@ void main() {
       AtKey atKey =
           AtKey.public('phone', namespace: 'wavi', sharedBy: '@alice').build();
       expect(atKey, isA<PublicKey>());
+      expect(atKey.toString(), 'public:phone.wavi@alice');
     });
 
     test('Test to verify the shared key', () {
       AtKey atKey =
           (AtKey.shared('image', namespace: 'wavi', sharedBy: '@alice')
-                ..sharedWith('bob'))
+                ..sharedWith('@bob'))
               .build();
       expect(atKey, isA<SharedKey>());
+      expect(atKey.toString(), '@bob:image.wavi@alice');
     });
 
     test('Test to verify the self key', () {
       AtKey selfKey =
           AtKey.self('phone', namespace: 'wavi', sharedBy: '@alice').build();
       expect(selfKey, isA<SelfKey>());
+      expect(selfKey.toString(), 'phone.wavi@alice');
     });
 
     test('Test to verify the hidden key', () {
       AtKey selfKey = AtKey.private('phone', namespace: 'wavi').build();
       expect(selfKey, isA<PrivateKey>());
+      expect(selfKey.toString(), 'privatekey:phone.wavi');
     });
   });
 
@@ -148,6 +182,7 @@ void main() {
       expect(atKey.metadata!.isPublic, equals(true));
       expect(atKey.metadata!.isBinary, equals(false));
       expect(atKey.metadata!.isCached, equals(false));
+      expect(atKey.toString(), 'public:phone.wavi@alice');
     });
 
     test('Test key and namespace with ttl and ttb', () {
@@ -166,6 +201,7 @@ void main() {
       expect(atKey.metadata!.isPublic, equals(true));
       expect(atKey.metadata!.isBinary, equals(false));
       expect(atKey.metadata!.isCached, equals(false));
+      expect(atKey.toString(), 'public:phone.wavi@alice');
     });
   });
 
@@ -173,37 +209,39 @@ void main() {
     test('Test shared key without caching', () {
       AtKey atKey =
           (AtKey.shared('phone', namespace: 'wavi', sharedBy: '@alice')
-                ..sharedWith('bob'))
+                ..sharedWith('@bob'))
               .build();
 
       expect(atKey.key, equals('phone'));
       expect(atKey.sharedBy, equals('@alice'));
       expect(atKey.namespace, equals('wavi'));
-      expect(atKey.sharedWith, equals('bob'));
+      expect(atKey.sharedWith, equals('@bob'));
       expect(atKey.metadata!.ttl, equals(null));
       expect(atKey.metadata!.ttb, equals(null));
       expect(atKey.metadata!.isPublic, equals(false));
       expect(atKey.metadata!.isBinary, equals(false));
       expect(atKey.metadata!.isCached, equals(false));
+      expect(atKey.toString(), '@bob:phone.wavi@alice');
     });
 
     test('Test shared key with caching', () {
       AtKey atKey =
           (AtKey.shared('phone', namespace: 'wavi', sharedBy: '@alice')
-                ..sharedWith('bob')
+                ..sharedWith('@bob')
                 ..cache(1000, true))
               .build();
 
       expect(atKey.key, equals('phone'));
       expect(atKey.sharedBy, equals('@alice'));
       expect(atKey.namespace, equals('wavi'));
-      expect(atKey.sharedWith, equals('bob'));
+      expect(atKey.sharedWith, equals('@bob'));
       expect(atKey.metadata!.ttr, equals(1000));
       expect(atKey.metadata!.ccd, equals(true));
       expect(atKey.metadata!.ttl, equals(null));
       expect(atKey.metadata!.ttb, equals(null));
       expect(atKey.metadata!.isPublic, equals(false));
       expect(atKey.metadata!.isBinary, equals(false));
+      expect(atKey.toString(), '@bob:phone.wavi@alice');
     });
   });
 
