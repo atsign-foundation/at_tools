@@ -72,6 +72,10 @@ class UpdateVerbBuilder implements VerbBuilder {
   /// checksum of the the public key of [sharedWith] atsign. Will be set only when [sharedWith] is set.
   String? pubKeyChecksum;
 
+  ///Indicates if the public data is encoded.
+  ///If the public data contains new line (\n) character, the data will be encoded and encoding will be set to type of encoding
+  String? encoding;
+
   @override
   String buildCommand() {
     if (isJson) {
@@ -101,6 +105,7 @@ class UpdateVerbBuilder implements VerbBuilder {
       metadata.sharedKeyStatus = sharedKeyStatus;
       metadata.sharedKeyEnc = sharedKeyEncrypted;
       metadata.sharedKeyStatus = sharedKeyStatus;
+      metadata.encoding = encoding;
       updateParams.metadata = metadata;
       var json = updateParams.toJson();
       var command = 'update:json:${jsonEncode(json)}\n';
@@ -133,6 +138,9 @@ class UpdateVerbBuilder implements VerbBuilder {
     }
     if (pubKeyChecksum != null) {
       command += '$SHARED_WITH_PUBLIC_KEY_CHECK_SUM:$pubKeyChecksum:';
+    }
+    if (encoding != null && encoding!.isNotEmpty) {
+      command += '$ENCODING:$encoding';
     }
     if (isPublic) {
       command += 'public:';
