@@ -67,3 +67,10 @@ class SelfKeyNotFoundException extends AtDecryptionException {
       {Intent? intent, ExceptionScenario? exceptionScenario})
       : super(message, intent: intent, exceptionScenario: exceptionScenario);
 }
+
+class AtKeyNotFoundException extends AtClientException {
+  AtKeyNotFoundException(String message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super.message(message,
+            intent: intent, exceptionScenario: exceptionScenario);
+}
