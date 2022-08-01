@@ -5,6 +5,7 @@ enum KeyType {
   privateKey,
   cachedPublicKey,
   cachedSharedKey,
+  reservedKey,
   invalidKey
 }
 

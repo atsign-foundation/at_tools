@@ -1,5 +1,7 @@
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/keystore/at_key_builder_impl.dart';
+import 'package:at_commons/src/keystore/key_type.dart';
+import 'package:at_commons/src/utils/at_key_regex_utils.dart';
 
 class AtKey {
   String? key;
@@ -180,6 +182,10 @@ class AtKey {
     }
     atKey.metadata = metaData;
     return atKey;
+  }
+
+  static KeyType getKeyType(String key) {
+    return RegexUtil.keyType(key);
   }
 }
 
