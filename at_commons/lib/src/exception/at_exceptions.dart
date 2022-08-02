@@ -188,6 +188,11 @@ class InvalidResponseException extends AtException {
   InvalidResponseException(message) : super(message);
 }
 
+/// Exception thrown when a key is invalid
+class InvalidAtKeyException extends AtException {
+  InvalidAtKeyException(message) : super(message);
+}
+
 enum ExceptionScenario {
   noNetworkConnectivity,
   rootServerNotReachable,
