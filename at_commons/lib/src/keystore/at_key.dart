@@ -184,6 +184,7 @@ class AtKey {
     return atKey;
   }
 
+  //# TODO dartdocs
   static KeyType getKeyType(String key) {
     return RegexUtil.keyType(key);
   }
@@ -243,6 +244,14 @@ class PrivateKey extends AtKey {
   String toString() {
     return 'privatekey:$key';
   }
+}
+
+class ReservedKey extends AtKey {
+  static List<String> reservedKeys = [
+    commitLogCompactionKey,
+    accessLogCompactionKey,
+    notificationCompactionKey
+  ];
 }
 
 class Metadata {

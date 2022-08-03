@@ -104,31 +104,31 @@ class ReservedEntityValidation extends Validation {
   ValidationResult doValidate() {
     // If key is in reserved key list, return false.
     var reservedKey = _reservedKey(key);
-    if (reservedKey != ReservedKey.nonReservedKey &&
-        ReservedKey.values.contains(reservedKey)) {
+    if (reservedKey != ReservedKeys.nonReservedKey &&
+        ReservedKeys.values.contains(reservedKey)) {
       return ValidationResult('Reserved key cannot be created');
     }
     return ValidationResult.noFailure();
   }
 
-  /// Returns the [ReservedKey] enum for given key.
-  ReservedKey _reservedKey(String key) {
+  /// Returns the [ReservedKeys] enum for given key.
+  ReservedKeys _reservedKey(String key) {
     if (key == _getEntityFromConstant(AT_ENCRYPTION_SHARED_KEY)) {
-      return ReservedKey.encryptionSharedKey;
+      return ReservedKeys.encryptionSharedKey;
     }
     if (key == _getEntityFromConstant(AT_ENCRYPTION_PUBLIC_KEY)) {
-      return ReservedKey.encryptionPublicKey;
+      return ReservedKeys.encryptionPublicKey;
     }
     if (key == _getEntityFromConstant(AT_ENCRYPTION_PRIVATE_KEY)) {
-      return ReservedKey.encryptionPrivateKey;
+      return ReservedKeys.encryptionPrivateKey;
     }
     if (key == _getEntityFromConstant(AT_PKAM_PUBLIC_KEY)) {
-      return ReservedKey.pkamPublicKey;
+      return ReservedKeys.pkamPublicKey;
     }
     if (key == _getEntityFromConstant(AT_SIGNING_PRIVATE_KEY)) {
-      return ReservedKey.signingPrivateKey;
+      return ReservedKeys.signingPrivateKey;
     }
-    return ReservedKey.nonReservedKey;
+    return ReservedKeys.nonReservedKey;
   }
 
   /// Returns the entity part from the key constants.
