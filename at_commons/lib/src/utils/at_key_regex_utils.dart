@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/keystore/key_type.dart';
 import 'package:at_commons/src/keystore/at_key.dart';
 
@@ -23,6 +24,8 @@ class Regexes {
       '''((cached:)(@(?<sharedWith>($_charsInAtSign|$_allowedEmoji){1,55}):))(_*(?<entity>($_charsInEntity|$_allowedEmoji)+))\\.(?<namespace>$_charsInNamespace)@(?<owner>($_charsInAtSign|$_allowedEmoji){1,55})''';
   static const cachedPublicKey =
       '''(?<visibility>(cached:public:){1})((@(?<sharedWith>($_charsInAtSign|$_allowedEmoji){1,55}):))?(?<entity>($_charsInEntity|$_allowedEmoji)+)\\.(?<namespace>$_charsInNamespace)@(?<owner>($_charsInAtSign|$_allowedEmoji){1,55})''';
+  static const reservedKey =
+      '^($commitLogCompactionKey|$accessLogCompactionKey|$notificationCompactionKey|$AT_PKAM_PRIVATE_KEY|$AT_PKAM_PUBLIC_KEY|$AT_ENCRYPTION_SELF_KEY|$AT_CRAM_SECRET|$AT_CRAM_SECRET_DELETED|$AT_SIGNING_KEYPAIR_GENERATED)\$';
 }
 
 class RegexUtil {
