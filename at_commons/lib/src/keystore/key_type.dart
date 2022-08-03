@@ -9,7 +9,7 @@ enum KeyType {
   invalidKey
 }
 
-enum ReservedKeys {
+enum ReservedKey {
   encryptionSharedKey,
   encryptionPublicKey,
   encryptionPrivateKey,

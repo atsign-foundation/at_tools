@@ -1,8 +1,7 @@
 import 'dart:collection';
 
-import 'package:at_commons/at_commons.dart';
+import 'package:at_commons/src/at_constants.dart';
 import 'package:at_commons/src/keystore/key_type.dart';
-import 'package:at_commons/src/keystore/at_key.dart';
 
 class Regexes {
   static const _charsInNamespace = r'([\w])+';
@@ -31,7 +30,7 @@ class Regexes {
 class RegexUtil {
   /// Returns a first matching key type after matching the key against regexes for each of the key type
   static KeyType keyType(String key) {
-    if (ReservedKey.reservedKeys.contains(key)) {
+    if (reservedKeys.contains(key)) {
       return KeyType.reservedKey;
     }
     // matches the key with public key regex.
