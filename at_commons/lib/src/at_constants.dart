@@ -79,3 +79,4 @@ const List<String> reservedKeys = [
   AT_CRAM_SECRET_DELETED,
   AT_SIGNING_KEYPAIR_GENERATED
 ];
+const String ENCODING = 'encoding';

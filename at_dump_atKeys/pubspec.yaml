@@ -5,6 +5,9 @@ version: 1.0.0
 environment:
   sdk: '>=2.12.0 <3.0.0'
 
+dependency_overrides:
+  at_pkam:
+    path: ../at_pkam
 dependencies:
   crypton: ^2.0.1
   encrypt: ^5.0.0

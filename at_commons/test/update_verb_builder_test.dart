@@ -1,6 +1,8 @@
 import 'package:at_commons/at_builders.dart';
 import 'package:test/test.dart';
 
+import 'syntax_test.dart';
+
 void main() {
   group('A group of update verb builder tests to check update command', () {
     test('verify public at key command', () {
@@ -83,6 +85,40 @@ void main() {
         ..sharedKeyEncrypted = 'abc';
       expect(updateBuilder.buildCommandForMeta(),
           'update:meta:@bob:phone@alice:isEncrypted:true:sharedKeyEnc:abc:pubKeyCS:123\n');
+    });
+  });
+
+  group('A group of positive tests to validate the update regex', () {
+    var inputToExpectedOutput = {
+      'update:ttl:10000:ttb:10000:ttr:10000:ccd:true:dataSignature:123456:encoding:base64:public:phone@bob 12345':
+          {
+        'ttl': '10000',
+        'ttb': '10000',
+        'ttr': '10000',
+        'ccd': 'true',
+        'dataSignature': '123456',
+        'encoding': 'base64',
+        'forAtSign': null,
+        'atKey': 'phone',
+        'atSign': 'bob',
+        'value': '12345'
+      }
+    };
+    inputToExpectedOutput.forEach((command, expectedVerbParams) {
+      test('validating regex for $command', () {
+        var actualVerbParams = getVerbParams(VerbSyntax.update, command);
+        for (var key in expectedVerbParams.keys) {
+          expect(actualVerbParams[key], expectedVerbParams[key]);
+        }
+      });
+    });
+  });
+
+  group('A group of negative test on update verb regex', () {
+    test('update verb with encoding value not specified', () {
+      var command = 'update:encoding:@alice:phone@bob 123';
+      var actualVerbParams = getVerbParams(VerbSyntax.update, command);
+      expect(actualVerbParams.length, 0);
     });
   });
 }

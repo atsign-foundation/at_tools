@@ -5,12 +5,32 @@ import 'package:at_commons/src/utils/at_key_regex_utils.dart';
 
 class AtKey {
   String? key;
-  String? sharedWith;
-  String? sharedBy;
+  String? _sharedWith;
+  String? _sharedBy;
   String? namespace;
   Metadata? metadata;
   bool isRef = false;
 
+
+  String? get sharedBy => _sharedBy;
+  set sharedBy(String? atSign) {
+    assertStartsWithAtIfNotEmpty(atSign);
+    _sharedBy = atSign;
+  }
+
+  String? get sharedWith => _sharedWith;
+  set sharedWith(String? atSign) {
+    assertStartsWithAtIfNotEmpty(atSign);
+    _sharedWith = atSign;
+  }
+
+  String _dotNamespaceIfPresent() {
+    if (namespace != null) {
+      return '.$namespace';
+    } else {
+      return '';
+    }
+  }
   @override
   String toString() {
     // If metadata.isPublic is true and metadata.isCached is true,
@@ -19,32 +39,37 @@ class AtKey {
         (metadata != null &&
             (metadata!.isPublic != null && metadata!.isPublic!) &&
             (metadata!.isCached))) {
-      return 'cached:public:$key.$namespace$sharedBy';
+      return 'cached:public:$key${_dotNamespaceIfPresent()}$_sharedBy';
     }
     // If metadata.isPublic is true, return public key
     if (key!.startsWith('public:') ||
         (metadata != null &&
             metadata!.isPublic != null &&
             metadata!.isPublic!)) {
-      return 'public:$key.$namespace$sharedBy';
+      return 'public:$key${_dotNamespaceIfPresent()}$_sharedBy';
     }
     //If metadata.isCached is true, return shared cached key
     if (key!.startsWith('cached:') ||
         (metadata != null && metadata!.isCached)) {
-      return 'cached:$sharedWith:$key.$namespace$sharedBy';
+      return 'cached:$_sharedWith:$key${_dotNamespaceIfPresent()}$_sharedBy';
     }
     // If key starts with privatekey:, return private key
     if (key!.startsWith('privatekey:')) {
       return '$key';
     }
-    //If sharedWith is not null, return sharedKey
-    if (sharedWith != null && sharedWith!.isNotEmpty) {
-      return '$sharedWith:$key.$namespace$sharedBy';
+    //If _sharedWith is not null, return sharedKey
+    if (_sharedWith != null && _sharedWith!.isNotEmpty) {
+      return '$_sharedWith:$key${_dotNamespaceIfPresent()}$_sharedBy';
     }
     // Defaults to return a self key.
-    return '$key.$namespace$sharedBy';
+    return '$key${_dotNamespaceIfPresent()}$_sharedBy';
   }
 
+  static void assertStartsWithAtIfNotEmpty(String? atSign) {
+    if (atSign != null && atSign.isNotEmpty && !atSign.startsWith('@')) {
+      throw InvalidSyntaxException('atSign $atSign does not start with an "@"');
+    }
+  }
   /// Public keys are visible to everyone and shown in an authenticated/unauthenticated scan
   ///
   /// Builds a public key and returns a [PublicKeyBuilder]
@@ -55,6 +80,7 @@ class AtKey {
   ///```
   static PublicKeyBuilder public(String key,
       {String? namespace, String sharedBy = ''}) {
+    assertStartsWithAtIfNotEmpty(sharedBy);
     return PublicKeyBuilder()
       ..key(key)
       ..namespace(namespace)
@@ -62,7 +88,7 @@ class AtKey {
   }
 
   /// Shared Keys are shared with other atSign. The owner can see the keys on
-  /// authenticated scan. The SharedWith atSign can lookup the value of the key.
+  /// authenticated scan. The sharedWith atSign can lookup the value of the key.
   ///
   ///Builds a sharedWith key and returns a [SharedKeyBuilder]. Optionally the key
   ///can be cached on the [AtKey.sharedWith] atSign.
@@ -75,12 +101,13 @@ class AtKey {
   /// To cache a key on the @bob atSign.
   /// ```dart
   ///AtKey atKey = (AtKey.shared('phone', namespace: 'wavi', sharedBy: '@alice')
-  ///  ..sharedWith('bob')
+  ///  ..sharedWith('@bob')
   ///  ..cache(1000, true))
   ///  .build();
   /// ```
   static SharedKeyBuilder shared(String key,
       {String? namespace, String sharedBy = ''}) {
+    assertStartsWithAtIfNotEmpty(sharedBy);
     return SharedKeyBuilder()
       ..key(key)
       ..namespace(namespace)
@@ -99,6 +126,7 @@ class AtKey {
   /// ```
   static SelfKeyBuilder self(String key,
       {String? namespace, String sharedBy = ''}) {
+    assertStartsWithAtIfNotEmpty(sharedBy);
     return SelfKeyBuilder()
       ..key(key)
       ..namespace(namespace)
@@ -131,7 +159,7 @@ class AtKey {
       return atKey;
     } else if (key.startsWith(AT_ENCRYPTION_PRIVATE_KEY)) {
       atKey.key = key.split('@')[0];
-      atKey.sharedBy = key.split('@')[1];
+      atKey._sharedBy = '@${key.split('@')[1]}';
       atKey.metadata = metaData;
       return atKey;
     }
@@ -143,7 +171,7 @@ class AtKey {
     // If key does not contain ':' Ex: phone@bob; then keyParts length is 1
     // where phone is key and @bob is sharedBy
     if (keyParts.length == 1) {
-      atKey.sharedBy = keyParts[0].split('@')[1];
+      atKey._sharedBy = '@${keyParts[0].split('@')[1]}';
       atKey.key = keyParts[0].split('@')[0];
     } else {
       // Example key: public:phone@bob
@@ -153,18 +181,19 @@ class AtKey {
       // Example key: cached:@alice:phone@bob
       else if (keyParts[0] == CACHED) {
         metaData.isCached = true;
-        atKey.sharedWith = keyParts[1];
+        atKey._sharedWith = keyParts[1];
       } else {
-        atKey.sharedWith = keyParts[0];
+        atKey._sharedWith = keyParts[0];
       }
+
       List<String> keyArr = [];
-      if (keyParts[0] == CACHED) {
-        keyArr = keyParts[2].split('@');
-      } else {
-        keyArr = keyParts[1].split('@');
+      if (keyParts[0] == CACHED) { //cached:@alice:phone@bob
+        keyArr = keyParts[2].split('@'); //phone@bob ==> 'phone', 'bob'
+      } else { // @alice:phone@bob
+        keyArr = keyParts[1].split('@'); // phone@bob ==> 'phone', 'bob'
       }
       if (keyArr.length == 2) {
-        atKey.sharedBy = keyArr[1];
+        atKey._sharedBy = '@${keyArr[1]}'; // keyArr[1] is 'bob' so sharedBy needs to be @bob
         atKey.key = keyArr[0];
       } else {
         atKey.key = keyArr[0];
@@ -199,7 +228,7 @@ class PublicKey extends AtKey {
 
   @override
   String toString() {
-    return 'public:$key.$namespace$sharedBy';
+    return 'public:$key${_dotNamespaceIfPresent()}$_sharedBy';
   }
 }
 
@@ -215,10 +244,10 @@ class SelfKey extends AtKey {
     // If sharedWith is populated and sharedWith is equal to sharedBy, then
     // keys is a self key.
     // @alice:phone@alice or phone@alice
-    if (sharedWith != null && sharedWith!.isNotEmpty) {
-      return '$sharedWith:$key.$namespace$sharedBy';
+    if (_sharedWith != null && _sharedWith!.isNotEmpty) {
+      return '$_sharedWith:$key${_dotNamespaceIfPresent()}$_sharedBy';
     }
-    return '$key.$namespace$sharedBy';
+    return '$key${_dotNamespaceIfPresent()}$_sharedBy';
   }
 }
 
@@ -230,7 +259,7 @@ class SharedKey extends AtKey {
 
   @override
   String toString() {
-    return '$sharedWith:$key.$namespace$sharedBy';
+    return '$_sharedWith:$key${_dotNamespaceIfPresent()}$_sharedBy';
   }
 }
 
@@ -242,7 +271,7 @@ class PrivateKey extends AtKey {
 
   @override
   String toString() {
-    return 'privatekey:$key';
+    return 'privatekey:$key${_dotNamespaceIfPresent()}';
   }
 }
 
@@ -266,10 +295,11 @@ class Metadata {
   bool isCached = false;
   String? sharedKeyEnc;
   String? pubKeyCS;
+  String? encoding;
 
   @override
   String toString() {
-    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : $isBinary, isEncrypted : $isEncrypted, isCached : $isCached, dataSignature: $dataSignature, sharedKeyStatus: $sharedKeyStatus, encryptedSharedKey: $sharedKeyEnc, pubKeyCheckSum: $pubKeyCS}';
+    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : $isBinary, isEncrypted : $isEncrypted, isCached : $isCached, dataSignature: $dataSignature, sharedKeyStatus: $sharedKeyStatus, encryptedSharedKey: $sharedKeyEnc, pubKeyCheckSum: $pubKeyCS, encoding: $encoding}';
   }
 
   Map toJson() {
@@ -290,6 +320,7 @@ class Metadata {
     map[SHARED_KEY_STATUS] = sharedKeyStatus;
     map[SHARED_KEY_ENCRYPTED] = sharedKeyEnc;
     map[SHARED_WITH_PUBLIC_KEY_CHECK_SUM] = pubKeyCS;
+    map[ENCODING] = encoding;
     return map;
   }
 
@@ -339,6 +370,7 @@ class Metadata {
       metaData.sharedKeyStatus = json[SHARED_KEY_STATUS];
       metaData.sharedKeyEnc = json[SHARED_KEY_ENCRYPTED];
       metaData.pubKeyCS = json[SHARED_WITH_PUBLIC_KEY_CHECK_SUM];
+      metaData.encoding = json[ENCODING];
     } catch (error) {
       print('AtMetaData.fromJson error: ' + error.toString());
     }
