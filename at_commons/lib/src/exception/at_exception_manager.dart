@@ -20,7 +20,7 @@ class AtExceptionManager {
           ..fromException(atException);
     }
     // Else wrap the atException into AtClientException and return.
-    return (AtClientException.message(atException.message))
+    return (AtClientException.message(atException.message, intent: atException.intent, exceptionScenario:  atException.exceptionScenario))
       ..fromException(atException);
   }
 }
