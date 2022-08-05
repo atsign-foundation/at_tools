@@ -1,5 +1,6 @@
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/keystore/at_key_builder_impl.dart';
+import 'package:at_commons/src/keystore/key_type.dart';
 
 class AtKey {
   String? key;
@@ -9,14 +10,15 @@ class AtKey {
   Metadata? metadata;
   bool isRef = false;
 
-
   String? get sharedBy => _sharedBy;
+
   set sharedBy(String? atSign) {
     assertStartsWithAtIfNotEmpty(atSign);
     _sharedBy = atSign;
   }
 
   String? get sharedWith => _sharedWith;
+
   set sharedWith(String? atSign) {
     assertStartsWithAtIfNotEmpty(atSign);
     _sharedWith = atSign;
@@ -29,6 +31,7 @@ class AtKey {
       return '';
     }
   }
+
   @override
   String toString() {
     // If metadata.isPublic is true and metadata.isCached is true,
@@ -68,6 +71,7 @@ class AtKey {
       throw InvalidSyntaxException('atSign $atSign does not start with an "@"');
     }
   }
+
   /// Public keys are visible to everyone and shown in an authenticated/unauthenticated scan
   ///
   /// Builds a public key and returns a [PublicKeyBuilder]
@@ -185,13 +189,16 @@ class AtKey {
       }
 
       List<String> keyArr = [];
-      if (keyParts[0] == CACHED) { //cached:@alice:phone@bob
+      if (keyParts[0] == CACHED) {
+        //cached:@alice:phone@bob
         keyArr = keyParts[2].split('@'); //phone@bob ==> 'phone', 'bob'
-      } else { // @alice:phone@bob
+      } else {
+        // @alice:phone@bob
         keyArr = keyParts[1].split('@'); // phone@bob ==> 'phone', 'bob'
       }
       if (keyArr.length == 2) {
-        atKey._sharedBy = '@${keyArr[1]}'; // keyArr[1] is 'bob' so sharedBy needs to be @bob
+        atKey._sharedBy =
+            '@${keyArr[1]}'; // keyArr[1] is 'bob' so sharedBy needs to be @bob
         atKey.key = keyArr[0];
       } else {
         atKey.key = keyArr[0];
@@ -269,25 +276,79 @@ class PrivateKey extends AtKey {
 }
 
 class Metadata {
+  /// Represents the time in milliseconds beyond which the key expires
   int? ttl;
+
+  /// Represents the time in milliseconds from when the key becomes active
   int? ttb;
+
+  /// Represents the time frequency in seconds when the cached key gets refreshed
   int? ttr;
+
+  /// CCD (Cascade Delete) means if a shared key is deleted, then the corresponding cached key will also be deleted
+  ///
+  /// When set to true, on deleting the original key, the corresponding cached key will be deleted,
+  /// When set to false, the cached key remains even after the original key is deleted.
   bool? ccd;
+
+  /// This is a derived field representing [ttb] in [DateTime] format
   DateTime? availableAt;
+
+  /// This is a derived field representing [ttl] in [DateTime] format
   DateTime? expiresAt;
+
+  /// This is a derived field representing [ttr] in [DateTime] format
   DateTime? refreshAt;
+
+  /// A date and time representing when the key is created
   DateTime? createdAt;
+
+  /// A date and time representing when the key is last modified
   DateTime? updatedAt;
+
+  /// The [dataSignature] is used to verify authenticity of the public data.
+  ///
+  /// The public data is signed using the key owner's [ReservedKey.encryptionPrivateKey] and resultant is stored into dataSignature.
   String? dataSignature;
+
+  /// Represents the status of the [SharedKey]
   String? sharedKeyStatus;
+
+  /// When set to true, implies the key is a [PublicKey]
   bool? isPublic = false;
+
+  /// When set to true, implies the key is a HiddenKey
   bool isHidden = false;
+
+  /// Indicates if the namespace should be appended to the key
+  ///
+  /// By default, is set to true which implies the namespace is appended key
+  ///
+  /// For reserved key's, [namespaceAware] is set to false to ignore the namespace appending to key
   bool namespaceAware = true;
+
+  /// Determines whether a value is stored as binary data
+  /// If value of the key is blob (images, videos etc), the binary data is encoded to text and [isBinary] is set to true.
   bool? isBinary = false;
+
+  /// Represents if the notify text is encrypted
+  /// When set to true, implies the value is encrypted
   bool? isEncrypted;
+
+  /// When set to true, indicates the key is a cached key
   bool isCached = false;
+
+  /// Stores the encrypted shared key
+  ///
+  /// The value is encrypted with the shared key and shared key is encrypted with the sharedWith atSign encryption public key
   String? sharedKeyEnc;
+
+  /// Stores the checksum of the [ReservedKey.encryptionPublicKey] of the SharedWith atSign.
+  ///
+  /// Used to verify if the encryption key-pair used to encrypt and decrypt the value are same
   String? pubKeyCS;
+
+  /// Represents the type of encoding (ex: base64) when the value contains a new line character's
   String? encoding;
 
   @override
