@@ -15,12 +15,14 @@ class AtExceptionManager {
     // convert it to AtKeyNotFoundException and return it.
     if (atException is KeyNotFoundException) {
       return AtKeyNotFoundException(atException.message,
-              intent: atException.intent,
-              exceptionScenario: atException.exceptionScenario)
-          ..fromException(atException);
+          intent: atException.intent,
+          exceptionScenario: atException.exceptionScenario)
+        ..fromException(atException);
     }
     // Else wrap the atException into AtClientException and return.
-    return (AtClientException.message(atException.message, intent: atException.intent, exceptionScenario:  atException.exceptionScenario))
+    return (AtClientException.message(atException.message,
+        intent: atException.intent,
+        exceptionScenario: atException.exceptionScenario))
       ..fromException(atException);
   }
 }

@@ -122,7 +122,8 @@ void main() {
       expect(sharedKeyBuilder.build().toString(), '@bob:phone.wavi');
 
       sharedKeyBuilder =
-          AtKey.shared('phone', namespace: 'wavi', sharedBy: '@alice')..sharedWith('@bob');
+          AtKey.shared('phone', namespace: 'wavi', sharedBy: '@alice')
+            ..sharedWith('@bob');
       expect(sharedKeyBuilder, isA<SharedKeyBuilder>());
       expect(sharedKeyBuilder.build().toString(), '@bob:phone.wavi@alice');
     });
