@@ -1,5 +1,7 @@
 ## 3.0.22
 - Add ENCODING to update verb regex, update verb builder and Metadata to support encoding of new line character
+- Add AtKeyNotFoundException for non-existent keys in secondary
+- Add documentation around the Metadata fields
 ## 3.0.21
 - Add constant for stats notification id
 ## 3.0.20
