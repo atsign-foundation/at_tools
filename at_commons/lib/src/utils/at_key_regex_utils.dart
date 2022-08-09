@@ -4,6 +4,9 @@ import 'package:at_commons/src/at_constants.dart';
 import 'package:at_commons/src/keystore/key_type.dart';
 
 class Regexes {
+  // The regex [_\w-]+ is used to match the session keys (example: _a7abf9f5-dde5-4320-918e-c71760b88641)
+  static const _charsInReservedKey =
+      r'(shared_key|publickey|privatekey|self_encryption_key|commitLogCompactionStats|accessLogCompactionStats|notificationCompactionStats|signing_privatekey|signing_publickey|signing_keypair_generated|at_pkam_privatekey|at_pkam_publickey|at_secret|at_secret_deleted|_[\w-]+|)';
   static const _charsInNamespace = r'([\w])+';
   static const _charsInAtSign = r'[\w\-_]';
   static const _charsInEntity = r'''[\w\.\-_'*"]''';
@@ -24,13 +27,13 @@ class Regexes {
   static const cachedPublicKey =
       '''(?<visibility>(cached:public:){1})((@(?<sharedWith>($_charsInAtSign|$_allowedEmoji){1,55}):))?(?<entity>($_charsInEntity|$_allowedEmoji)+)\\.(?<namespace>$_charsInNamespace)@(?<owner>($_charsInAtSign|$_allowedEmoji){1,55})''';
   static const reservedKey =
-      '^($commitLogCompactionKey|$accessLogCompactionKey|$notificationCompactionKey|$AT_PKAM_PRIVATE_KEY|$AT_PKAM_PUBLIC_KEY|$AT_ENCRYPTION_SELF_KEY|$AT_CRAM_SECRET|$AT_CRAM_SECRET_DELETED|$AT_SIGNING_KEYPAIR_GENERATED)\$';
+      '''(((@(?<sharedWith>($_charsInAtSign|$_allowedEmoji){1,55}))|public|privatekey):)?(?<atKey>$_charsInReservedKey)(@(?<owner>($_charsInAtSign|$_allowedEmoji){1,55}))?''';
 }
 
 class RegexUtil {
   /// Returns a first matching key type after matching the key against regexes for each of the key type
   static KeyType keyType(String key) {
-    if (reservedKeys.contains(key)) {
+    if (matchAll(Regexes.reservedKey, key)) {
       return KeyType.reservedKey;
     }
     // matches the key with public key regex.

@@ -59,5 +59,31 @@ void main() {
       var keyType = AtKey.getKeyType('@bob:phone@bob');
       expect(keyType, equals(KeyType.invalidKey));
     });
+
+    test('Test reserved key type for shared_key', () {
+      var keyType = AtKey.getKeyType('@bob:shared_key@alice');
+      expect(keyType, equals(KeyType.reservedKey));
+    });
+
+    test('Test reserved key type for encryption publickey', () {
+      var keyType = AtKey.getKeyType('public:publickey@alice');
+      expect(keyType, equals(KeyType.reservedKey));
+    });
+
+    test('Test reserved key type for public session key', () {
+      var keyType = AtKey.getKeyType(
+          'public:_a29464d0-1f2d-4216-b903-031963bc4ab3@alice');
+      expect(keyType, equals(KeyType.reservedKey));
+    });
+
+    test('Test reserved key type for latest notification id', () {
+      var keyType = AtKey.getKeyType('_latestNotificationIdv2');
+      expect(keyType, equals(KeyType.reservedKey));
+    });
+
+    test('Test reserved key type for signing public key', () {
+      var keyType = AtKey.getKeyType('public:signing_publickey@colin');
+      expect(keyType, equals(KeyType.reservedKey));
+    });
   });
 }
