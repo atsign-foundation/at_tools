@@ -1,4 +1,5 @@
 import 'package:at_commons/at_builders.dart';
+import 'package:at_commons/at_commons.dart';
 import 'package:test/test.dart';
 
 import 'syntax_test.dart';
@@ -117,8 +118,11 @@ void main() {
   group('A group of negative test on update verb regex', () {
     test('update verb with encoding value not specified', () {
       var command = 'update:encoding:@alice:phone@bob 123';
-      var actualVerbParams = getVerbParams(VerbSyntax.update, command);
-      expect(actualVerbParams.length, 0);
+      expect(
+          () => getVerbParams(VerbSyntax.update, command),
+          throwsA(predicate((dynamic e) =>
+              e is InvalidSyntaxException &&
+              e.message == 'command does not match the regex')));
     });
   });
 }

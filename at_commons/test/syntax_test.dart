@@ -41,14 +41,20 @@ void main() {
 
     test('id not sent to notify delete', () {
       var command = 'notify:remove:';
-      var verbParams = getVerbParams(VerbSyntax.notifyRemove, command);
-      expect(verbParams.isEmpty, true);
+      expect(
+              () => getVerbParams(VerbSyntax.notifyRemove, command),
+          throwsA(predicate((dynamic e) =>
+          e is InvalidSyntaxException &&
+              e.message == 'command does not match the regex')));
     });
   });
 }
 
 Map getVerbParams(String regex, String command) {
   var regExp = RegExp(regex, caseSensitive: false);
+  if (!regExp.hasMatch(command)) {
+    throw InvalidSyntaxException('command does not match the regex');
+  }
   var regexMatches = regExp.allMatches(command);
   var paramsMap = HashMap<String, String?>();
   for (var f in regexMatches) {
