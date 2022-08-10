@@ -42,56 +42,58 @@ abstract class Regexes {
 
 class RegexesWithMandatoryNamespace implements Regexes {
   // There are currently no tests for this, but the regexes are and must remain mutually exclusive
-  @override
-  String get publicKey =>
-  '''${Regexes.publicKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _publicKey = '''${Regexes.publicKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _privateKey = '''${Regexes.privateKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _selfKey = '''${Regexes.selfKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _sharedKey = '''${Regexes.sharedKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _cachedSharedKey = '''${Regexes.cachedSharedKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _cachedPublicKey = '''${Regexes.cachedPublicKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
 
   @override
-  String get privateKey =>
-  '''${Regexes.privateKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  String get publicKey => _publicKey;
 
   @override
-  String get selfKey =>
-  '''${Regexes.selfKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  String get privateKey => _privateKey;
 
   @override
-  String get sharedKey =>
-  '''${Regexes.sharedKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  String get selfKey => _selfKey;
 
   @override
-  String get cachedSharedKey =>
-  '''${Regexes.cachedSharedKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  String get sharedKey => _sharedKey;
 
   @override
-  String get cachedPublicKey =>
-  '''${Regexes.cachedPublicKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  String get cachedSharedKey => _cachedSharedKey;
+
+  @override
+  String get cachedPublicKey => _cachedPublicKey;
 }
 
 class RegexesNonMandatoryNamespace implements Regexes {
   // There are currently no tests for this, but the regexes are and must remain mutually exclusive
-  @override
-  String get publicKey =>
-      '''${Regexes.publicKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _publicKey = '''${Regexes.publicKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _privateKey = '''${Regexes.privateKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _selfKey = '''${Regexes.selfKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _sharedKey = '''${Regexes.sharedKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _cachedSharedKey = '''${Regexes.cachedSharedKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _cachedPublicKey = '''${Regexes.cachedPublicKeyStartFragment}${Regexes.ownershipFragment}''';
 
   @override
-  String get privateKey =>
-      '''${Regexes.privateKeyStartFragment}${Regexes.ownershipFragment}''';
+  String get publicKey => _publicKey;
 
   @override
-  String get selfKey =>
-      '''${Regexes.selfKeyStartFragment}${Regexes.ownershipFragment}''';
+  String get privateKey => _privateKey;
 
   @override
-  String get sharedKey =>
-      '''${Regexes.sharedKeyStartFragment}${Regexes.ownershipFragment}''';
+  String get selfKey => _selfKey;
 
   @override
-  String get cachedSharedKey =>
-      '''${Regexes.cachedSharedKeyStartFragment}${Regexes.ownershipFragment}''';
+  String get sharedKey => _sharedKey;
 
   @override
-  String get cachedPublicKey =>
-      '''${Regexes.cachedPublicKeyStartFragment}${Regexes.ownershipFragment}''';
+  String get cachedSharedKey => _cachedSharedKey;
+
+  @override
+  String get cachedPublicKey => _cachedPublicKey;
 }
 
 class RegexUtil {
