@@ -31,16 +31,7 @@ class AtExceptionStack implements Comparable<AtChainedException> {
 
   /// Accepts the Intent and returns a message
   String getIntentMessage(Intent intent) {
-    if (intent == Intent.fetchData) {
-      return 'Failed to fetch data';
-    }
-    if (intent == Intent.shareData) {
-      return 'Failed to share data';
-    }
-    if (intent == Intent.decryptData) {
-      return 'Failed to decrypt the data';
-    }
-    return 'Failed to notify data';
+    return 'Failed to ${intent.name}';
   }
 
   @override

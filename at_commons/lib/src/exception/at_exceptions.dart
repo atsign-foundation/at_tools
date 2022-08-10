@@ -212,6 +212,7 @@ enum ExceptionScenario {
 }
 
 enum Intent {
+  syncData,
   shareData,
   fetchData,
   validateKey,
