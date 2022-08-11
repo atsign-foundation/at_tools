@@ -100,9 +100,7 @@ class RegexUtil {
   /// Returns a first matching key type after matching the key against regexes for each of the key type
   static KeyType keyType(String key, bool enforceNamespace) {
     Regexes regexes = Regexes(enforceNamespace);
-    if (enforceNamespace) {
 
-    }
     // matches the key with public key regex.
     if (matchAll(regexes.publicKey, key)) {
       return KeyType.publicKey;
