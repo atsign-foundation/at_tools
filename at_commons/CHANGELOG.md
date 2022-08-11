@@ -1,3 +1,8 @@
+## 3.0.23
+* fix: bug fixes to AtKey.fromString static method and various toString instance methods
+* feat: When validating AtKeys, allow _namespace_ to be optional, for legacy app code which depends on keys without namespaces
+* feat: Added _getKeyType_ to AtKey
+
 ## 3.0.22
 - Add ENCODING to update verb regex, update verb builder and Metadata to support encoding of new line character
 - Add AtKeyNotFoundException for non-existent keys in secondary

@@ -25,9 +25,8 @@ class ConfigVerbBuilder implements VerbBuilder {
         command += '${VerbUtil.formatAtSign(atSign)}';
       }
     }
-    command = command.trim();
-    command = command + '\n';
-    return command;
+
+    return '${command.trim()}\n';
   }
 
   @override

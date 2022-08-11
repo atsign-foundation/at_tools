@@ -1,6 +1,5 @@
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/keystore/at_key_builder_impl.dart';
-import 'package:at_commons/src/keystore/key_type.dart';
 import 'package:test/test.dart';
 
 void main() {
