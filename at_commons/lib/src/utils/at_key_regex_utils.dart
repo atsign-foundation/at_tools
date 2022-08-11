@@ -8,6 +8,8 @@ abstract class Regexes {
   static const charsInEntity = r'''[\w\.\-_'*"]''';
   static const allowedEmoji =
       r'''((\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff]))''';
+  static const _charsInReservedKey =
+      r'(shared_key|publickey|privatekey|self_encryption_key|commitLogCompactionStats|accessLogCompactionStats|notificationCompactionStats|signing_privatekey|signing_publickey|signing_keypair_generated|at_pkam_privatekey|at_pkam_publickey|at_secret_deleted|at_secret|_[\w-]+|)';
 
   static const String namespaceFragment = '''\\.(?<namespace>$charsInNamespace)''';
   static const String ownershipFragment = '''@(?<owner>($charsInAtSign|$allowedEmoji){1,55})''';
@@ -20,6 +22,7 @@ abstract class Regexes {
   static const String sharedKeyStartFragment = '''((@$sharedWithFragment)(_*$entityFragment)''';
   static const String cachedSharedKeyStartFragment = '''((cached:)(@$sharedWithFragment)(_*$entityFragment)''';
   static const String cachedPublicKeyStartFragment = '''(?<visibility>(cached:public:){1})((@$sharedWithFragment)?$entityFragment''';
+  static const String reservedKeyFragment = '''(((@(?<sharedWith>($charsInAtSign|$allowedEmoji){1,55}))|public|privatekey):)?(?<atKey>$_charsInReservedKey)(@(?<owner>($charsInAtSign|$allowedEmoji){1,55}))?''';
 
   String get publicKey;
   String get privateKey;
@@ -27,6 +30,7 @@ abstract class Regexes {
   String get sharedKey;
   String get cachedSharedKey;
   String get cachedPublicKey;
+  String get reservedKey;
 
   static final Regexes _regexesWithMandatoryNamespace = RegexesWithMandatoryNamespace();
   static final Regexes _regexesNonMandatoryNamespace = RegexesNonMandatoryNamespace();
@@ -66,6 +70,9 @@ class RegexesWithMandatoryNamespace implements Regexes {
 
   @override
   String get cachedPublicKey => _cachedPublicKey;
+
+  @override
+  String get reservedKey => Regexes.reservedKeyFragment;
 }
 
 class RegexesNonMandatoryNamespace implements Regexes {
@@ -94,12 +101,19 @@ class RegexesNonMandatoryNamespace implements Regexes {
 
   @override
   String get cachedPublicKey => _cachedPublicKey;
+
+  @override
+  String get reservedKey => Regexes.reservedKeyFragment;
 }
 
 class RegexUtil {
   /// Returns a first matching key type after matching the key against regexes for each of the key type
   static KeyType keyType(String key, bool enforceNamespace) {
     Regexes regexes = Regexes(enforceNamespace);
+
+    if (matchAll(regexes.reservedKey, key)) {
+      return KeyType.reservedKey;
+    }
 
     // matches the key with public key regex.
     if (matchAll(regexes.publicKey, key)) {
