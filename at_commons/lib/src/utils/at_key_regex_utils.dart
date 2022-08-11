@@ -6,8 +6,10 @@ abstract class Regexes {
   static const charsInNamespace = r'([\w])+';
   static const charsInAtSign = r'[\w\-_]';
   static const charsInEntity = r'''[\w\.\-_'*"]''';
-  static const allowedEmoji = r'''((\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff]))''';
-  static const _charsInReservedKey = r'(shared_key|publickey|privatekey|self_encryption_key|commitLogCompactionStats|accessLogCompactionStats|notificationCompactionStats|signing_privatekey|signing_publickey|signing_keypair_generated|at_pkam_privatekey|at_pkam_publickey|at_secret_deleted|at_secret|_[\w-]+|)';
+  static const allowedEmoji =
+      r'''((\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff]))''';
+  static const _charsInReservedKey =
+      r'(shared_key|publickey|privatekey|self_encryption_key|commitLogCompactionStats|accessLogCompactionStats|notificationCompactionStats|signing_privatekey|signing_publickey|signing_keypair_generated|at_pkam_privatekey|at_pkam_publickey|at_secret_deleted|at_secret|_[\w-]+|)';
 
   static const String namespaceFragment = '''\\.(?<namespace>$charsInNamespace)''';
   static const String ownershipFragment = '''@(?<owner>($charsInAtSign|$allowedEmoji){1,55})''';
