@@ -68,15 +68,4 @@ const String notificationCompactionKey =
 const String bypassCache = 'bypassCache';
 const String showHidden = 'showhidden';
 const String statsNotificationId = '_latestNotificationIdv2';
-const List<String> reservedKeys = [
-  commitLogCompactionKey,
-  accessLogCompactionKey,
-  notificationCompactionKey,
-  AT_PKAM_PRIVATE_KEY,
-  AT_PKAM_PUBLIC_KEY,
-  AT_ENCRYPTION_SELF_KEY,
-  AT_CRAM_SECRET,
-  AT_CRAM_SECRET_DELETED,
-  AT_SIGNING_KEYPAIR_GENERATED
-];
 const String ENCODING = 'encoding';
