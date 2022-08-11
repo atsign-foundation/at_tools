@@ -31,35 +31,41 @@ void main() {
   });
   group('A group of tests to check invalid key types', () {
     test('Test public key type without namespace', () {
-      var keyType = AtKey.getKeyType('public:phone@bob');
+      var keyType =
+          AtKey.getKeyType('public:phone@bob', enforceNameSpace: true);
       expect(keyType, equals(KeyType.invalidKey));
     });
 
     test('Test cached public key type without namespace', () {
-      var keyType = AtKey.getKeyType('cached:public:phone@bob');
+      var keyType =
+          AtKey.getKeyType('cached:public:phone@bob', enforceNameSpace: true);
       expect(keyType, equals(KeyType.invalidKey));
     });
 
     test('Test shared key type without namespace', () {
-      var keyType = AtKey.getKeyType('@alice:phone@bob');
+      var keyType =
+          AtKey.getKeyType('@alice:phone@bob', enforceNameSpace: true);
       expect(keyType, equals(KeyType.invalidKey));
     });
 
     test('Test cached shared key type without namespace', () {
-      var keyType = AtKey.getKeyType('cached:@alice:phone@bob');
+      var keyType =
+          AtKey.getKeyType('cached:@alice:phone@bob', enforceNameSpace: true);
       expect(keyType, equals(KeyType.invalidKey));
     });
 
     test('Test self key type without sharedWith atsign and without namespace',
         () {
-      var keyType = AtKey.getKeyType('phone@bob');
+      var keyType = AtKey.getKeyType('phone@bob', enforceNameSpace: true);
       expect(keyType, equals(KeyType.invalidKey));
     });
     test('Test self key type with atsign and without namespace', () {
-      var keyType = AtKey.getKeyType('@bob:phone@bob');
+      var keyType = AtKey.getKeyType('@bob:phone@bob', enforceNameSpace: true);
       expect(keyType, equals(KeyType.invalidKey));
     });
+  });
 
+  group('A group of tests to check reserved key types', () {
     test('Test reserved key type for shared_key', () {
       var keyType = AtKey.getKeyType('@bob:shared_key@alice');
       expect(keyType, equals(KeyType.reservedKey));

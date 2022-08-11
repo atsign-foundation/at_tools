@@ -50,38 +50,35 @@ class _AtKeyValidatorImpl extends AtKeyValidator {
     context.atSign = context.atSign?.replaceFirst('@', '');
     // If context.type is null, setType and regex.
     if (context.type == null) {
-      _setTypeAndRegex(key);
-      return;
+      _type = RegexUtil.keyType(key, context.enforceNamespace);
+    } else {
+      // if the type of the key is passed in the validation use that to init the regex
+      _type = context.type!;
     }
-    // if the type of the key is passed in the validation use that to init the regex
-    _type = context.type!;
-    _setRegex(context.type!);
+    _setRegex(_type, context.enforceNamespace);
   }
 
-  void _setTypeAndRegex(String key) {
-    _type = RegexUtil.keyType(key);
-    _setRegex(_type);
-  }
+  void _setRegex(KeyType type, bool enforceNamespace) {
+    Regexes regexes = Regexes(enforceNamespace);
 
-  void _setRegex(KeyType type) {
     switch (type) {
       case KeyType.publicKey:
-        _regex = Regexes.publicKey;
+        _regex = regexes.publicKey;
         break;
       case KeyType.privateKey:
-        _regex = Regexes.privateKey;
+        _regex = regexes.privateKey;
         break;
       case KeyType.selfKey:
-        _regex = Regexes.selfKey;
+        _regex = regexes.selfKey;
         break;
       case KeyType.sharedKey:
-        _regex = Regexes.sharedKey;
+        _regex = regexes.sharedKey;
         break;
       case KeyType.cachedPublicKey:
-        _regex = Regexes.cachedPublicKey;
+        _regex = regexes.cachedPublicKey;
         break;
       case KeyType.cachedSharedKey:
-        _regex = Regexes.cachedSharedKey;
+        _regex = regexes.cachedSharedKey;
         break;
       case KeyType.reservedKey:
         _regex = Regexes.reservedKey;

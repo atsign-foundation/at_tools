@@ -1,53 +1,150 @@
 import 'dart:collection';
 
-import 'package:at_commons/src/at_constants.dart';
 import 'package:at_commons/src/keystore/key_type.dart';
 
-class Regexes {
-  // The regex [_\w-]+ is used to match the session keys (example: _a7abf9f5-dde5-4320-918e-c71760b88641)
+abstract class Regexes {
+  static const charsInNamespace = r'([\w])+';
+  static const charsInAtSign = r'[\w\-_]';
+  static const charsInEntity = r'''[\w\.\-_'*"]''';
+  static const allowedEmoji =
+      r'''((\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff]))''';
   static const _charsInReservedKey =
       r'(shared_key|publickey|privatekey|self_encryption_key|commitLogCompactionStats|accessLogCompactionStats|notificationCompactionStats|signing_privatekey|signing_publickey|signing_keypair_generated|at_pkam_privatekey|at_pkam_publickey|at_secret|at_secret_deleted|_[\w-]+|)';
-  static const _charsInNamespace = r'([\w])+';
-  static const _charsInAtSign = r'[\w\-_]';
-  static const _charsInEntity = r'''[\w\.\-_'*"]''';
-  static const _allowedEmoji =
-      r'''((\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff]))''';
 
-  // Ideally these should be mutually exclusive, and they are. Will write tests for that.
-  static const publicKey =
-      '''(?<visibility>(public:){1})((@(?<sharedWith>($_charsInAtSign|$_allowedEmoji){1,55}):))?(?<entity>($_charsInEntity|$_allowedEmoji)+)\\.(?<namespace>$_charsInNamespace)@(?<owner>($_charsInAtSign|$_allowedEmoji){1,55})''';
-  static const privateKey =
-      '''(?<visibility>(private:){1})((@(?<sharedWith>($_charsInAtSign|$_allowedEmoji){1,55}):))?(?<entity>($_charsInEntity|$_allowedEmoji)+)\\.(?<namespace>$_charsInNamespace)@(?<owner>($_charsInAtSign|$_allowedEmoji){1,55})''';
-  static const selfKey =
-      '''((@(?<sharedWith>($_charsInAtSign|$_allowedEmoji){1,55}):))?(_*(?<entity>($_charsInEntity|$_allowedEmoji)+))\\.(?<namespace>$_charsInNamespace)@(?<owner>($_charsInAtSign|$_allowedEmoji){1,55})''';
-  static const sharedKey =
-      '''((@(?<sharedWith>($_charsInAtSign|$_allowedEmoji){1,55}):))(_*(?<entity>($_charsInEntity|$_allowedEmoji)+))\\.(?<namespace>$_charsInNamespace)@(?<owner>($_charsInAtSign|$_allowedEmoji){1,55})''';
-  static const cachedSharedKey =
-      '''((cached:)(@(?<sharedWith>($_charsInAtSign|$_allowedEmoji){1,55}):))(_*(?<entity>($_charsInEntity|$_allowedEmoji)+))\\.(?<namespace>$_charsInNamespace)@(?<owner>($_charsInAtSign|$_allowedEmoji){1,55})''';
-  static const cachedPublicKey =
-      '''(?<visibility>(cached:public:){1})((@(?<sharedWith>($_charsInAtSign|$_allowedEmoji){1,55}):))?(?<entity>($_charsInEntity|$_allowedEmoji)+)\\.(?<namespace>$_charsInNamespace)@(?<owner>($_charsInAtSign|$_allowedEmoji){1,55})''';
+  static const String namespaceFragment =
+      '''\\.(?<namespace>$charsInNamespace)''';
+  static const String ownershipFragment =
+      '''@(?<owner>($charsInAtSign|$allowedEmoji){1,55})''';
+  static const String sharedWithFragment =
+      '''(?<sharedWith>($charsInAtSign|$allowedEmoji){1,55}):)''';
+  static const String entityFragment =
+      '''(?<entity>($charsInEntity|$allowedEmoji)+)''';
+
+  static const String publicKeyStartFragment =
+      '''(?<visibility>(public:){1})((@$sharedWithFragment)?$entityFragment''';
+  static const String privateKeyStartFragment =
+      '''(?<visibility>(private:){1})((@$sharedWithFragment)?$entityFragment''';
+  static const String selfKeyStartFragment =
+      '''((@$sharedWithFragment)?(_*$entityFragment)''';
+  static const String sharedKeyStartFragment =
+      '''((@$sharedWithFragment)(_*$entityFragment)''';
+  static const String cachedSharedKeyStartFragment =
+      '''((cached:)(@$sharedWithFragment)(_*$entityFragment)''';
+  static const String cachedPublicKeyStartFragment =
+      '''(?<visibility>(cached:public:){1})((@$sharedWithFragment)?$entityFragment''';
   static const reservedKey =
-      '''(((@(?<sharedWith>($_charsInAtSign|$_allowedEmoji){1,55}))|public|privatekey):)?(?<atKey>$_charsInReservedKey)(@(?<owner>($_charsInAtSign|$_allowedEmoji){1,55}))?''';
+      '''(((@(?<sharedWith>($charsInAtSign|$allowedEmoji){1,55}))|public|privatekey):)?(?<atKey>$_charsInReservedKey)(@(?<owner>($charsInAtSign|$allowedEmoji){1,55}))?''';
+
+  String get publicKey;
+  String get privateKey;
+  String get selfKey;
+  String get sharedKey;
+  String get cachedSharedKey;
+  String get cachedPublicKey;
+
+  static final Regexes _regexesWithMandatoryNamespace =
+      RegexesWithMandatoryNamespace();
+  static final Regexes _regexesNonMandatoryNamespace =
+      RegexesNonMandatoryNamespace();
+
+  factory Regexes(bool enforceNamespace) {
+    if (enforceNamespace) {
+      return _regexesWithMandatoryNamespace;
+    } else {
+      return _regexesNonMandatoryNamespace;
+    }
+  }
+}
+
+class RegexesWithMandatoryNamespace implements Regexes {
+  // There are currently no tests for this, but the regexes are and must remain mutually exclusive
+  static const String _publicKey =
+      '''${Regexes.publicKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _privateKey =
+      '''${Regexes.privateKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _selfKey =
+      '''${Regexes.selfKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _sharedKey =
+      '''${Regexes.sharedKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _cachedSharedKey =
+      '''${Regexes.cachedSharedKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _cachedPublicKey =
+      '''${Regexes.cachedPublicKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+
+  @override
+  String get publicKey => _publicKey;
+
+  @override
+  String get privateKey => _privateKey;
+
+  @override
+  String get selfKey => _selfKey;
+
+  @override
+  String get sharedKey => _sharedKey;
+
+  @override
+  String get cachedSharedKey => _cachedSharedKey;
+
+  @override
+  String get cachedPublicKey => _cachedPublicKey;
+}
+
+class RegexesNonMandatoryNamespace implements Regexes {
+  // There are currently no tests for this, but the regexes are and must remain mutually exclusive
+  static const String _publicKey =
+      '''${Regexes.publicKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _privateKey =
+      '''${Regexes.privateKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _selfKey =
+      '''${Regexes.selfKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _sharedKey =
+      '''${Regexes.sharedKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _cachedSharedKey =
+      '''${Regexes.cachedSharedKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _cachedPublicKey =
+      '''${Regexes.cachedPublicKeyStartFragment}${Regexes.ownershipFragment}''';
+
+  @override
+  String get publicKey => _publicKey;
+
+  @override
+  String get privateKey => _privateKey;
+
+  @override
+  String get selfKey => _selfKey;
+
+  @override
+  String get sharedKey => _sharedKey;
+
+  @override
+  String get cachedSharedKey => _cachedSharedKey;
+
+  @override
+  String get cachedPublicKey => _cachedPublicKey;
 }
 
 class RegexUtil {
   /// Returns a first matching key type after matching the key against regexes for each of the key type
-  static KeyType keyType(String key) {
+  static KeyType keyType(String key, bool enforceNamespace) {
+    Regexes regexes = Regexes(enforceNamespace);
+
     if (matchAll(Regexes.reservedKey, key)) {
       return KeyType.reservedKey;
     }
+
     // matches the key with public key regex.
-    if (matchAll(Regexes.publicKey, key)) {
+    if (matchAll(regexes.publicKey, key)) {
       return KeyType.publicKey;
     }
     // matches the key with private key regex.
-    if (matchAll(Regexes.privateKey, key)) {
+    if (matchAll(regexes.privateKey, key)) {
       return KeyType.privateKey;
     }
     // matches the key with self key regex.
-    if (matchAll(Regexes.selfKey, key)) {
+    if (matchAll(regexes.selfKey, key)) {
       Map<String, String> matches =
-          RegexUtil.matchesByGroup(Regexes.selfKey, key);
+          RegexUtil.matchesByGroup(regexes.selfKey, key);
       String? sharedWith = matches[RegexGroup.sharedWith.name()];
       // If owner is not specified set it to a empty string
       String? owner = matches[RegexGroup.owner.name()];
@@ -58,10 +155,10 @@ class RegexUtil {
       }
       return KeyType.selfKey;
     }
-    if (matchAll(Regexes.cachedPublicKey, key)) {
+    if (matchAll(regexes.cachedPublicKey, key)) {
       return KeyType.cachedPublicKey;
     }
-    if (matchAll(Regexes.cachedSharedKey, key)) {
+    if (matchAll(regexes.cachedSharedKey, key)) {
       return KeyType.cachedSharedKey;
     }
     return KeyType.invalidKey;

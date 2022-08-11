@@ -23,6 +23,9 @@ class ValidationContext {
 
   // validate the ownership of the key
   bool validateOwnership = true;
+
+  // enforce presence of namespace
+  bool enforceNamespace = false;
 }
 
 /// Represents outcome of a key validation
