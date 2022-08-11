@@ -22,7 +22,7 @@ abstract class Regexes {
   static const String sharedKeyStartFragment = '''((@$sharedWithFragment)(_*$entityFragment)''';
   static const String cachedSharedKeyStartFragment = '''((cached:)(@$sharedWithFragment)(_*$entityFragment)''';
   static const String cachedPublicKeyStartFragment = '''(?<visibility>(cached:public:){1})((@$sharedWithFragment)?$entityFragment''';
-  static const String reservedKey = '''(((@(?<sharedWith>($charsInAtSign|$allowedEmoji){1,55}))|public|privatekey):)?(?<atKey>$_charsInReservedKey)(@(?<owner>($charsInAtSign|$allowedEmoji){1,55}))?''';
+  static const String reservedKeyFragment = '''(((@(?<sharedWith>($charsInAtSign|$allowedEmoji){1,55}))|public|privatekey):)?(?<atKey>$_charsInReservedKey)(@(?<owner>($charsInAtSign|$allowedEmoji){1,55}))?''';
 
   String get publicKey;
   String get privateKey;
@@ -30,6 +30,7 @@ abstract class Regexes {
   String get sharedKey;
   String get cachedSharedKey;
   String get cachedPublicKey;
+  String get reservedKey;
 
   static final Regexes _regexesWithMandatoryNamespace = RegexesWithMandatoryNamespace();
   static final Regexes _regexesNonMandatoryNamespace = RegexesNonMandatoryNamespace();
@@ -69,6 +70,9 @@ class RegexesWithMandatoryNamespace implements Regexes {
 
   @override
   String get cachedPublicKey => _cachedPublicKey;
+
+  @override
+  String get reservedKey => Regexes.reservedKeyFragment;
 }
 
 class RegexesNonMandatoryNamespace implements Regexes {
@@ -97,6 +101,9 @@ class RegexesNonMandatoryNamespace implements Regexes {
 
   @override
   String get cachedPublicKey => _cachedPublicKey;
+
+  @override
+  String get reservedKey => Regexes.reservedKeyFragment;
 }
 
 class RegexUtil {
@@ -104,7 +111,7 @@ class RegexUtil {
   static KeyType keyType(String key, bool enforceNamespace) {
     Regexes regexes = Regexes(enforceNamespace);
 
-    if (matchAll(Regexes.reservedKey, key)) {
+    if (matchAll(regexes.reservedKey, key)) {
       return KeyType.reservedKey;
     }
 
