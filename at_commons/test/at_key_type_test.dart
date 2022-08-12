@@ -75,6 +75,16 @@ void main() {
       expect(keyType, equals(KeyType.reservedKey));
     });
 
+    test('Test reserved key type for self encryption key', () {
+      var keyType = AtKey.getKeyType('privatekey:self_encryption_key');
+      expect(keyType, equals(KeyType.reservedKey));
+    });
+
+    test('Test reserved key type for signing private key', () {
+      var keyType = AtKey.getKeyType('@alice:signing_privatekey@alice');
+      expect(keyType, equals(KeyType.reservedKey));
+    });
+
     test('Test reserved key type for public session key', () {
       var keyType = AtKey.getKeyType(
           'public:_a29464d0-1f2d-4216-b903-031963bc4ab3@alice');
@@ -88,6 +98,26 @@ void main() {
 
     test('Test reserved key type for signing public key', () {
       var keyType = AtKey.getKeyType('public:signing_publickey@colin');
+      expect(keyType, equals(KeyType.reservedKey));
+    });
+
+    test('Test reserved key type for commit log compaction key', () {
+      var keyType = AtKey.getKeyType('privatekey:commitLogCompactionStats');
+      expect(keyType, equals(KeyType.reservedKey));
+    });
+
+    test('Test reserved key type for access log compaction key', () {
+      var keyType = AtKey.getKeyType('privatekey:accessLogCompactionStats');
+      expect(keyType, equals(KeyType.reservedKey));
+    });
+
+    test('Test reserved key type for cram secret deleted', () {
+      var keyType = AtKey.getKeyType('privatekey:at_secret_deleted');
+      expect(keyType, equals(KeyType.reservedKey));
+    });
+
+    test('Test reserved key type for cram secret', () {
+      var keyType = AtKey.getKeyType('privatekey:at_secret');
       expect(keyType, equals(KeyType.reservedKey));
     });
   });

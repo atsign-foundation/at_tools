@@ -1,3 +1,5 @@
+## 3.0.24
+* fix:  add error code for InvalidAtKeyException
 ## 3.0.23
 * fix: bug fixes to AtKey.fromString static method and various toString instance methods
 * feat: When validating AtKeys, allow _namespace_ to be optional, for legacy app code which depends on keys without namespaces
