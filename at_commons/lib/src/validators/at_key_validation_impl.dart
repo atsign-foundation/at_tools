@@ -1,5 +1,4 @@
 import 'package:at_commons/at_commons.dart';
-import 'package:at_commons/src/keystore/key_type.dart';
 import 'package:at_commons/src/utils/at_key_regex_utils.dart';
 
 /// Returns an instance of [AtKeyValidator]
@@ -81,7 +80,7 @@ class _AtKeyValidatorImpl extends AtKeyValidator {
         _regex = regexes.cachedSharedKey;
         break;
       case KeyType.reservedKey:
-        _regex = Regexes.reservedKey;
+        _regex = regexes.reservedKey;
         break;
       case KeyType.invalidKey:
         _regex = '';

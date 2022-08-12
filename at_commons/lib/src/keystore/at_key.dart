@@ -432,7 +432,8 @@ class Metadata {
       metaData.pubKeyCS = json[SHARED_WITH_PUBLIC_KEY_CHECK_SUM];
       metaData.encoding = json[ENCODING];
     } catch (error) {
-      print('AtMetaData.fromJson error: ' + error.toString());
+      // TODO swallowing the error does not seem like the right thing to do
+      print('AtMetaData.fromJson error: ${error.toString()}');
     }
     return metaData;
   }

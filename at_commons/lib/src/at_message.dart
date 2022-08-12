@@ -12,41 +12,41 @@ enum AtMessage {
 
 extension AtMessageExtension on AtMessage {
   String get text {
-    const _notFoundMsg = 'No message found';
-    const _wrongVerbMsg =
+    const notFoundMsg = 'No message found';
+    const wrongVerbMsg =
         'Available verbs are: lookup:, from:, pol:, llookup:, plookup:, update:, delete:, scan and exit. ';
-    const _closingConnectionMsg = 'Closing the connection. ';
-    const _cleanExitMsg = 'Exited cleanly, closing the connection. ';
-    const _moreThanOneAt =
+    const closingConnectionMsg = 'Closing the connection. ';
+    const cleanExitMsg = 'Exited cleanly, closing the connection. ';
+    const moreThanOneAt =
         'invalid @sign: Cannot Contain more than one @ character';
-    const _whiteSpaceNotAllowed =
+    const whiteSpaceNotAllowed =
         'invalid @sign: Cannot Contain whitespace characters';
-    const _reservedCharacterUsed =
+    const reservedCharacterUsed =
         'invalid @sign: Cannot contain \!\*\'`\(\)\;\:\&\=\+\$\,\/\?\#\[\]\{\} characters';
-    const _noAtSign =
+    const noAtSign =
         'invalid @sign: must include one @ character and at least one character on the right';
-    const _controlCharacter =
+    const controlCharacter =
         'invalid @sign: must not include control characters';
 
     switch (this) {
       case AtMessage.wrongVerb:
-        return _wrongVerbMsg;
+        return wrongVerbMsg;
       case AtMessage.closingConnection:
-        return _closingConnectionMsg;
+        return closingConnectionMsg;
       case AtMessage.cleanExit:
-        return _cleanExitMsg;
+        return cleanExitMsg;
       case AtMessage.moreThanOneAt:
-        return _moreThanOneAt;
+        return moreThanOneAt;
       case AtMessage.whiteSpaceNotAllowed:
-        return _whiteSpaceNotAllowed;
+        return whiteSpaceNotAllowed;
       case AtMessage.reservedCharacterUsed:
-        return _reservedCharacterUsed;
+        return reservedCharacterUsed;
       case AtMessage.noAtSign:
-        return _noAtSign;
+        return noAtSign;
       case AtMessage.controlCharacter:
-        return _controlCharacter;
+        return controlCharacter;
       default:
-        return _notFoundMsg;
+        return notFoundMsg;
     }
   }
 }

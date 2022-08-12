@@ -11,29 +11,18 @@ abstract class Regexes {
   static const _charsInReservedKey =
       r'(shared_key|publickey|privatekey|self_encryption_key|commitLogCompactionStats|accessLogCompactionStats|notificationCompactionStats|signing_privatekey|signing_publickey|signing_keypair_generated|at_pkam_privatekey|at_pkam_publickey|at_secret_deleted|at_secret|_[\w-]+|)';
 
-  static const String namespaceFragment =
-      '''\\.(?<namespace>$charsInNamespace)''';
-  static const String ownershipFragment =
-      '''@(?<owner>($charsInAtSign|$allowedEmoji){1,55})''';
-  static const String sharedWithFragment =
-      '''(?<sharedWith>($charsInAtSign|$allowedEmoji){1,55}):)''';
-  static const String entityFragment =
-      '''(?<entity>($charsInEntity|$allowedEmoji)+)''';
+  static const String namespaceFragment = '''\\.(?<namespace>$charsInNamespace)''';
+  static const String ownershipFragment = '''@(?<owner>($charsInAtSign|$allowedEmoji){1,55})''';
+  static const String sharedWithFragment = '''(?<sharedWith>($charsInAtSign|$allowedEmoji){1,55}):)''';
+  static const String entityFragment = '''(?<entity>($charsInEntity|$allowedEmoji)+)''';
 
-  static const String publicKeyStartFragment =
-      '''(?<visibility>(public:){1})((@$sharedWithFragment)?$entityFragment''';
-  static const String privateKeyStartFragment =
-      '''(?<visibility>(private:){1})((@$sharedWithFragment)?$entityFragment''';
-  static const String selfKeyStartFragment =
-      '''((@$sharedWithFragment)?(_*$entityFragment)''';
-  static const String sharedKeyStartFragment =
-      '''((@$sharedWithFragment)(_*$entityFragment)''';
-  static const String cachedSharedKeyStartFragment =
-      '''((cached:)(@$sharedWithFragment)(_*$entityFragment)''';
-  static const String cachedPublicKeyStartFragment =
-      '''(?<visibility>(cached:public:){1})((@$sharedWithFragment)?$entityFragment''';
-  static const reservedKey =
-      '''(((@(?<sharedWith>($charsInAtSign|$allowedEmoji){1,55}))|public|privatekey):)?(?<atKey>$_charsInReservedKey)(@(?<owner>($charsInAtSign|$allowedEmoji){1,55}))?''';
+  static const String publicKeyStartFragment = '''(?<visibility>(public:){1})((@$sharedWithFragment)?$entityFragment''';
+  static const String privateKeyStartFragment = '''(?<visibility>(private:){1})((@$sharedWithFragment)?$entityFragment''';
+  static const String selfKeyStartFragment = '''((@$sharedWithFragment)?(_*$entityFragment)''';
+  static const String sharedKeyStartFragment = '''((@$sharedWithFragment)(_*$entityFragment)''';
+  static const String cachedSharedKeyStartFragment = '''((cached:)(@$sharedWithFragment)(_*$entityFragment)''';
+  static const String cachedPublicKeyStartFragment = '''(?<visibility>(cached:public:){1})((@$sharedWithFragment)?$entityFragment''';
+  static const String reservedKeyFragment = '''(((@(?<sharedWith>($charsInAtSign|$allowedEmoji){1,55}))|public|privatekey):)?(?<atKey>$_charsInReservedKey)(@(?<owner>($charsInAtSign|$allowedEmoji){1,55}))?''';
 
   String get publicKey;
   String get privateKey;
@@ -41,11 +30,10 @@ abstract class Regexes {
   String get sharedKey;
   String get cachedSharedKey;
   String get cachedPublicKey;
+  String get reservedKey;
 
-  static final Regexes _regexesWithMandatoryNamespace =
-      RegexesWithMandatoryNamespace();
-  static final Regexes _regexesNonMandatoryNamespace =
-      RegexesNonMandatoryNamespace();
+  static final Regexes _regexesWithMandatoryNamespace = RegexesWithMandatoryNamespace();
+  static final Regexes _regexesNonMandatoryNamespace = RegexesNonMandatoryNamespace();
 
   factory Regexes(bool enforceNamespace) {
     if (enforceNamespace) {
@@ -58,18 +46,12 @@ abstract class Regexes {
 
 class RegexesWithMandatoryNamespace implements Regexes {
   // There are currently no tests for this, but the regexes are and must remain mutually exclusive
-  static const String _publicKey =
-      '''${Regexes.publicKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
-  static const String _privateKey =
-      '''${Regexes.privateKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
-  static const String _selfKey =
-      '''${Regexes.selfKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
-  static const String _sharedKey =
-      '''${Regexes.sharedKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
-  static const String _cachedSharedKey =
-      '''${Regexes.cachedSharedKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
-  static const String _cachedPublicKey =
-      '''${Regexes.cachedPublicKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _publicKey = '''${Regexes.publicKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _privateKey = '''${Regexes.privateKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _selfKey = '''${Regexes.selfKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _sharedKey = '''${Regexes.sharedKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _cachedSharedKey = '''${Regexes.cachedSharedKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _cachedPublicKey = '''${Regexes.cachedPublicKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
 
   @override
   String get publicKey => _publicKey;
@@ -88,22 +70,19 @@ class RegexesWithMandatoryNamespace implements Regexes {
 
   @override
   String get cachedPublicKey => _cachedPublicKey;
+
+  @override
+  String get reservedKey => Regexes.reservedKeyFragment;
 }
 
 class RegexesNonMandatoryNamespace implements Regexes {
   // There are currently no tests for this, but the regexes are and must remain mutually exclusive
-  static const String _publicKey =
-      '''${Regexes.publicKeyStartFragment}${Regexes.ownershipFragment}''';
-  static const String _privateKey =
-      '''${Regexes.privateKeyStartFragment}${Regexes.ownershipFragment}''';
-  static const String _selfKey =
-      '''${Regexes.selfKeyStartFragment}${Regexes.ownershipFragment}''';
-  static const String _sharedKey =
-      '''${Regexes.sharedKeyStartFragment}${Regexes.ownershipFragment}''';
-  static const String _cachedSharedKey =
-      '''${Regexes.cachedSharedKeyStartFragment}${Regexes.ownershipFragment}''';
-  static const String _cachedPublicKey =
-      '''${Regexes.cachedPublicKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _publicKey = '''${Regexes.publicKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _privateKey = '''${Regexes.privateKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _selfKey = '''${Regexes.selfKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _sharedKey = '''${Regexes.sharedKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _cachedSharedKey = '''${Regexes.cachedSharedKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _cachedPublicKey = '''${Regexes.cachedPublicKeyStartFragment}${Regexes.ownershipFragment}''';
 
   @override
   String get publicKey => _publicKey;
@@ -122,6 +101,9 @@ class RegexesNonMandatoryNamespace implements Regexes {
 
   @override
   String get cachedPublicKey => _cachedPublicKey;
+
+  @override
+  String get reservedKey => Regexes.reservedKeyFragment;
 }
 
 class RegexUtil {
@@ -129,7 +111,7 @@ class RegexUtil {
   static KeyType keyType(String key, bool enforceNamespace) {
     Regexes regexes = Regexes(enforceNamespace);
 
-    if (matchAll(Regexes.reservedKey, key)) {
+    if (matchAll(regexes.reservedKey, key)) {
       return KeyType.reservedKey;
     }
 
