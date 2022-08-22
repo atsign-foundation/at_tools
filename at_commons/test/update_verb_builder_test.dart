@@ -90,29 +90,27 @@ void main() {
   });
 
   group('A group of positive tests to validate the update regex', () {
-    test('validate update regex', () {
-      var inputToExpectedOutput = {
-        'update:ttl:10000:ttb:10000:ttr:10000:ccd:true:dataSignature:123456:encoding:base64:public:phone@bob 12345':
-            {
-          'ttl': '10000',
-          'ttb': '10000',
-          'ttr': '10000',
-          'ccd': 'true',
-          'dataSignature': '123456',
-          'encoding': 'base64',
-          'forAtSign': null,
-          'atKey': 'phone',
-          'atSign': 'bob',
-          'value': '12345'
+    var inputToExpectedOutput = {
+      'update:ttl:10000:ttb:10000:ttr:10000:ccd:true:dataSignature:123456:encoding:base64:public:phone@bob 12345':
+          {
+        'ttl': '10000',
+        'ttb': '10000',
+        'ttr': '10000',
+        'ccd': 'true',
+        'dataSignature': '123456',
+        'encoding': 'base64',
+        'forAtSign': null,
+        'atKey': 'phone',
+        'atSign': 'bob',
+        'value': '12345'
+      }
+    };
+    inputToExpectedOutput.forEach((command, expectedVerbParams) {
+      test('validating regex for $command', () {
+        var actualVerbParams = getVerbParams(VerbSyntax.update, command);
+        for (var key in expectedVerbParams.keys) {
+          expect(actualVerbParams[key], expectedVerbParams[key]);
         }
-      };
-      inputToExpectedOutput.forEach((command, expectedVerbParams) {
-        test('validating regex for $command', () {
-          var actualVerbParams = getVerbParams(VerbSyntax.update, command);
-          for (var key in expectedVerbParams.keys) {
-            expect(actualVerbParams[key], expectedVerbParams[key]);
-          }
-        });
       });
     });
     test('validate update command with negative ttl and ttr', () {
@@ -143,7 +141,7 @@ void main() {
       expect(actualVerbParams[AT_KEY], 'kryz.kryz_9850');
       expect(actualVerbParams[AT_SIGN], 'kryz_9850');
     });
-    test('validate update meta command with negative ttl and ttr', () {
+    test('validate update meta command with negative ttl and ttb', () {
       final updateCommand =
           'update:meta:public:kryz.kryz_9850@kryz_9850:ttl:-1:ttb:-1';
       var actualVerbParams =
