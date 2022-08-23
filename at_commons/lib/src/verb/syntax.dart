@@ -1,5 +1,7 @@
 class VerbSyntax {
-  static const from = r'^from:(?<atSign>@?[^@\s]+$)';
+  // Adding \{ and \} to regex to ensure the JSON encoded String is Map.
+  static const from =
+      r'^from:(?<atSign>@?[^@:\s]+)(:clientConfig:(?<clientConfig>\{.+\}))?$';
   static const pol = r'^pol$';
   static const cram = r'^cram:(?<digest>.+$)';
   static const pkam = r'^pkam:(?<signature>.+$)';
@@ -20,6 +22,7 @@ class VerbSyntax {
       r'^sync:from:(?<from_commit_seq>[0-9]+|-1)(:limit:(?<limit>\d+))(:(?<regex>.+))?$';
   static const update =
       r'^update:json:(?<json>.+)$|^update:(?:ttl:(?<ttl>\d+):)?(?:ttb:(?<ttb>\d+):)?(?:ttr:(?<ttr>(-?)\d+):)?(ccd:(?<ccd>true|false):)?(?:dataSignature:(?<dataSignature>[^:@]+):)?(?:sharedKeyStatus:(?<sharedKeyStatus>[^:@]+):)?(isBinary:(?<isBinary>true|false):)?(isEncrypted:(?<isEncrypted>true|false):)?(sharedKeyEnc:(?<sharedKeyEnc>[^:@]+):)?(pubKeyCS:(?<pubKeyCS>[^:@]+):)?(encoding:(?<encoding>\w+):)?(priority:(?<priority>low|medium|high):)?((?:public:)|(@(?<forAtSign>[^@:\s]*):))?(?<atKey>[^:@]((?!:{2})[^@])+)(?:@(?<atSign>[^@\s]*))? (?<value>.+$)';
+
   // ignore: constant_identifier_names
   static const update_meta =
       r'^update:meta:((?:public:)|((?<forAtSign>@?[^@\s]*):))?(?<atKey>((?!:{2})[^@])+)@(?<atSign>[^@:\s]*)(:ttl:(?<ttl>\d+))?(:ttb:(?<ttb>\d+))?(:ttr:(?<ttr>\d+))?(:ccd:(?<ccd>true|false))?(?:sharedKeyStatus:(?<sharedKeyStatus>[^:@]+):)?(:isBinary:(?<isBinary>true|false))?(:isEncrypted:(?<isEncrypted>true|false))?(sharedKeyEnc:(?<sharedKeyEnc>[^:@]+):)?(pubKeyCS:(?<pubKeyCS>[^:@]+))?$';
