@@ -244,7 +244,8 @@ class TestKeys {
     invalidCachedPublicKeysNamespaceOptional.addAll(temp);
 
     //  No namespace
-    invalidCachedPublicKeysNamespaceMandatory.add("cached:public:@bob:phone@bob");
+    invalidCachedPublicKeysNamespaceMandatory
+        .add("cached:public:@bob:phone@bob");
   }
 
   _initNonBobSelfKeys() {

@@ -42,9 +42,9 @@ void main() {
     test('id not sent to notify delete', () {
       var command = 'notify:remove:';
       expect(
-              () => getVerbParams(VerbSyntax.notifyRemove, command),
+          () => getVerbParams(VerbSyntax.notifyRemove, command),
           throwsA(predicate((dynamic e) =>
-          e is InvalidSyntaxException &&
+              e is InvalidSyntaxException &&
               e.message == 'command does not match the regex')));
     });
   });

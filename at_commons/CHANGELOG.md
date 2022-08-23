@@ -1,5 +1,6 @@
 ## 3.0.25
 * fix: update regex to correctly parse negative values in ttl and ttb
+* feat: add clientConfig to from verb syntax
 ## 3.0.24
 * fix:  add error code for InvalidAtKeyException
 ## 3.0.23
