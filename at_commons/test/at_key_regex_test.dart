@@ -197,7 +197,8 @@ void main() {
 
     test('Tests to validate cached shared keys, namespace mandatory', () {
       var keyTypeList = [];
-      keyTypeList.add("cached:@sitaram0123456789012345678901234567890123456789012345:phone.buzz@jagannadh");
+      keyTypeList.add(
+          "cached:@sitaram0123456789012345678901234567890123456789012345:phone.buzz@jagannadh");
       keyTypeList.add("cached:@sitaram:phone.buzz@jagannadh");
       keyTypeList.add("cached:@sitaram:pho_-n________e.b@jagannadh");
       keyTypeList.add("cached:@sitaram💙:phone😀.buzz@jagannadh💙");
@@ -210,8 +211,10 @@ void main() {
 
     test('Tests to validate cached shared keys, namespace not mandatory', () {
       var keyTypeList = [];
-      keyTypeList.add("cached:@sitaram0123456789012345678901234567890123456789012345:phone.buzz@jagannadh");
-      keyTypeList.add("cached:@sitaram0123456789012345678901234567890123456789012345:phone@jagannadh");
+      keyTypeList.add(
+          "cached:@sitaram0123456789012345678901234567890123456789012345:phone.buzz@jagannadh");
+      keyTypeList.add(
+          "cached:@sitaram0123456789012345678901234567890123456789012345:phone@jagannadh");
 
       keyTypeList.add("cached:@sitaram:phone.buzz@jagannadh");
       keyTypeList.add("cached:@sitaram:phone@jagannadh");
@@ -242,19 +245,23 @@ void main() {
       List<String> invalidPubKeys;
       invalidPubKeys = TestKeys().invalidPublicKeysNamespaceMandatory;
       for (var i = 0; i < invalidPubKeys.length; i++) {
-        expect(RegexUtil.matchAll(Regexes(true).publicKey, invalidPubKeys[i]), false);
+        expect(RegexUtil.matchAll(Regexes(true).publicKey, invalidPubKeys[i]),
+            false);
       }
       invalidPubKeys = TestKeys().invalidPublicKeysNamespaceOptional;
       for (var i = 0; i < invalidPubKeys.length; i++) {
-        expect(RegexUtil.matchAll(Regexes(false).publicKey, invalidPubKeys[i]), false);
+        expect(RegexUtil.matchAll(Regexes(false).publicKey, invalidPubKeys[i]),
+            false);
       }
     });
 
     test('Valid private keys', () {
       var privateKeys = TestKeys().validPrivateKeys;
       for (var i = 0; i < privateKeys.length; i++) {
-        expect(RegexUtil.matchAll(Regexes(true).privateKey, privateKeys[i]), true);
-        expect(RegexUtil.matchAll(Regexes(false).privateKey, privateKeys[i]), true);
+        expect(
+            RegexUtil.matchAll(Regexes(true).privateKey, privateKeys[i]), true);
+        expect(RegexUtil.matchAll(Regexes(false).privateKey, privateKeys[i]),
+            true);
       }
     });
 
@@ -263,12 +270,17 @@ void main() {
       invalidPrivateKeys = TestKeys().invalidPrivateKeysNamespaceMandatory;
       for (var i = 0; i < invalidPrivateKeys.length; i++) {
         print(invalidPrivateKeys[i]);
-        expect(RegexUtil.matchAll(Regexes(true).privateKey, invalidPrivateKeys[i]), false);
+        expect(
+            RegexUtil.matchAll(Regexes(true).privateKey, invalidPrivateKeys[i]),
+            false);
       }
       invalidPrivateKeys = TestKeys().invalidPrivateKeysNamespaceOptional;
       for (var i = 0; i < invalidPrivateKeys.length; i++) {
         print(invalidPrivateKeys[i]);
-        expect(RegexUtil.matchAll(Regexes(false).privateKey, invalidPrivateKeys[i]), false);
+        expect(
+            RegexUtil.matchAll(
+                Regexes(false).privateKey, invalidPrivateKeys[i]),
+            false);
       }
     });
   });
@@ -277,20 +289,33 @@ void main() {
     test('Valid cached public keys', () {
       var cachedPubKeys = TestKeys().validCachedPublicKeys;
       for (var i = 0; i < cachedPubKeys.length; i++) {
-        expect(RegexUtil.matchAll(Regexes(true).cachedPublicKey, cachedPubKeys[i]), true);
-        expect(RegexUtil.matchAll(Regexes(false).cachedPublicKey, cachedPubKeys[i]), true);
+        expect(
+            RegexUtil.matchAll(Regexes(true).cachedPublicKey, cachedPubKeys[i]),
+            true);
+        expect(
+            RegexUtil.matchAll(
+                Regexes(false).cachedPublicKey, cachedPubKeys[i]),
+            true);
       }
     });
 
     test('Invalid cached public keys', () {
       List<String> invalidCachedPubKeys;
-      invalidCachedPubKeys = TestKeys().invalidCachedPublicKeysNamespaceMandatory;
+      invalidCachedPubKeys =
+          TestKeys().invalidCachedPublicKeysNamespaceMandatory;
       for (var i = 0; i < invalidCachedPubKeys.length; i++) {
-        expect(RegexUtil.matchAll(Regexes(true).cachedPublicKey, invalidCachedPubKeys[i]), false);
+        expect(
+            RegexUtil.matchAll(
+                Regexes(true).cachedPublicKey, invalidCachedPubKeys[i]),
+            false);
       }
-      invalidCachedPubKeys = TestKeys().invalidCachedPublicKeysNamespaceOptional;
+      invalidCachedPubKeys =
+          TestKeys().invalidCachedPublicKeysNamespaceOptional;
       for (var i = 0; i < invalidCachedPubKeys.length; i++) {
-        expect(RegexUtil.matchAll(Regexes(false).cachedPublicKey, invalidCachedPubKeys[i]), false);
+        expect(
+            RegexUtil.matchAll(
+                Regexes(false).cachedPublicKey, invalidCachedPubKeys[i]),
+            false);
       }
     });
   });
@@ -299,8 +324,10 @@ void main() {
     test('Valid Self keys', () {
       var validSelfKeys = TestKeys().validSelfKeys;
       for (var i = 0; i < validSelfKeys.length; i++) {
-        expect(RegexUtil.matchAll(Regexes(true).selfKey, validSelfKeys[i]), true);
-        expect(RegexUtil.matchAll(Regexes(false).selfKey, validSelfKeys[i]), true);
+        expect(
+            RegexUtil.matchAll(Regexes(true).selfKey, validSelfKeys[i]), true);
+        expect(
+            RegexUtil.matchAll(Regexes(false).selfKey, validSelfKeys[i]), true);
       }
     });
 
@@ -308,11 +335,13 @@ void main() {
       List<String> invalidSelfKeys;
       invalidSelfKeys = TestKeys().invalidSelfKeysNamespaceMandatory;
       for (var i = 0; i < invalidSelfKeys.length; i++) {
-        expect(RegexUtil.matchAll(Regexes(true).selfKey, invalidSelfKeys[i]), false);
+        expect(RegexUtil.matchAll(Regexes(true).selfKey, invalidSelfKeys[i]),
+            false);
       }
       invalidSelfKeys = TestKeys().invalidSelfKeysNamespaceOptional;
       for (var i = 0; i < invalidSelfKeys.length; i++) {
-        expect(RegexUtil.matchAll(Regexes(false).selfKey, invalidSelfKeys[i]), false);
+        expect(RegexUtil.matchAll(Regexes(false).selfKey, invalidSelfKeys[i]),
+            false);
       }
     });
 
@@ -320,8 +349,12 @@ void main() {
       test('Valid shared keys', () {
         var validSharedKeys = TestKeys().validSharedKeys;
         for (var i = 0; i < validSharedKeys.length; i++) {
-          expect(RegexUtil.matchAll(Regexes(true).sharedKey, validSharedKeys[i]), true);
-          expect(RegexUtil.matchAll(Regexes(false).sharedKey, validSharedKeys[i]), true);
+          expect(
+              RegexUtil.matchAll(Regexes(true).sharedKey, validSharedKeys[i]),
+              true);
+          expect(
+              RegexUtil.matchAll(Regexes(false).sharedKey, validSharedKeys[i]),
+              true);
         }
       });
 
@@ -329,11 +362,16 @@ void main() {
         List<String> invalidSharedKeys;
         invalidSharedKeys = TestKeys().invalidSharedKeysNamespaceMandatory;
         for (var i = 0; i < invalidSharedKeys.length; i++) {
-          expect(RegexUtil.matchAll(Regexes(true).sharedKey, invalidSharedKeys[i]), false);
+          expect(
+              RegexUtil.matchAll(Regexes(true).sharedKey, invalidSharedKeys[i]),
+              false);
         }
         invalidSharedKeys = TestKeys().invalidSharedKeysNamespaceOptional;
         for (var i = 0; i < invalidSharedKeys.length; i++) {
-          expect(RegexUtil.matchAll(Regexes(false).sharedKey, invalidSharedKeys[i]), false);
+          expect(
+              RegexUtil.matchAll(
+                  Regexes(false).sharedKey, invalidSharedKeys[i]),
+              false);
         }
       });
 
@@ -341,20 +379,34 @@ void main() {
         var validCachedSharedKeys = TestKeys().validCachedSharedKeys;
         for (var i = 0; i < validCachedSharedKeys.length; i++) {
           print(validCachedSharedKeys[i]);
-          expect(RegexUtil.matchAll(Regexes(true).cachedSharedKey, validCachedSharedKeys[i]), true);
-          expect(RegexUtil.matchAll(Regexes(false).cachedSharedKey, validCachedSharedKeys[i]), true);
+          expect(
+              RegexUtil.matchAll(
+                  Regexes(true).cachedSharedKey, validCachedSharedKeys[i]),
+              true);
+          expect(
+              RegexUtil.matchAll(
+                  Regexes(false).cachedSharedKey, validCachedSharedKeys[i]),
+              true);
         }
       });
 
       test('Invalid cached shared keys', () {
         List<String> invalidCachedSharedKeys;
-        invalidCachedSharedKeys = TestKeys().invalidCachedSharedKeysNamespaceMandatory;
+        invalidCachedSharedKeys =
+            TestKeys().invalidCachedSharedKeysNamespaceMandatory;
         for (var i = 0; i < invalidCachedSharedKeys.length; i++) {
-          expect(RegexUtil.matchAll(Regexes(true).cachedSharedKey, invalidCachedSharedKeys[i]), false);
+          expect(
+              RegexUtil.matchAll(
+                  Regexes(true).cachedSharedKey, invalidCachedSharedKeys[i]),
+              false);
         }
-        invalidCachedSharedKeys = TestKeys().invalidCachedSharedKeysNamespaceOptional;
+        invalidCachedSharedKeys =
+            TestKeys().invalidCachedSharedKeysNamespaceOptional;
         for (var i = 0; i < invalidCachedSharedKeys.length; i++) {
-          expect(RegexUtil.matchAll(Regexes(false).cachedSharedKey, invalidCachedSharedKeys[i]), false);
+          expect(
+              RegexUtil.matchAll(
+                  Regexes(false).cachedSharedKey, invalidCachedSharedKeys[i]),
+              false);
         }
       });
     });
