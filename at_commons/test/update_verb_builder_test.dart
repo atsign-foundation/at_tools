@@ -113,6 +113,44 @@ void main() {
         }
       });
     });
+    test('validate update command with negative ttl and ttr', () {
+      final updateCommand =
+          'update:ttl:-1:ttr:-1:dataSignature:abc:isBinary:false:isEncrypted:false:public:kryz.kryz_9850@kryz_9850 {"stationName":"KRYZ","frequency":"98.5 Mhz"}';
+      var actualVerbParams = getVerbParams(VerbSyntax.update, updateCommand);
+      expect(actualVerbParams[AT_TTL], '-1');
+      expect(actualVerbParams[AT_TTR], '-1');
+      expect(actualVerbParams[AT_KEY], 'kryz.kryz_9850');
+      expect(actualVerbParams[AT_SIGN], 'kryz_9850');
+    });
+    test('validate update command with negative ttl and ttb', () {
+      final updateCommand =
+          'update:ttl:-1:ttb:-1:dataSignature:abc:isBinary:false:isEncrypted:false:public:kryz.kryz_9850@kryz_9850 {"stationName":"KRYZ","frequency":"98.5 Mhz"}';
+      var actualVerbParams = getVerbParams(VerbSyntax.update, updateCommand);
+      expect(actualVerbParams[AT_TTL], '-1');
+      expect(actualVerbParams[AT_TTB], '-1');
+      expect(actualVerbParams[AT_KEY], 'kryz.kryz_9850');
+      expect(actualVerbParams[AT_SIGN], 'kryz_9850');
+    });
+    test('validate update meta command with negative ttl and ttr', () {
+      final updateCommand =
+          'update:meta:public:kryz.kryz_9850@kryz_9850:ttl:-1:ttr:-1';
+      var actualVerbParams =
+          getVerbParams(VerbSyntax.update_meta, updateCommand);
+      expect(actualVerbParams[AT_TTL], '-1');
+      expect(actualVerbParams[AT_TTR], '-1');
+      expect(actualVerbParams[AT_KEY], 'kryz.kryz_9850');
+      expect(actualVerbParams[AT_SIGN], 'kryz_9850');
+    });
+    test('validate update meta command with negative ttl and ttb', () {
+      final updateCommand =
+          'update:meta:public:kryz.kryz_9850@kryz_9850:ttl:-1:ttb:-1';
+      var actualVerbParams =
+          getVerbParams(VerbSyntax.update_meta, updateCommand);
+      expect(actualVerbParams[AT_TTL], '-1');
+      expect(actualVerbParams[AT_TTB], '-1');
+      expect(actualVerbParams[AT_KEY], 'kryz.kryz_9850');
+      expect(actualVerbParams[AT_SIGN], 'kryz_9850');
+    });
   });
 
   group('A group of negative test on update verb regex', () {
