@@ -1,5 +1,7 @@
 class VerbSyntax {
-  static const from = r'^from:(?<atSign>@?[^@\s]+$)';
+  // Adding \{ and \} to regex to ensure the JSON encoded String is Map.
+  static const from =
+      r'^from:(?<atSign>@?[^@:\s]+)(:clientConfig:(?<clientConfig>\{.+\}))?$';
   static const pol = r'^pol$';
   static const cram = r'^cram:(?<digest>.+$)';
   static const pkam = r'^pkam:(?<signature>.+$)';
