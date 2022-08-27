@@ -9,9 +9,11 @@ class AtSignLogger {
   bool _hierarchicalLoggingEnabled = false;
   String? _level;
 
+  static var loggingHandler = ConsoleLoggingHandler();
+
   AtSignLogger(String name) {
     logger = logging.Logger.detached(name);
-    logger.onRecord.listen(ConsoleLoggingHandler());
+    logger.onRecord.listen(loggingHandler);
     level = _root_level;
   }
 
