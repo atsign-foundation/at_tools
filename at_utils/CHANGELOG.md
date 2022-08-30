@@ -1,3 +1,6 @@
+# 3.0.11
+- Change the ConsoleLoggingHandler to static reference
+- Update the at_commons version to 3.0.25
 # 3.0.10
 - at_commons version change to 3.0.17 for AtException hierarchy and introducing new AtException subclasses
 ## 3.0.9
