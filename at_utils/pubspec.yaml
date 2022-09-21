@@ -3,7 +3,7 @@ description: A Dart library that contains various utility classes such as atSign
 version: 3.0.11
 repository: https://github.com/atsign-foundation/at_tools
 homepage: https://atsign.dev
-documentation: https://atsign.dev/docs/
+documentation: https://docs.atsign.com/
 
 
 environment:

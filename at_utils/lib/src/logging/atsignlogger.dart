@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:at_utils/src/logging/handlers.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:logging/logging.dart' as logging;
@@ -33,6 +35,7 @@ class AtSignLogger {
 
   bool isLoggable(String value) => (LogLevel.level[value]! >= logger.level);
 
+  // ignore: unnecessary_getters_setters
   bool get hierarchicalLoggingEnabled {
     return _hierarchicalLoggingEnabled;
   }
