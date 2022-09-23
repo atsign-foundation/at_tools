@@ -19,3 +19,4 @@ export 'package:at_commons/src/verb/syntax.dart';
 export 'package:at_commons/src/verb/update_verb_builder.dart';
 export 'package:at_commons/src/verb/verb_builder.dart';
 export 'package:at_commons/src/verb/from_verb_builder.dart';
+export 'package:at_commons/src/verb/notify_fetch_verb_builder.dart';

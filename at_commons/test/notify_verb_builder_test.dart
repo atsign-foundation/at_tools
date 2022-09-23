@@ -105,4 +105,27 @@ void main() {
   } catch (e, s) {
     print(s);
   }
+
+  group('A group of test to validate notify fetch verb', () {
+    test('Test to verify to notify:fetch', () {
+      var notifyFetch = NotifyFetchVerbBuilder()..notificationId = '123';
+      var notifyFetchCommand = notifyFetch.buildCommand();
+      expect(notifyFetchCommand, 'notify:fetch:123\n');
+      var verbParams =
+          getVerbParams(VerbSyntax.notifyFetch, notifyFetchCommand.trim());
+      expect(verbParams['notificationId'], '123');
+    });
+
+    test('Negative test to verify to notify:fetch when notification id not set', () {
+      var notifyFetch = NotifyFetchVerbBuilder();
+      expect(() => notifyFetch.buildCommand(),
+          throwsA(predicate((dynamic e) => e is InvalidSyntaxException)));
+    });
+
+    test('Negative test to verify to notify:fetch when empty string is set', () {
+      var notifyFetch = NotifyFetchVerbBuilder()..notificationId = '';
+      expect(() => notifyFetch.buildCommand(),
+          throwsA(predicate((dynamic e) => e is InvalidSyntaxException)));
+    });
+  });
 }
