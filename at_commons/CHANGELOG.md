@@ -1,3 +1,5 @@
+## 3.0.26
+* feat: Introduce notifyFetch verb
 ## 3.0.25
 * fix: update regex to correctly parse negative values in ttl and ttb
 * feat: add clientConfig to from verb syntax
