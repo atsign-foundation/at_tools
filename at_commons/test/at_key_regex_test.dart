@@ -411,4 +411,28 @@ void main() {
       });
     });
   });
+
+  group('A group of test to validate local keys', () {
+    test('Test to validate local keys with enforcing namespaces', () {
+      var keyTypeList = [];
+      keyTypeList.add('local:phone.buzz@alice');
+      keyTypeList.add('local:pho_-n________e.b@alice');
+      keyTypeList.add('local:phone😀.buzz@alice💙');
+      for (var key in keyTypeList) {
+        var type = RegexUtil.keyType(key, true);
+        expect(type == KeyType.localKey, true);
+      }
+    });
+
+    test('Test to validate local keys without enforcing namespaces', () {
+      var keyTypeList = [];
+      keyTypeList.add('local:phone@alice');
+      keyTypeList.add('local:pho_-n________e@alice');
+      keyTypeList.add('local:phone😀@alice💙');
+      for (var key in keyTypeList) {
+        var type = RegexUtil.keyType(key, false);
+        expect(type == KeyType.localKey, true);
+      }
+    });
+  });
 }

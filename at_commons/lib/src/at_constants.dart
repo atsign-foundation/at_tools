@@ -71,3 +71,4 @@ const String statsNotificationId = '_latestNotificationIdv2';
 const String ENCODING = 'encoding';
 const String CLIENT_CONFIG = 'clientConfig';
 const String VERSION = 'version';
+const String IS_LOCAL = 'isLocal';

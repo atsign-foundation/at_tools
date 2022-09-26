@@ -27,6 +27,11 @@ void main() {
       var keyType = AtKey.getKeyType('@bob:phone.buzz@bob');
       expect(keyType, equals(KeyType.selfKey));
     });
+
+    test('Test to verify local key type with namespace', () {
+      var keyType = AtKey.getKeyType('local:latestNotification.wavi@bob', enforceNameSpace: true);
+      expect(keyType, equals(KeyType.localKey));
+    });
   });
   group('A group of tests to check invalid key types', () {
     test('Test public key type without namespace', () {
@@ -60,6 +65,10 @@ void main() {
     });
     test('Test self key type with atsign and without namespace', () {
       var keyType = AtKey.getKeyType('@bob:phone@bob', enforceNameSpace: true);
+      expect(keyType, equals(KeyType.invalidKey));
+    });
+    test('Test local key type with atsign and without namespace', () {
+      var keyType = AtKey.getKeyType('local:phone@bob', enforceNameSpace: true);
       expect(keyType, equals(KeyType.invalidKey));
     });
   });
