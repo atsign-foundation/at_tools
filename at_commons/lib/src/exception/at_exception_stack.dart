@@ -17,8 +17,10 @@ class AtExceptionStack implements Comparable<AtChainedException> {
   String getTraceMessage() {
     var size = _exceptionList.length;
     String fullMessage = '';
-    fullMessage =
-        '${getIntentMessage(_exceptionList.first.intent)} caused by\n';
+    if (size > 0) {
+      fullMessage =
+          '${getIntentMessage(_exceptionList.first.intent)} caused by\n';
+    }
     for (AtChainedException element in _exceptionList) {
       size--;
       fullMessage += element.message;
