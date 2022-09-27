@@ -1,5 +1,6 @@
 ## 3.0.26
 * feat: Introduce notifyFetch verb
+* fix: bug in at_exception_stack.dart
 ## 3.0.25
 * fix: update regex to correctly parse negative values in ttl and ttb
 * feat: add clientConfig to from verb syntax
