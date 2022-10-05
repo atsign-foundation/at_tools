@@ -6,14 +6,14 @@ import 'package:sshnp_register_tool/colors.dart';
 class IOUtil {
   /// Print 'c' client options
   static void printClientUsage() {
-    print('${Colors.white}Choose an option:');
+    print('${Colors.white.code}Choose an option:');
     print('1. I need a free atSign');
     print('2. I have an unactivated atSign');
   }
 
   /// Print 'd' device options
   static void printDeviceUsage() {
-    print('${Colors.white}Choose an option:');
+    print('${Colors.white.code}Choose an option:');
     print('1. I need a free atSign');
     print('2. I have an unactivated atSign');
     print(

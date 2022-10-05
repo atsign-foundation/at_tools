@@ -90,7 +90,7 @@ Future<void> startRepl(
     } else if (choice == '3') {
       await SystemdUtil.writeSshnpdService();
       print('${Colors.green.code}Looks like everything went well :)');
-      print('Type ${Colors.yellow.code}sudo nano etc/systemd/system/sshnpd.service ${Colors.green.code}to modify ${Colors.yellow.code}line 11 ${Colors.green.code}with the correct atSigns.');
+      print('Type ${Colors.yellow.code}nano etc/systemd/system/sshnpd.service ${Colors.green.code}to modify ${Colors.yellow.code}line 11 ${Colors.green.code}with the correct atSigns.');
       print(Colors.white.code);
     }
   }
@@ -165,7 +165,7 @@ Future<void> _onboardUnactivatedAtSign(
         '${Colors.red.code}Something went wrong when sending your OTP. Ensure that the atSign \'$atSign\' is an atSign that you own. Please try again.');
     exit(1);
   } else {
-    print('${Colors.white.code}Successfully sent otp to the email that owns the atSign.');
+    print('${Colors.green.code}Successfully sent otp to the email that owns the atSign.');
   }
   print('${Colors.magenta.code}Enter the OTP sent to your email (that owns the atSign)');
   final String otp = IOUtil.getChoice(prompt: false).toUpperCase();
@@ -184,7 +184,7 @@ Future<void> _onboardUnactivatedAtSign(
 
   if (onboarded) {
     print('${Colors.green.code}You have successfully onboarded your atSign $atSign${Colors.white.code}');
-        print('${Colors.green}$atSign\'s keys can be found in ${Colors.yellow.code}~/.atsign/keys/${atSign}_key.atKeys${Colors.white.code}');
+        print('${Colors.green.code}$atSign\'s keys can be found in ${Colors.yellow.code}~/.atsign/keys/${atSign}_key.atKeys${Colors.white.code}');
 
   } else {
     print('${Colors.red.code}Onboard unsuccessful. Please try again.');
