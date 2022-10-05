@@ -37,3 +37,5 @@ atProtocol.
 [at_ve_doctor](./at_ve_doctor)- A very simple way to test the status of the
 secondaries running in the Virtual Environment. Using the
 [at_server_status](https://pub.dev/packages/at_server_status) package.
+
+[sshnp_register_tool](./sshnp_register_tool/) - Register/Onboard atSigns easily on your client or IoT device using this tool. The tool can also initialize your `sshnpd.service` on your IoT device.
