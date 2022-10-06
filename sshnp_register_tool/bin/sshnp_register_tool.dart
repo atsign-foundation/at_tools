@@ -146,7 +146,7 @@ Future<void> _registerNewAtSign(
   final bool onboarded = await OnboardingUtil.onboard(atSign, rootUrl, cram);
   if (onboarded) {
     print('${Colors.green.code}You have successfully onboarded your atSign $atSign${Colors.white.code}');
-    print('${Colors.green.code}$atSign\'s keys can be found in ${Colors.yellow.code}~/.atsign/keys/${atSign}_key.atKeys${Colors.white.code}');
+    print('${Colors.green.code}$atSign\'s keys can be found in ${Colors.yellow.code}${IOUtil.getUriDirectoryPath()}${atSign}_key.atKeys${Colors.white.code}');
   } else {
     print('${Colors.red.code}mOnboard unsuccessful. Please try again.');
   }
@@ -184,8 +184,7 @@ Future<void> _onboardUnactivatedAtSign(
 
   if (onboarded) {
     print('${Colors.green.code}You have successfully onboarded your atSign $atSign${Colors.white.code}');
-        print('${Colors.green.code}$atSign\'s keys can be found in ${Colors.yellow.code}~/.atsign/keys/${atSign}_key.atKeys${Colors.white.code}');
-
+    print('${Colors.green.code}$atSign\'s keys can be found in ${Colors.yellow.code}${IOUtil.getUriDirectoryPath()}${atSign}_key.atKeys${Colors.white.code}');
   } else {
     print('${Colors.red.code}Onboard unsuccessful. Please try again.');
   }

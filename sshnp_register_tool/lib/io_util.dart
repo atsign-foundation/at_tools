@@ -56,4 +56,17 @@ class IOUtil {
     }
   }
 
+  /// returns ~/.atsign/keys/ directory path based on OS
+  static String getUriDirectoryPath() {
+    String home = "";
+    if (Platform.isMacOS) {
+      home = Platform.environment['HOME']!;
+    } else if (Platform.isLinux) {
+      home = Platform.environment['HOME']!;
+    } else if (Platform.isWindows) {
+      home = Platform.environment['UserProfile']!;
+    }
+    final String path = "$home/.atsign/keys/";
+    return path;
+  }
 }
