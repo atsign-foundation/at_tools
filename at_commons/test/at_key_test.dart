@@ -520,7 +520,7 @@ void main() {
         ..key = 'phone'
         ..sharedBy = '@alice'
         ..namespace = 'wavi'
-        ..metadata = (Metadata()..isLocal = true);
+        ..isLocal = true;
       expect(atKey.toString(), 'local:phone.wavi@alice');
     });
 
@@ -529,15 +529,33 @@ void main() {
       expect(atKey.key, 'phone');
       expect(atKey.namespace, 'wavi');
       expect(atKey.sharedBy, '@alice');
-      expect(atKey.metadata!.isLocal, true);
+      expect(atKey.isLocal, true);
     });
 
-    test('A test to validate the creation of local key using static method',(){
-      var atKey = AtKey.local('phone', namespace: 'wavi', sharedBy: '@alice').build();
+    test('A test to validate the creation of local key using static method',
+        () {
+      var atKey =
+          AtKey.local('phone', namespace: 'wavi', sharedBy: '@alice').build();
       expect(atKey.key, 'phone');
       expect(atKey.namespace, 'wavi');
       expect(atKey.sharedBy, '@alice');
-      expect(atKey.metadata!.isLocal, true);
+      expect(atKey.isLocal, true);
+    });
+
+    test(
+        'A test to verify InvalidAtKey exception is thrown when sharedWith and isLocal are populated',
+        () {
+      expect(
+          () => AtKey()
+            ..key = 'phone'
+            ..namespace = 'wavi'
+            ..sharedWith = '@bob'
+            ..sharedBy = '@alice'
+            ..isLocal = true,
+          throwsA(predicate((dynamic e) =>
+              e is InvalidAtKeyException &&
+              e.message ==
+                  'sharedWith should be empty when isLocal is set to true')));
     });
   });
 }

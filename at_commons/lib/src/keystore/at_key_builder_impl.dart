@@ -136,6 +136,6 @@ class PrivateKeyBuilder extends AbstractKeyBuilder {
 class LocalKeyBuilder extends AbstractKeyBuilder {
   LocalKeyBuilder() : super() {
     _atKey = LocalKey();
-    _meta.isLocal = true;
+    _atKey.isLocal = true;
   }
 }

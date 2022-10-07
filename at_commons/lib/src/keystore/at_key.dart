@@ -9,6 +9,8 @@ class AtKey {
   String? namespace;
   Metadata? metadata;
   bool isRef = false;
+  /// When set to true, represents the local key
+  bool _isLocal = false;
 
   String? get sharedBy => _sharedBy;
 
@@ -22,6 +24,16 @@ class AtKey {
   set sharedWith(String? atSign) {
     assertStartsWithAtIfNotEmpty(atSign);
     _sharedWith = atSign;
+  }
+
+  bool get isLocal => _isLocal;
+
+  set isLocal(bool isLocal) {
+    if (isLocal == true && sharedWith != null) {
+      throw InvalidAtKeyException(
+          'sharedWith should be empty when isLocal is set to true');
+    }
+    _isLocal = isLocal;
   }
 
   String _dotNamespaceIfPresent() {
@@ -62,8 +74,8 @@ class AtKey {
     if (_sharedWith != null && _sharedWith!.isNotEmpty) {
       return '$_sharedWith:$key${_dotNamespaceIfPresent()}$_sharedBy';
     }
-    // if metadata.isLocal is true, return localkey
-    if (key!.startsWith('local:') || (metadata != null && metadata!.isLocal)) {
+    // if key starts with local: or isLocal set to true, return local key
+    if (key!.startsWith('local:') || (isLocal == true)) {
       return 'local:$key${_dotNamespaceIfPresent()}$sharedBy';
     }
     // Defaults to return a self key.
@@ -202,7 +214,7 @@ class AtKey {
         metaData.isPublic = true;
       }
       if (keyParts[0] == 'local') {
-        metaData.isLocal = true;
+        atKey.isLocal = true;
       }
       // Example key: cached:@alice:phone@bob
       else if (keyParts[0] == CACHED) {
@@ -310,6 +322,7 @@ class PrivateKey extends AtKey {
 /// The key does not sync between the local-secondary and the cloud-secondary.
 class LocalKey extends AtKey {
   LocalKey() {
+    isLocal = true;
     super.metadata = Metadata();
   }
 
@@ -395,12 +408,9 @@ class Metadata {
   /// Represents the type of encoding (ex: base64) when the value contains a new line character's
   String? encoding;
 
-  /// When set to true, implies the key is [LocalKey]
-  bool isLocal = false;
-
   @override
   String toString() {
-    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : $isBinary, isEncrypted : $isEncrypted, isCached : $isCached, dataSignature: $dataSignature, sharedKeyStatus: $sharedKeyStatus, encryptedSharedKey: $sharedKeyEnc, pubKeyCheckSum: $pubKeyCS, encoding: $encoding, isLocal: $isLocal}';
+    return 'Metadata{ttl: $ttl, ttb: $ttb, ttr: $ttr,ccd: $ccd, isPublic: $isPublic, isHidden: $isHidden, availableAt : ${availableAt?.toUtc().toString()}, expiresAt : ${expiresAt?.toUtc().toString()}, refreshAt : ${refreshAt?.toUtc().toString()}, createdAt : ${createdAt?.toUtc().toString()},updatedAt : ${updatedAt?.toUtc().toString()},isBinary : $isBinary, isEncrypted : $isEncrypted, isCached : $isCached, dataSignature: $dataSignature, sharedKeyStatus: $sharedKeyStatus, encryptedSharedKey: $sharedKeyEnc, pubKeyCheckSum: $pubKeyCS, encoding: $encoding}';
   }
 
   Map toJson() {
@@ -422,7 +432,6 @@ class Metadata {
     map[SHARED_KEY_ENCRYPTED] = sharedKeyEnc;
     map[SHARED_WITH_PUBLIC_KEY_CHECK_SUM] = pubKeyCS;
     map[ENCODING] = encoding;
-    map[IS_LOCAL] = isLocal;
     return map;
   }
 
@@ -473,7 +482,6 @@ class Metadata {
       metaData.sharedKeyEnc = json[SHARED_KEY_ENCRYPTED];
       metaData.pubKeyCS = json[SHARED_WITH_PUBLIC_KEY_CHECK_SUM];
       metaData.encoding = json[ENCODING];
-      metaData.isLocal = json[IS_LOCAL];
     } catch (error) {
       // TODO swallowing the error does not seem like the right thing to do
       print('AtMetaData.fromJson error: ${error.toString()}');
