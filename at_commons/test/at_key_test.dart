@@ -513,4 +513,102 @@ void main() {
       expect('privatekey:at_secret', atKey.toString());
     });
   });
+
+  group('A group of tests to validate local key', () {
+    test('A test to verify toString on AtKey', () {
+      var atKey = AtKey()
+        ..key = 'phone'
+        ..sharedBy = '@alice'
+        ..namespace = 'wavi'
+        ..isLocal = true;
+      expect(atKey.toString(), 'local:phone.wavi@alice');
+    });
+
+    test('A test to verify toString on AtKey with local: in atKey', () {
+      var atKey = AtKey()
+        ..key = 'local:phone'
+        ..sharedBy = '@alice'
+        ..namespace = 'wavi'
+        ..isLocal = true;
+      expect(atKey.toString(), 'local:phone.wavi@alice');
+    });
+
+    test('A test to verify fromString on AtKey', () {
+      var atKey = AtKey.fromString('local:phone.wavi@alice');
+      expect(atKey.key, 'phone');
+      expect(atKey.namespace, 'wavi');
+      expect(atKey.sharedBy, '@alice');
+      expect(atKey.isLocal, true);
+    });
+
+    test('A test to validate the creation of local key using static method',
+        () {
+      var atKey = AtKey.local('phone', '@alice', namespace: 'wavi').build();
+      expect(atKey.key, 'phone');
+      expect(atKey.namespace, 'wavi');
+      expect(atKey.sharedBy, '@alice');
+      expect(atKey.isLocal, true);
+    });
+
+    test(
+        'A test to verify InvalidAtKey exception is thrown when sharedWith and isLocal are populated',
+        () {
+      expect(
+          () => AtKey()
+            ..key = 'phone'
+            ..namespace = 'wavi'
+            ..sharedWith = '@bob'
+            ..sharedBy = '@alice'
+            ..isLocal = true,
+          throwsA(predicate((dynamic e) =>
+              e is InvalidAtKeyException &&
+              e.message ==
+                  'sharedWith should be empty when isLocal is set to true')));
+    });
+
+    test('A test to verify local key builder', () {
+      var localKey = (LocalKeyBuilder()
+            ..key('phone')
+            ..sharedBy('@alice'))
+          .build();
+      expect(localKey, isA<LocalKey>());
+      expect(localKey.isLocal, true);
+      expect(localKey.toString(), 'local:phone@alice');
+    });
+
+    test('validate a local key with sharedBy populated', () {
+      var localKey = (LocalKeyBuilder()
+            ..key('phone')
+            ..sharedBy('@alice'))
+          .build();
+      var validationResult = AtKeyValidators.get().validate(
+          localKey.toString(), ValidationContext()..atSign = '@alice');
+      expect(validationResult.isValid, true);
+    });
+
+    test('validate a local key with sharedBy not populated', () {
+      var localKey = (LocalKeyBuilder()
+            ..key('phone')
+            ..sharedBy(''))
+          .build();
+      var validationResult = AtKeyValidators.get().validate(
+          localKey.toString(), ValidationContext()..atSign = '@alice');
+      expect(validationResult.isValid, false);
+      expect(validationResult.failureReason, 'local:phone is not a valid key');
+    });
+
+    test('validate a local key with namespace not populated', () {
+      var localKey = (LocalKeyBuilder()
+            ..key('phone')
+            ..sharedBy('@alice'))
+          .build();
+      var validationResult = AtKeyValidators.get().validate(
+          localKey.toString(),
+          ValidationContext()
+            ..atSign = '@alice'
+            ..enforceNamespace = true);
+      expect(validationResult.isValid, false);
+      expect(validationResult.failureReason, 'local:phone@alice is not a valid key');
+    });
+  });
 }

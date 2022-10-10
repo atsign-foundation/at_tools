@@ -82,6 +82,9 @@ class _AtKeyValidatorImpl extends AtKeyValidator {
       case KeyType.reservedKey:
         _regex = regexes.reservedKey;
         break;
+      case KeyType.localKey:
+        _regex = regexes.localKey;
+        break;
       case KeyType.invalidKey:
         _regex = '';
         break;
