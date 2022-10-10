@@ -575,5 +575,27 @@ void main() {
       expect(localKey.isLocal, true);
       expect(localKey.toString(), 'local:phone@alice');
     });
+
+    test('validate a local key with namespace', () {
+      var localKey = (LocalKeyBuilder()
+            ..key('phone')
+            ..sharedBy('@alice'))
+          .build();
+      var validationResult = AtKeyValidators.get().validate(
+          localKey.toString(), ValidationContext()..atSign = '@alice');
+      expect(validationResult.isValid, true);
+    });
+
+    test('validate a local key with namespace when sharedBy is not populated',
+        () {
+      var localKey = (LocalKeyBuilder()
+            ..key('phone')
+            ..sharedBy(''))
+          .build();
+      var validationResult = AtKeyValidators.get().validate(
+          localKey.toString(), ValidationContext()..atSign = '@alice');
+      expect(validationResult.isValid, false);
+      expect(validationResult.failureReason, 'local:phone is not a valid key');
+    });
   });
 }
