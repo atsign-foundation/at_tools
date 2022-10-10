@@ -9,7 +9,9 @@ class AtKey {
   String? namespace;
   Metadata? metadata;
   bool isRef = false;
-  /// When set to true, represents the local key
+
+  /// When set to true, represents the [LocalKey]
+  /// These keys will never be synced between the client and secondary server.
   bool _isLocal = false;
 
   String? get sharedBy => _sharedBy;
@@ -75,8 +77,12 @@ class AtKey {
       return '$_sharedWith:$key${_dotNamespaceIfPresent()}$_sharedBy';
     }
     // if key starts with local: or isLocal set to true, return local key
-    if (key!.startsWith('local:') || (isLocal == true)) {
-      return 'local:$key${_dotNamespaceIfPresent()}$sharedBy';
+    if (isLocal == true) {
+      String localKey = '$key${_dotNamespaceIfPresent()}$sharedBy';
+      if (localKey.startsWith('local:')) {
+        return localKey;
+      }
+      return 'local:$localKey';
     }
     // Defaults to return a self key.
     return '$key${_dotNamespaceIfPresent()}$_sharedBy';
@@ -176,8 +182,8 @@ class AtKey {
   /// ```dart
   /// AtKey localKey = AtKey.local('phone',namespace:'wavi').build();
   /// ```
-  static LocalKeyBuilder local(String key,
-      {String? namespace, String sharedBy = ''}) {
+  static LocalKeyBuilder local(String key, String sharedBy,
+      {String? namespace}) {
     return LocalKeyBuilder()
       ..key(key)
       ..namespace(namespace)

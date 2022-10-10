@@ -524,6 +524,15 @@ void main() {
       expect(atKey.toString(), 'local:phone.wavi@alice');
     });
 
+    test('A test to verify toString on AtKey with local: in atKey', () {
+      var atKey = AtKey()
+        ..key = 'local:phone'
+        ..sharedBy = '@alice'
+        ..namespace = 'wavi'
+        ..isLocal = true;
+      expect(atKey.toString(), 'local:phone.wavi@alice');
+    });
+
     test('A test to verify fromString on AtKey', () {
       var atKey = AtKey.fromString('local:phone.wavi@alice');
       expect(atKey.key, 'phone');
@@ -534,8 +543,7 @@ void main() {
 
     test('A test to validate the creation of local key using static method',
         () {
-      var atKey =
-          AtKey.local('phone', namespace: 'wavi', sharedBy: '@alice').build();
+      var atKey = AtKey.local('phone', '@alice', namespace: 'wavi').build();
       expect(atKey.key, 'phone');
       expect(atKey.namespace, 'wavi');
       expect(atKey.sharedBy, '@alice');
@@ -556,6 +564,16 @@ void main() {
               e is InvalidAtKeyException &&
               e.message ==
                   'sharedWith should be empty when isLocal is set to true')));
+    });
+
+    test('A test to verify local key builder', () {
+      var localKey = (LocalKeyBuilder()
+            ..key('phone')
+            ..sharedBy('@alice'))
+          .build();
+      expect(localKey, isA<LocalKey>());
+      expect(localKey.isLocal, true);
+      expect(localKey.toString(), 'local:phone@alice');
     });
   });
 }
