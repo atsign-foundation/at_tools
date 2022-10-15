@@ -10,6 +10,29 @@ class AtKey {
   Metadata? metadata;
   bool isRef = false;
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AtKey &&
+          runtimeType == other.runtimeType &&
+          key == other.key &&
+          _sharedWith == other._sharedWith &&
+          _sharedBy == other._sharedBy &&
+          namespace == other.namespace &&
+          metadata == other.metadata &&
+          isRef == other.isRef &&
+          _isLocal == other._isLocal;
+
+  @override
+  int get hashCode =>
+      key.hashCode ^
+      _sharedWith.hashCode ^
+      _sharedBy.hashCode ^
+      namespace.hashCode ^
+      metadata.hashCode ^
+      isRef.hashCode ^
+      _isLocal.hashCode;
+
   /// When set to true, represents the [LocalKey]
   /// These keys will never be synced between the client and secondary server.
   bool _isLocal = false;
