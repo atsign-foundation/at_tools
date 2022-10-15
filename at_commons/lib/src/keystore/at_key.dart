@@ -517,6 +517,55 @@ class Metadata {
     }
     return metaData;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Metadata &&
+          runtimeType == other.runtimeType &&
+          ttl == other.ttl &&
+          ttb == other.ttb &&
+          ttr == other.ttr &&
+          ccd == other.ccd &&
+          availableAt == other.availableAt &&
+          expiresAt == other.expiresAt &&
+          refreshAt == other.refreshAt &&
+          createdAt == other.createdAt &&
+          updatedAt == other.updatedAt &&
+          dataSignature == other.dataSignature &&
+          sharedKeyStatus == other.sharedKeyStatus &&
+          isPublic == other.isPublic &&
+          isHidden == other.isHidden &&
+          namespaceAware == other.namespaceAware &&
+          isBinary == other.isBinary &&
+          isEncrypted == other.isEncrypted &&
+          isCached == other.isCached &&
+          sharedKeyEnc == other.sharedKeyEnc &&
+          pubKeyCS == other.pubKeyCS &&
+          encoding == other.encoding;
+
+  @override
+  int get hashCode =>
+      ttl.hashCode ^
+      ttb.hashCode ^
+      ttr.hashCode ^
+      ccd.hashCode ^
+      availableAt.hashCode ^
+      expiresAt.hashCode ^
+      refreshAt.hashCode ^
+      createdAt.hashCode ^
+      updatedAt.hashCode ^
+      dataSignature.hashCode ^
+      sharedKeyStatus.hashCode ^
+      isPublic.hashCode ^
+      isHidden.hashCode ^
+      namespaceAware.hashCode ^
+      isBinary.hashCode ^
+      isEncrypted.hashCode ^
+      isCached.hashCode ^
+      sharedKeyEnc.hashCode ^
+      pubKeyCS.hashCode ^
+      encoding.hashCode;
 }
 
 class AtValue {
