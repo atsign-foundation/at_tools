@@ -576,4 +576,11 @@ class AtValue {
   String toString() {
     return 'AtValue{value: $value, metadata: $metadata}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is AtValue && runtimeType == other.runtimeType && value == other.value && metadata == other.metadata;
+
+  @override
+  int get hashCode => value.hashCode ^ metadata.hashCode;
 }
