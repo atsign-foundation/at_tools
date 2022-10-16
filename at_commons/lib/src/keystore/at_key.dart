@@ -10,6 +10,29 @@ class AtKey {
   Metadata? metadata;
   bool isRef = false;
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AtKey &&
+          runtimeType == other.runtimeType &&
+          key == other.key &&
+          _sharedWith == other._sharedWith &&
+          _sharedBy == other._sharedBy &&
+          namespace == other.namespace &&
+          metadata == other.metadata &&
+          isRef == other.isRef &&
+          _isLocal == other._isLocal;
+
+  @override
+  int get hashCode =>
+      key.hashCode ^
+      _sharedWith.hashCode ^
+      _sharedBy.hashCode ^
+      namespace.hashCode ^
+      metadata.hashCode ^
+      isRef.hashCode ^
+      _isLocal.hashCode;
+
   /// When set to true, represents the [LocalKey]
   /// These keys will never be synced between the client and secondary server.
   bool _isLocal = false;
@@ -494,6 +517,55 @@ class Metadata {
     }
     return metaData;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Metadata &&
+          runtimeType == other.runtimeType &&
+          ttl == other.ttl &&
+          ttb == other.ttb &&
+          ttr == other.ttr &&
+          ccd == other.ccd &&
+          availableAt == other.availableAt &&
+          expiresAt == other.expiresAt &&
+          refreshAt == other.refreshAt &&
+          createdAt == other.createdAt &&
+          updatedAt == other.updatedAt &&
+          dataSignature == other.dataSignature &&
+          sharedKeyStatus == other.sharedKeyStatus &&
+          isPublic == other.isPublic &&
+          isHidden == other.isHidden &&
+          namespaceAware == other.namespaceAware &&
+          isBinary == other.isBinary &&
+          isEncrypted == other.isEncrypted &&
+          isCached == other.isCached &&
+          sharedKeyEnc == other.sharedKeyEnc &&
+          pubKeyCS == other.pubKeyCS &&
+          encoding == other.encoding;
+
+  @override
+  int get hashCode =>
+      ttl.hashCode ^
+      ttb.hashCode ^
+      ttr.hashCode ^
+      ccd.hashCode ^
+      availableAt.hashCode ^
+      expiresAt.hashCode ^
+      refreshAt.hashCode ^
+      createdAt.hashCode ^
+      updatedAt.hashCode ^
+      dataSignature.hashCode ^
+      sharedKeyStatus.hashCode ^
+      isPublic.hashCode ^
+      isHidden.hashCode ^
+      namespaceAware.hashCode ^
+      isBinary.hashCode ^
+      isEncrypted.hashCode ^
+      isCached.hashCode ^
+      sharedKeyEnc.hashCode ^
+      pubKeyCS.hashCode ^
+      encoding.hashCode;
 }
 
 class AtValue {
@@ -504,4 +576,11 @@ class AtValue {
   String toString() {
     return 'AtValue{value: $value, metadata: $metadata}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is AtValue && runtimeType == other.runtimeType && value == other.value && metadata == other.metadata;
+
+  @override
+  int get hashCode => value.hashCode ^ metadata.hashCode;
 }
