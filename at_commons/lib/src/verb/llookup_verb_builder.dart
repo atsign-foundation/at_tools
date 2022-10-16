@@ -31,11 +31,18 @@ class LLookupVerbBuilder implements VerbBuilder {
 
   String? operation;
 
+  /// Indicates if the key is local
+  /// If the key is local, the key does not sync between cloud and local secondary
+  bool isLocal = false;
+
   @override
   String buildCommand() {
     var command = 'llookup:';
     if (operation != null) {
       command += '$operation:';
+    }
+    if(isLocal){
+      command += 'local:';
     }
     if (isCached) {
       command += 'cached:';
