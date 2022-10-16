@@ -21,7 +21,7 @@ class ConfigUtil {
     var fileUri = await Isolate.resolvePackageUri(
         Uri.parse('package:at_cli/'));
     if (fileUri == null) {
-      throw Exception('Could not file config file at config/config.yaml');
+      throw Exception('Could not find package location');
     }
     Directory packageRoot = Directory.fromUri(fileUri).parent;
     return path.join(packageRoot.path, 'config/config.yaml');
