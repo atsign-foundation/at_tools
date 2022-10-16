@@ -131,3 +131,11 @@ class PrivateKeyBuilder extends AbstractKeyBuilder {
     _meta.isPublic = false;
   }
 }
+
+/// Builder to build the local keys
+class LocalKeyBuilder extends AbstractKeyBuilder {
+  LocalKeyBuilder() : super() {
+    _atKey = LocalKey();
+    _atKey.isLocal = true;
+  }
+}

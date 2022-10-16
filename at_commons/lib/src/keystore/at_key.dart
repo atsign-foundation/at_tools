@@ -10,6 +10,33 @@ class AtKey {
   Metadata? metadata;
   bool isRef = false;
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AtKey &&
+          runtimeType == other.runtimeType &&
+          key == other.key &&
+          _sharedWith == other._sharedWith &&
+          _sharedBy == other._sharedBy &&
+          namespace == other.namespace &&
+          metadata == other.metadata &&
+          isRef == other.isRef &&
+          _isLocal == other._isLocal;
+
+  @override
+  int get hashCode =>
+      key.hashCode ^
+      _sharedWith.hashCode ^
+      _sharedBy.hashCode ^
+      namespace.hashCode ^
+      metadata.hashCode ^
+      isRef.hashCode ^
+      _isLocal.hashCode;
+
+  /// When set to true, represents the [LocalKey]
+  /// These keys will never be synced between the client and secondary server.
+  bool _isLocal = false;
+
   String? get sharedBy => _sharedBy;
 
   set sharedBy(String? atSign) {
@@ -22,6 +49,16 @@ class AtKey {
   set sharedWith(String? atSign) {
     assertStartsWithAtIfNotEmpty(atSign);
     _sharedWith = atSign;
+  }
+
+  bool get isLocal => _isLocal;
+
+  set isLocal(bool isLocal) {
+    if (isLocal == true && sharedWith != null) {
+      throw InvalidAtKeyException(
+          'sharedWith should be empty when isLocal is set to true');
+    }
+    _isLocal = isLocal;
   }
 
   String _dotNamespaceIfPresent() {
@@ -61,6 +98,14 @@ class AtKey {
     //If _sharedWith is not null, return sharedKey
     if (_sharedWith != null && _sharedWith!.isNotEmpty) {
       return '$_sharedWith:$key${_dotNamespaceIfPresent()}$_sharedBy';
+    }
+    // if key starts with local: or isLocal set to true, return local key
+    if (isLocal == true) {
+      String localKey = '$key${_dotNamespaceIfPresent()}$sharedBy';
+      if (localKey.startsWith('local:')) {
+        return localKey;
+      }
+      return 'local:$localKey';
     }
     // Defaults to return a self key.
     return '$key${_dotNamespaceIfPresent()}$_sharedBy';
@@ -151,6 +196,23 @@ class AtKey {
       ..namespace(namespace);
   }
 
+  /// Local key are confined to the client(device)/server it is created.
+  /// The key does not sync between the local-secondary and the cloud-secondary.
+  ///
+  /// Builds a local key and return a [LocalKeyBuilder].
+  ///
+  /// Example: local:phone.wavi@alice
+  /// ```dart
+  /// AtKey localKey = AtKey.local('phone',namespace:'wavi').build();
+  /// ```
+  static LocalKeyBuilder local(String key, String sharedBy,
+      {String? namespace}) {
+    return LocalKeyBuilder()
+      ..key(key)
+      ..namespace(namespace)
+      ..sharedBy(sharedBy);
+  }
+
   static AtKey fromString(String key) {
     var atKey = AtKey();
     var metaData = Metadata();
@@ -179,6 +241,9 @@ class AtKey {
       // Example key: public:phone@bob
       if (keyParts[0] == 'public') {
         metaData.isPublic = true;
+      }
+      if (keyParts[0] == 'local') {
+        atKey.isLocal = true;
       }
       // Example key: cached:@alice:phone@bob
       else if (keyParts[0] == CACHED) {
@@ -278,6 +343,21 @@ class PrivateKey extends AtKey {
   @override
   String toString() {
     return 'privatekey:$key${_dotNamespaceIfPresent()}';
+  }
+}
+
+/// Represents a local key
+/// Local key are confined to the client(device)/server it is created.
+/// The key does not sync between the local-secondary and the cloud-secondary.
+class LocalKey extends AtKey {
+  LocalKey() {
+    isLocal = true;
+    super.metadata = Metadata();
+  }
+
+  @override
+  String toString() {
+    return 'local:$key${_dotNamespaceIfPresent()}$sharedBy';
   }
 }
 
@@ -437,6 +517,55 @@ class Metadata {
     }
     return metaData;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Metadata &&
+          runtimeType == other.runtimeType &&
+          ttl == other.ttl &&
+          ttb == other.ttb &&
+          ttr == other.ttr &&
+          ccd == other.ccd &&
+          availableAt == other.availableAt &&
+          expiresAt == other.expiresAt &&
+          refreshAt == other.refreshAt &&
+          createdAt == other.createdAt &&
+          updatedAt == other.updatedAt &&
+          dataSignature == other.dataSignature &&
+          sharedKeyStatus == other.sharedKeyStatus &&
+          isPublic == other.isPublic &&
+          isHidden == other.isHidden &&
+          namespaceAware == other.namespaceAware &&
+          isBinary == other.isBinary &&
+          isEncrypted == other.isEncrypted &&
+          isCached == other.isCached &&
+          sharedKeyEnc == other.sharedKeyEnc &&
+          pubKeyCS == other.pubKeyCS &&
+          encoding == other.encoding;
+
+  @override
+  int get hashCode =>
+      ttl.hashCode ^
+      ttb.hashCode ^
+      ttr.hashCode ^
+      ccd.hashCode ^
+      availableAt.hashCode ^
+      expiresAt.hashCode ^
+      refreshAt.hashCode ^
+      createdAt.hashCode ^
+      updatedAt.hashCode ^
+      dataSignature.hashCode ^
+      sharedKeyStatus.hashCode ^
+      isPublic.hashCode ^
+      isHidden.hashCode ^
+      namespaceAware.hashCode ^
+      isBinary.hashCode ^
+      isEncrypted.hashCode ^
+      isCached.hashCode ^
+      sharedKeyEnc.hashCode ^
+      pubKeyCS.hashCode ^
+      encoding.hashCode;
 }
 
 class AtValue {
@@ -447,4 +576,11 @@ class AtValue {
   String toString() {
     return 'AtValue{value: $value, metadata: $metadata}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is AtValue && runtimeType == other.runtimeType && value == other.value && metadata == other.metadata;
+
+  @override
+  int get hashCode => value.hashCode ^ metadata.hashCode;
 }

@@ -34,6 +34,8 @@ abstract class Regexes {
       '''(?<visibility>(cached:public:){1})((@$sharedWithFragment)?$entityFragment''';
   static const String reservedKeyFragment =
       '''(((@(?<sharedWith>($charsInAtSign|$allowedEmoji){1,55}))|public|privatekey):)?(?<atKey>$_charsInReservedKey)(@(?<owner>($charsInAtSign|$allowedEmoji){1,55}))?''';
+  static const String localKeyFragment =
+      '''(?<visibility>(local:){1})$entityFragment''';
 
   String get publicKey;
   String get privateKey;
@@ -42,6 +44,7 @@ abstract class Regexes {
   String get cachedSharedKey;
   String get cachedPublicKey;
   String get reservedKey;
+  String get localKey;
 
   static final Regexes _regexesWithMandatoryNamespace =
       RegexesWithMandatoryNamespace();
@@ -71,6 +74,8 @@ class RegexesWithMandatoryNamespace implements Regexes {
       '''${Regexes.cachedSharedKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
   static const String _cachedPublicKey =
       '''${Regexes.cachedPublicKeyStartFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
+  static const String _localKey =
+      '''${Regexes.localKeyFragment}${Regexes.namespaceFragment}${Regexes.ownershipFragment}''';
 
   @override
   String get publicKey => _publicKey;
@@ -92,6 +97,9 @@ class RegexesWithMandatoryNamespace implements Regexes {
 
   @override
   String get reservedKey => Regexes.reservedKeyFragment;
+
+  @override
+  String get localKey => _localKey;
 }
 
 class RegexesNonMandatoryNamespace implements Regexes {
@@ -108,6 +116,8 @@ class RegexesNonMandatoryNamespace implements Regexes {
       '''${Regexes.cachedSharedKeyStartFragment}${Regexes.ownershipFragment}''';
   static const String _cachedPublicKey =
       '''${Regexes.cachedPublicKeyStartFragment}${Regexes.ownershipFragment}''';
+  static const String _localkey =
+      '''${Regexes.localKeyFragment}${Regexes.ownershipFragment}''';
 
   @override
   String get publicKey => _publicKey;
@@ -129,6 +139,9 @@ class RegexesNonMandatoryNamespace implements Regexes {
 
   @override
   String get reservedKey => Regexes.reservedKeyFragment;
+
+  @override
+  String get localKey => _localkey;
 }
 
 class RegexUtil {
@@ -167,6 +180,9 @@ class RegexUtil {
     }
     if (matchAll(regexes.cachedSharedKey, key)) {
       return KeyType.cachedSharedKey;
+    }
+    if (matchAll(regexes.localKey, key)) {
+      return KeyType.localKey;
     }
     return KeyType.invalidKey;
   }

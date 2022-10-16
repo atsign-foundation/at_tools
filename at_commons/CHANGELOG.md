@@ -1,3 +1,5 @@
+## 3.0.27
+* feat: Implement the `==` and `hashCode` methods for AtKey, AtValue and Metadata classes
 ## 3.0.26
 * feat: Introduce notifyFetch verb
 * fix: bug in at_exception_stack.dart

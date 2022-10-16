@@ -12,6 +12,7 @@ class ConfigUtil {
       String configPath = await _getConfigFile();
       appConfig = ApplicationConfiguration(configPath);
   }
+  
   static YamlMap? getYaml() {
     return appConfig.getYaml();
   }
@@ -24,6 +25,5 @@ class ConfigUtil {
     }
     Directory packageRoot = Directory.fromUri(fileUri).parent;
     return path.join(packageRoot.path, 'config/config.yaml');
-
   }
 }
