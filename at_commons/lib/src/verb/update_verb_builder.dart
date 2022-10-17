@@ -146,10 +146,14 @@ class UpdateVerbBuilder implements VerbBuilder {
     if (encoding != null && encoding!.isNotEmpty) {
       command += '$ENCODING:$encoding';
     }
+    // The key can only be
+    // 1. a local key
+    // 2. a public key or
+    // 3. a shared key
+    // The key is mutually exclusive between isLocal, isPublic and sharedWith
     if (isLocal) {
       command += 'local:';
-    }
-    if (isPublic) {
+    } else if (isPublic) {
       command += 'public:';
     } else if (sharedWith != null) {
       command += '${VerbUtil.formatAtSign(sharedWith)}:';
