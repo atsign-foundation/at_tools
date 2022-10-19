@@ -76,6 +76,10 @@ class UpdateVerbBuilder implements VerbBuilder {
   ///If the public data contains new line (\n) character, the data will be encoded and encoding will be set to type of encoding
   String? encoding;
 
+  /// Indicates if the key is local
+  /// If the key is local, the key does not sync between cloud and local secondary
+  bool isLocal = false;
+
   @override
   String buildCommand() {
     if (isJson) {
@@ -142,13 +146,19 @@ class UpdateVerbBuilder implements VerbBuilder {
     if (encoding != null && encoding!.isNotEmpty) {
       command += '$ENCODING:$encoding';
     }
-    if (isPublic) {
+    // The key can only be
+    // 1. a local key
+    // 2. a public key or
+    // 3. a shared key
+    // The key is mutually exclusive between isLocal, isPublic and sharedWith
+    if (isLocal) {
+      command += 'local:';
+    } else if (isPublic) {
       command += 'public:';
     } else if (sharedWith != null) {
       command += '${VerbUtil.formatAtSign(sharedWith)}:';
     }
     command += atKey!;
-
     if (sharedBy != null) {
       command += '${VerbUtil.formatAtSign(sharedBy)}';
     }

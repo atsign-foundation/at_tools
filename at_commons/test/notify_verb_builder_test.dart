@@ -116,13 +116,15 @@ void main() {
       expect(verbParams['notificationId'], '123');
     });
 
-    test('Negative test to verify to notify:fetch when notification id not set', () {
+    test('Negative test to verify to notify:fetch when notification id not set',
+        () {
       var notifyFetch = NotifyFetchVerbBuilder();
       expect(() => notifyFetch.buildCommand(),
           throwsA(predicate((dynamic e) => e is InvalidSyntaxException)));
     });
 
-    test('Negative test to verify to notify:fetch when empty string is set', () {
+    test('Negative test to verify to notify:fetch when empty string is set',
+        () {
       var notifyFetch = NotifyFetchVerbBuilder()..notificationId = '';
       expect(() => notifyFetch.buildCommand(),
           throwsA(predicate((dynamic e) => e is InvalidSyntaxException)));

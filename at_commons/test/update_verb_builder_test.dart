@@ -36,6 +36,16 @@ void main() {
       expect(updateBuilder.buildCommand(),
           'update:sharedKeyEnc:abc:pubKeyCS:123:@bob:email@alice alice@atsign.com\n');
     });
+
+    test('verify local key command', () {
+      var updateBuilder = UpdateVerbBuilder()
+        ..value = 'alice@atsign.com'
+        ..atKey = 'email'
+        ..sharedBy = 'alice'
+        ..isLocal = true;
+      expect(updateBuilder.buildCommand(),
+          'update:local:email@alice alice@atsign.com\n');
+    });
   });
 
   group('A group of update verb builder tests to check update metadata command',
