@@ -9,7 +9,6 @@ void main() {
           Intent.syncData, ExceptionScenario.invalidKeyFormed, 'sync issue');
       final exceptionStack = AtExceptionStack();
       exceptionStack.add(atChainedException);
-      print(exceptionStack.getTraceMessage());
       expect(exceptionStack.getTraceMessage(), isNotEmpty);
       expect(exceptionStack.getTraceMessage(),
           startsWith('Failed to syncData caused by'));
@@ -35,7 +34,6 @@ void main() {
           ExceptionScenario.noNamespaceProvided, 'name space is not provided');
       final exceptionStack = AtExceptionStack();
       exceptionStack.add(atChainedException);
-      print(exceptionStack.getTraceMessage());
       expect(exceptionStack.getTraceMessage(), isNotEmpty);
       expect(exceptionStack.getTraceMessage(),
           startsWith('Failed to validateKey caused by'));
@@ -46,7 +44,6 @@ void main() {
           ExceptionScenario.atSignDoesNotExist, 'atsign does not exist');
       final exceptionStack = AtExceptionStack();
       exceptionStack.add(atChainedException);
-      print(exceptionStack.getTraceMessage());
       expect(exceptionStack.getTraceMessage(), isNotEmpty);
       expect(exceptionStack.getTraceMessage(),
           startsWith('Failed to shareData caused by'));
@@ -57,7 +54,6 @@ void main() {
           ExceptionScenario.decryptionFailed, 'Decryption failed');
       final exceptionStack = AtExceptionStack();
       exceptionStack.add(atChainedException);
-      print(exceptionStack.getTraceMessage());
       expect(exceptionStack.getTraceMessage(), isNotEmpty);
       expect(exceptionStack.getTraceMessage(),
           startsWith('Failed to decryptData caused by'));
@@ -70,7 +66,6 @@ void main() {
           'Encryption keys not found');
       final exceptionStack = AtExceptionStack();
       exceptionStack.add(atChainedException);
-      print(exceptionStack.getTraceMessage());
       expect(exceptionStack.getTraceMessage(), isNotEmpty);
       expect(exceptionStack.getTraceMessage(),
           startsWith('Failed to fetchEncryptionPrivateKey caused by'));
@@ -83,7 +78,6 @@ void main() {
           'Secondary server not reachable');
       final exceptionStack = AtExceptionStack();
       exceptionStack.add(atChainedException);
-      print(exceptionStack.getTraceMessage());
       expect(exceptionStack.getTraceMessage(), isNotEmpty);
       expect(exceptionStack.getTraceMessage(),
           startsWith('Failed to notifyData caused by'));
