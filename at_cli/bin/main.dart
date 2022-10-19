@@ -8,6 +8,7 @@ import 'package:at_utils/at_logger.dart';
 
 void main(List<String> arguments) async {
   AtSignLogger.root_level = 'severe';
+  await ConfigUtil.init();
   var logger = AtSignLogger('AtCli');
   try {
     var parsedArgs = CommandLineParser.getParserResults(arguments);

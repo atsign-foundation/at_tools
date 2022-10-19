@@ -53,15 +53,15 @@ class AtMetadataUtil {
     return ttbMs;
   }
 
-  static int? validateTTR(int? ttr_ms) {
-    if (ttr_ms == null || ttr_ms == 0) {
+  static int? validateTTR(int? ttrMs) {
+    if (ttrMs == null || ttrMs == 0) {
       return null;
     }
-    if (ttr_ms <= -2) {
+    if (ttrMs <= -2) {
       throw InvalidSyntaxException(
           'Valid values for TTR are -1 and greater than or equal to 1');
     }
-    return ttr_ms;
+    return ttrMs;
   }
 
   /// Throws [InvalidSyntaxException] if ttr is 0 or null.
