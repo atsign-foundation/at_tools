@@ -13,6 +13,7 @@ dependencies:
   at_client: ^3.0.9
   crypton: ^2.0.1
   encrypt: ^5.0.0
+  yaml_writer: ^1.0.2
 
 dev_dependencies:
   lints: ^1.0.1
