@@ -29,7 +29,8 @@ void main() {
     });
 
     test('Test to verify local key type with namespace', () {
-      var keyType = AtKey.getKeyType('local:latestNotification.wavi@bob', enforceNameSpace: true);
+      var keyType = AtKey.getKeyType('local:latestNotification.wavi@bob',
+          enforceNameSpace: true);
       expect(keyType, equals(KeyType.localKey));
     });
   });

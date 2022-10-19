@@ -37,7 +37,7 @@ void main() {
           'update:sharedKeyEnc:abc:pubKeyCS:123:@bob:email@alice alice@atsign.com\n');
     });
 
-    test('verify local key command',(){
+    test('verify local key command', () {
       var updateBuilder = UpdateVerbBuilder()
         ..value = 'alice@atsign.com'
         ..atKey = 'email'

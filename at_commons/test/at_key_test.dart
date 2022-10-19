@@ -608,7 +608,8 @@ void main() {
             ..atSign = '@alice'
             ..enforceNamespace = true);
       expect(validationResult.isValid, false);
-      expect(validationResult.failureReason, 'local:phone@alice is not a valid key');
+      expect(validationResult.failureReason,
+          'local:phone@alice is not a valid key');
     });
   });
 }

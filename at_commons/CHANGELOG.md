@@ -1,3 +1,5 @@
+## 3.0.28
+* feat: Introduce the local key type
 ## 3.0.27
 * feat: Implement the `==` and `hashCode` methods for AtKey, AtValue and Metadata classes
 ## 3.0.26

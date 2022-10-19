@@ -41,7 +41,7 @@ class LLookupVerbBuilder implements VerbBuilder {
     if (operation != null) {
       command += '$operation:';
     }
-    if(isLocal){
+    if (isLocal) {
       command += 'local:';
     }
     if (isCached) {
