@@ -1,3 +1,5 @@
+## 3.0.29
+* fix: AtKey.fromString() defaults sharedWith to 'public'
 ## 3.0.28
 * feat: Introduce the local key type
 ## 3.0.27
