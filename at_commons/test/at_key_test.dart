@@ -27,6 +27,8 @@ void main() {
       expect(outKey.toString(), inKey.toString());
       expect(outKey.key, 'foo.bar');
       expect(outKey.namespace, 'attalk');
+      expect(outKey.metadata!.isPublic, false);
+      expect(outKey.isLocal, false);
     });
 
     test('Test to verify a public key', () {
@@ -35,6 +37,7 @@ void main() {
       expect(atKey.key, 'phone');
       expect(atKey.sharedBy, '@bob');
       expect(atKey.sharedWith, null);
+      expect(atKey.isLocal, false);
       expect(atKey.metadata!.isPublic, true);
       expect(atKey.metadata!.namespaceAware, false);
       expect(atKey.toString(), testKey);
@@ -46,6 +49,8 @@ void main() {
       expect(atKey.key, 'phone');
       expect(atKey.sharedBy, '@bob');
       expect(atKey.sharedWith, '@alice');
+      expect(atKey.metadata!.isPublic, false);
+      expect(atKey.isLocal, false);
       expect(atKey.toString(), testKey);
     });
 
@@ -54,6 +59,9 @@ void main() {
       var atKey = AtKey.fromString(testKey);
       expect(atKey.key, 'phone');
       expect(atKey.sharedBy, '@bob');
+      expect(atKey.sharedWith, null);
+      expect(atKey.metadata!.isPublic, false);
+      expect(atKey.isLocal, false);
       expect(atKey.toString(), testKey);
     });
 
@@ -65,6 +73,8 @@ void main() {
       expect(atKey.sharedWith, '@alice');
       expect(atKey.metadata!.isCached, true);
       expect(atKey.metadata!.namespaceAware, false);
+      expect(atKey.metadata!.isPublic, false);
+      expect(atKey.isLocal, false);
       expect(atKey.toString(), testKey);
     });
 
@@ -86,6 +96,8 @@ void main() {
       expect(atKey.key, 'phone');
       expect(atKey.sharedWith, '@alice');
       expect(atKey.sharedBy, '@bob');
+      expect(atKey.metadata!.isPublic, false);
+      expect(atKey.isLocal, false);
       expect(atKey.metadata!.namespaceAware, true);
       expect(atKey.toString(), testKey);
     });
