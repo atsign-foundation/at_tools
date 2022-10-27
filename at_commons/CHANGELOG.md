@@ -1,5 +1,5 @@
 ## 3.0.29
-* fix: AtKey.fromString() defaults sharedWith to 'public'
+* fix: AtKey.fromString() sets incorrect value in sharedWith attribute for public keys.
 ## 3.0.28
 * feat: Introduce the local key type
 ## 3.0.27
