@@ -34,6 +34,7 @@ void main() {
       var atKey = AtKey.fromString(testKey);
       expect(atKey.key, 'phone');
       expect(atKey.sharedBy, '@bob');
+      expect(atKey.sharedWith, null);
       expect(atKey.metadata!.isPublic, true);
       expect(atKey.metadata!.namespaceAware, false);
       expect(atKey.toString(), testKey);

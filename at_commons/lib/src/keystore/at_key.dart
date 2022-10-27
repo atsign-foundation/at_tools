@@ -242,7 +242,7 @@ class AtKey {
       if (keyParts[0] == 'public') {
         metaData.isPublic = true;
       }
-      if (keyParts[0] == 'local') {
+      else if (keyParts[0] == 'local') {
         atKey.isLocal = true;
       }
       // Example key: cached:@alice:phone@bob
