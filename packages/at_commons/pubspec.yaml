@@ -9,6 +9,9 @@ environment:
 
 dependencies:
   uuid: ^3.0.6
+  crypton: ^2.0.5
+  pointycastle: ^3.6.2
+
 
 dev_dependencies:
   lints: ^2.0.0
