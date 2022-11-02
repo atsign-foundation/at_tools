@@ -59,6 +59,6 @@ abstract class AtDataSigning {
   ///
   ///case NotVerified - Returns [AtSignatureVerificationResult] object with [AtSignatureVerificationResult.isVerified] set to false
   ///and the exception is stored in [AtSignatureVerificationResult.exception]
-  AtSignatureVerificationResult verifySignatureObj(
+  AtSignatureVerificationResult verifySignatureObject(
       AtSignature signature, String publicKey);
 }
