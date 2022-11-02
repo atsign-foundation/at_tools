@@ -34,7 +34,7 @@ class AtDataSigningImpl implements AtDataSigning {
   }
 
   @override
-  bool verifySignature(String data, String signature, String publicKey,
+  bool verifyStringSignature(String data, String signature, String publicKey,
       SignatureAlgorithm algorithm, int digestLength) {
     return _verifySignatureInternal(
         data, signature, publicKey, algorithm, digestLength);
@@ -63,7 +63,7 @@ class AtDataSigningImpl implements AtDataSigning {
         utf8.encode(data) as Uint8List, _getSigner(algorithm, digestLength)));
   }
 
-  ///Method that formats input parameters from [verifySignature] and [verifySignatureObj] and calls [_verifyRsaSignature]
+  ///Method that formats input parameters from [verifyStringSignature] and [verifySignatureObj] and calls [_verifyRsaSignature]
   bool _verifySignatureInternal(String data, String signature, String publicKey,
       SignatureAlgorithm algorithm, int digestLength) {
     _verifyDigestLength(digestLength);

@@ -42,7 +42,7 @@ abstract class AtDataSigning {
   ///
   ///case NotVerified - Returns [AtSignatureVerificationResult] object with [AtSignatureVerificationResult.isVerified] set to false
   ///and the exception is stored in [AtSignatureVerificationResult.exception]
-  bool verifySignature(String data, String signature, String publicKey,
+  bool verifyStringSignature(String data, String signature, String publicKey,
       SignatureAlgorithm algorithm, int digestLength);
 
   ///Method that verifies dataSignature of object type [AtSignature] using [RSAPublicKey]
