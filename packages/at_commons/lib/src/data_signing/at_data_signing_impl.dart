@@ -122,6 +122,7 @@ class AtDataSigningImpl implements AtDataSigning {
 
     try {
       result.isVerified = verifier.verifySignature(data, sign);
+      result.exception = result.isVerified ? null : SignatureMismatch();
     } on Exception catch(e){
       result.isVerified = false;
       result.exception = e;
