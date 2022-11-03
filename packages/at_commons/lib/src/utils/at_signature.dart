@@ -9,4 +9,9 @@ class AtSignature {
   String? signedBy;
   ///details of the preferred algorithm and digest length to be used for signing
   late String signatureSpecification;
+
+  @override
+  String toString(){
+    return 'actualText: $actualText\tsignature: $signature\ttimeStamp: $signatureTimestamp\tsignedBy: $signedBy\tsignatureSpecification: $signatureSpecification';
+  }
 }
