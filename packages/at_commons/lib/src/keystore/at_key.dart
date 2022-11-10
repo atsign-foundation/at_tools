@@ -1,6 +1,7 @@
 import 'package:at_commons/at_commons.dart';
 import 'package:at_commons/src/keystore/at_key_builder_impl.dart';
 import 'package:at_commons/src/utils/at_key_regex_utils.dart';
+import 'package:at_commons/src/utils/string_utils.dart';
 
 class AtKey {
   String? key;
@@ -39,16 +40,20 @@ class AtKey {
 
   String? get sharedBy => _sharedBy;
 
-  set sharedBy(String? atSign) {
-    assertStartsWithAtIfNotEmpty(atSign);
-    _sharedBy = atSign;
+  set sharedBy(String? sharedByAtSign) {
+    assertStartsWithAtIfNotEmpty(sharedByAtSign);
+    _sharedBy = sharedByAtSign;
   }
 
   String? get sharedWith => _sharedWith;
 
-  set sharedWith(String? atSign) {
-    assertStartsWithAtIfNotEmpty(atSign);
-    _sharedWith = atSign;
+  set sharedWith(String? sharedWithAtSign) {
+    assertStartsWithAtIfNotEmpty(sharedWithAtSign);
+    if (sharedWithAtSign.isNotNullOrEmpty && (isLocal == true || metadata?.isPublic == true)) {
+      throw InvalidAtKeyException(
+          'isLocal or isPublic cannot be true when sharedWith is set');
+    }
+    _sharedWith = sharedWithAtSign;
   }
 
   bool get isLocal => _isLocal;
@@ -56,7 +61,7 @@ class AtKey {
   set isLocal(bool isLocal) {
     if (isLocal == true && sharedWith != null) {
       throw InvalidAtKeyException(
-          'sharedWith should be empty when isLocal is set to true');
+          'sharedWith must be null when isLocal is set to true');
     }
     _isLocal = isLocal;
   }
@@ -71,6 +76,9 @@ class AtKey {
 
   @override
   String toString() {
+    if (key.isNullOrEmpty) {
+      throw InvalidAtKeyException('Key cannot be null or empty');
+    }
     // If metadata.isPublic is true and metadata.isCached is true,
     // return cached public key
     if (key!.startsWith('cached:public:') ||
@@ -241,8 +249,7 @@ class AtKey {
       // Example key: public:phone@bob
       if (keyParts[0] == 'public') {
         metaData.isPublic = true;
-      }
-      else if (keyParts[0] == 'local') {
+      } else if (keyParts[0] == 'local') {
         atKey.isLocal = true;
       }
       // Example key: cached:@alice:phone@bob
@@ -579,7 +586,11 @@ class AtValue {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is AtValue && runtimeType == other.runtimeType && value == other.value && metadata == other.metadata;
+      identical(this, other) ||
+      other is AtValue &&
+          runtimeType == other.runtimeType &&
+          value == other.value &&
+          metadata == other.metadata;
 
   @override
   int get hashCode => value.hashCode ^ metadata.hashCode;

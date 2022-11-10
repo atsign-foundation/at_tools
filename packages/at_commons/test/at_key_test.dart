@@ -112,6 +112,42 @@ void main() {
               e is InvalidSyntaxException &&
               e.message == '$key is not well-formed key')));
     });
+
+    test('Test cannot set sharedWith if isPublic is true', () {
+      expect(
+          () => {
+                AtKey()
+                  ..metadata = (Metadata()..isPublic = true)
+                  ..sharedBy = '@bob'
+                  ..sharedWith = '@alice'
+              },
+          throwsA(predicate(
+              (dynamic e) => e is InvalidAtKeyException && e.message == 'isLocal or isPublic cannot be true when sharedWith is set')));
+    });
+
+    test('Test cannot set sharedWith if isLocal is true', () {
+      expect(
+          () => {
+                AtKey()
+                  ..isLocal = true
+                  ..sharedBy = '@bob'
+                  ..sharedWith = '@alice'
+              },
+          throwsA(predicate(
+              (dynamic e) => e is InvalidAtKeyException && e.message == 'isLocal or isPublic cannot be true when sharedWith is set')));
+    });
+
+    test('Test cannot set isLocal to true if sharedWith is non-null', () {
+      expect(
+          () => {
+                AtKey()
+                  ..sharedBy = '@bob'
+                  ..sharedWith = '@alice'
+                  ..isLocal = true
+              },
+          throwsA(predicate(
+              (dynamic e) => e is InvalidAtKeyException && e.message == 'sharedWith must be null when isLocal is set to true')));
+    });
   });
 
   group('A group of tests to validate the AtKey builder instances', () {
@@ -186,6 +222,31 @@ void main() {
       AtKey selfKey = AtKey.private('phone', namespace: 'wavi').build();
       expect(selfKey, isA<PrivateKey>());
       expect(selfKey.toString(), 'privatekey:phone.wavi');
+    });
+  });
+
+  group('A group of negative test on toString method', () {
+    test('test to verify key is null', () {
+      var atKey = AtKey()
+        ..sharedWith = '@alice'
+        ..sharedBy = '@bob';
+      expect(
+          () => atKey.toString(),
+          throwsA(predicate((dynamic e) =>
+              e is InvalidAtKeyException &&
+              e.message == 'Key cannot be null or empty')));
+    });
+
+    test('test to verify key is empty', () {
+      var atKey = AtKey()
+        ..key = ''
+        ..sharedWith = '@alice'
+        ..sharedBy = '@bob';
+      expect(
+          () => atKey.toString(),
+          throwsA(predicate((dynamic e) =>
+              e is InvalidAtKeyException &&
+              e.message == 'Key cannot be null or empty')));
     });
   });
 
@@ -576,7 +637,7 @@ void main() {
           throwsA(predicate((dynamic e) =>
               e is InvalidAtKeyException &&
               e.message ==
-                  'sharedWith should be empty when isLocal is set to true')));
+                  'sharedWith must be null when isLocal is set to true')));
     });
 
     test('A test to verify local key builder', () {
