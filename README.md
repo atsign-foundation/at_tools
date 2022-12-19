@@ -14,10 +14,10 @@ methods and commonly used components of the atProtocol:
 
 ### pub.dev packages
 
-[at_commons](https://pub.dev/packages/at_commons)- at_commons library
+[at_commons](https://pub.dev/packages/at_commons) at_commons library
 is used for commonly used components in implementation of the atProtocol.
 
-[at_utils](https://pub.dev/packages/at_utils)- This is the Utility library
+[at_utils](https://pub.dev/packages/at_utils) This is the Utility library
 for atProtocol projects. It contains utility classes for atsign, atmetadata,
 configuration and logger.
 
