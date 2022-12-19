@@ -24,17 +24,17 @@ configuration and logger.
 
 ### standalone tools
 
-[at_cli](./at_cli) A command line tool to execute verbs on the atPlatform.
+[at_cli](./packages/at_cli) A command line tool to execute verbs on the atPlatform.
 
-[at_cram](./at_cram) The challenge–response authentication mechanism of the
+[at_cram](./packages/at_cram) The challenge–response authentication mechanism of the
 atProtocol.
 
-[at_dump_atKeys](./at_dump_atKeys) A command line tool to dump keys from a
+[at_dump_atKeys](./packages/at_dump_atKeys) A command line tool to dump keys from a
 .atKeys file.
 
-[at_pkam](./at_pkam) The public key authentication mechanism of the
+[at_pkam](./packages/at_pkam) The public key authentication mechanism of the
 atProtocol.
 
-[at_ve_doctor](./at_ve_doctor) A very simple way to test the status of the
+[at_ve_doctor](./packages/at_ve_doctor) A very simple way to test the status of the
 secondaries running in the Virtual Environment. Using the
 [at_server_status](https://pub.dev/packages/at_server_status) package.
