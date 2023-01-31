@@ -1,21 +1,63 @@
 import 'package:at_commons/at_commons.dart';
-import 'package:at_commons/src/verb/verb_builder.dart';
-import 'package:at_commons/src/verb/verb_util.dart';
+import 'package:at_commons/src/verb/abstract_verb_builder.dart';
 
 /// Local lookup verb builder generates a command to lookup value of [atKey] stored in the secondary server.
+///
 /// e.g llookup key shared with alice
-/// ```
-/// // Lookup phone number available only to alice
-///    var builder = LlookupVerbBuilder()..key=’@alice:phone’..atSign=’bob’;
-/// ```
+///
+/// * Lookup phone number available only to alice
+///
+/// * When sharedWith is populated, throws [InvalidAtKeyException] if isPublic or isLocal is set to true
+///```dart
+///    var builder = LLookupVerbBuilder()..sharedWith = '@alice'..key=’phone’..atSign=’bob’;
+///```
+///
 /// e.g llookup public key
-/// ```
-/// // Lookup email value that is available to everyone
-///     var builder = LlookupVerbBuilder()..key=’public:email’..atSign=’bob’;
+///
+/// * Lookup email value that is available to everyone
+///
+/// * When isPublic is set to true, throws [InvalidAtKeyException] if isLocal is set to true or sharedWith is populated
+///```dart
+/// var builder = LLookupVerbBuilder()..key=’email’..atSign=’bob’..isPublic = true;
+///```
 /// e.g llookup private key
-/// // Lookup a credit card number that is accessible only by Bob
-///    var builder = LlookupVerbBuilder()..key=’@bob:credit_card’..atSign=’bob’;
-class LLookupVerbBuilder implements VerbBuilder {
+///
+/// * Lookup a credit card number that is accessible only by Bob
+///```
+///    var builder = LLookupVerbBuilder()..sharedWith = '@bob'..key=’credit_card’..atSign=’bob’;
+///```
+///
+/// e.g. llookup a local key
+/// * Lookup a local key that is accessible only by bob
+///
+/// * When isLocal is set to true, throws [InvalidAtKeyException] if isPublic or isCached is set true or sharedWith is populated
+///```dart
+///    var builder = LLookupVerbBuilder()..key = 'password'..sharedBy = '@bob'..isLocal = true;
+///```
+///
+/// e.g. llookup a cached key
+/// * Lookup a cached key that shared by alice to bob
+///
+/// * When isCached is set to true, throws [InvalidAtKeyException] if isLocal is set to true
+///
+///```dart
+/// var builder = LLookupVerbBuilder()
+///               ..isCached = true
+///               ..sharedWith = '@bob'
+///               ..key = 'phone'
+///               ..sharedBy = '@alice'
+///```
+///
+/// e.g. llookup a cached public key
+/// * Lookup a cached key that is public key of alice
+///```dart
+/// var builder = LLookupVerbBuilder()
+///               ..isCached = true
+///               ..isPublic = true
+///               ..key = 'aboutMe'
+///               ..sharedBy = '@alice'
+///```
+class LLookupVerbBuilder extends AbstractVerbBuilder {
   /// the key of [atKey] to llookup. [atKey] can have either public, private or shared access.
   String? atKey;
 
@@ -41,24 +83,30 @@ class LLookupVerbBuilder implements VerbBuilder {
     if (operation != null) {
       command += '$operation:';
     }
-    if (isLocal) {
-      command += 'local:';
-    }
-    if (isCached) {
-      command += 'cached:';
-    }
-    if (isPublic) {
-      command += 'public:';
-    }
-    if (sharedWith != null && sharedWith!.isNotEmpty) {
-      command += '$sharedWith:';
-    }
-    command += atKey!;
-    return '$command${VerbUtil.formatAtSign(sharedBy)}\n';
+    return command += '${buildKey()}\n';
   }
 
   @override
   bool checkParams() {
     return atKey != null && sharedBy != null;
+  }
+
+  String buildKey() {
+    if (atKeyObj.key != null) {
+      return atKeyObj.toString();
+    }
+    super.atKeyObj
+      ..key = atKey
+      ..sharedBy = sharedBy
+      ..sharedWith = sharedWith
+      ..isLocal = isLocal
+      ..metadata = (Metadata()
+        ..isPublic = isPublic
+        ..isCached = isCached);
+    // validates the data in the verb builder.
+    // If validation is successful, build and return the key;
+    // else throws exception.
+    validateKey();
+    return super.atKeyObj.toString();
   }
 }

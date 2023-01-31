@@ -172,5 +172,112 @@ void main() {
               e is InvalidSyntaxException &&
               e.message == 'command does not match the regex')));
     });
+
+    test(
+        'test to verify local key with isPublic set to true throws invalid atkey exception',
+        () {
+      var updateVerbBuilder = UpdateVerbBuilder()
+        ..isPublic = true
+        ..isLocal = true
+        ..atKey = 'phone'
+        ..sharedBy = '@bob';
+
+      expect(
+          () => updateVerbBuilder.buildCommand(),
+          throwsA(predicate((dynamic e) =>
+              e is InvalidAtKeyException &&
+              e.message ==
+                  'When isLocal is set to true, cannot set isPublic to true or set a non-null sharedWith')));
+    });
+
+    test(
+        'test to verify local key with sharedWith populated throws invalid atkey exception',
+        () {
+      var updateVerbBuilder = UpdateVerbBuilder()
+        ..isLocal = true
+        ..sharedWith = '@alice'
+        ..atKey = 'phone'
+        ..sharedBy = '@bob';
+
+      expect(
+          () => updateVerbBuilder.buildCommand(),
+          throwsA(predicate((dynamic e) =>
+              e is InvalidAtKeyException &&
+              e.message ==
+                  'sharedWith must be null when isLocal is set to true')));
+    });
+
+    test(
+        'test to verify isPublic set to true with sharedWith populated throws invalid atkey exception',
+        () {
+      var updateVerbBuilder = UpdateVerbBuilder()
+        ..isPublic = true
+        ..sharedWith = '@alice'
+        ..atKey = 'phone'
+        ..sharedBy = '@bob';
+
+      expect(
+          () => updateVerbBuilder.buildCommand(),
+          throwsA(predicate((dynamic e) =>
+              e is InvalidAtKeyException &&
+              e.message ==
+                  'When isPublic is set to true, sharedWith cannot be populated')));
+    });
+
+    test('test to verify Key cannot be null or empty', () {
+      var updateVerbBuilder = UpdateVerbBuilder()
+        ..sharedWith = '@alice'
+        ..atKey = ''
+        ..sharedBy = '@bob';
+
+      expect(
+          () => updateVerbBuilder.buildCommand(),
+          throwsA(predicate((dynamic e) =>
+              e is InvalidAtKeyException &&
+              e.message == 'Key cannot be null or empty')));
+    });
+
+    test(
+        'A key with local is set and then sharedWith is set which throws exception',
+        () {
+      var updateVerbBuilder = UpdateVerbBuilder()
+        ..atKey = 'phone'
+        ..isLocal = true
+        ..sharedBy = '@bob'
+        ..value = '+445 334 3423';
+      var command = updateVerbBuilder.buildCommand();
+      expect(command, 'update:local:phone@bob +445 334 3423\n');
+      expect(() => updateVerbBuilder.atKeyObj.sharedWith = '@alice',
+          throwsA(predicate((dynamic e) => e is InvalidAtKeyException)));
+    });
+  });
+
+  group('A group of tests to validate the buildKey', () {
+    // The privatekey:<key> is used to insert the pkam keys
+    test('privatekey assigned to atKey.key', () {
+      var updateVerbBuilder = UpdateVerbBuilder()
+        ..atKey = 'privatekey:at_private_key';
+      expect(updateVerbBuilder.buildKey(), 'privatekey:at_private_key');
+    });
+
+    test('test to verify sharedWith is set to null on a local key', () {
+      var updateVerbBuilder = UpdateVerbBuilder()
+        ..atKey = 'phone'
+        ..sharedBy = '@alice'
+        ..isLocal = true;
+      expect(updateVerbBuilder.buildKey(), 'local:phone@alice');
+      updateVerbBuilder.sharedWith = null;
+      expect(updateVerbBuilder.buildKey(), 'local:phone@alice');
+    });
+
+    test('test to verify sharedWith is set to null on a public key', () {
+      var updateVerbBuilder = UpdateVerbBuilder()
+        ..atKey = 'phone'
+        ..sharedBy = '@alice'
+        ..isPublic = true;
+      expect(updateVerbBuilder.buildKey(), 'public:phone@alice');
+      updateVerbBuilder.sharedWith = null;
+      expect(updateVerbBuilder.buildKey(), 'public:phone@alice');
+    });
   });
 }

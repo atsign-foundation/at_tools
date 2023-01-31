@@ -1,3 +1,16 @@
+## 3.0.35
+- feat: enforce lowercase on AtKey(all key types included)
+- fix: incorrect behaviour of cached:public keys in AtKey.fromString()
+## 3.0.34
+- feat: New server-side exception ServerIsPausedException, error code AT0024
+## 3.0.33
+- fix: Deprecate AtCompactionConfig class
+## 3.0.32
+- fix: Enable deletion of a local key
+## 3.0.31
+- feat: Added AtTelemetryService. Marked @experimental while the feature is in early stages.
+## 3.0.30
+* fix: Add key validations to Update and llookup verb builders
 ## 3.0.29
 * fix: AtKey.fromString() sets incorrect value in sharedWith attribute for public keys.
 ## 3.0.28
