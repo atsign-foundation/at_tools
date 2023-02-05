@@ -1,39 +1,20 @@
-import 'package:at_commons/at_commons.dart';
-import 'package:at_commons/src/verb/verb_builder.dart';
 import 'package:uuid/uuid.dart';
 
-class NotifyVerbBuilder implements VerbBuilder {
+import '../at_constants.dart';
+import 'metadata_using_verb_builder.dart';
+import 'operation_enum.dart';
+import 'verb_util.dart';
+
+class NotifyVerbBuilder extends MetadataUsingVerbBuilder {
   /// id for each notification.
   String id = Uuid().v4();
-
-  /// Key that represents a user's information. e.g phone, location, email etc.,
-  String? atKey;
 
   /// Value of the key typically in string format. Images, files, etc.,
   /// must be converted to unicode string before storing.
   dynamic value;
 
-  /// AtSign to whom [atKey] has to be shared.
-  String? sharedWith;
-
-  /// AtSign of the client user calling this builder.
-  String? sharedBy;
-
-  /// if [isPublic] is true, then [atKey] is accessible by all atSigns.
-  /// if [isPublic] is false, then [atKey] is accessible either by [sharedWith] or [sharedBy]
-  bool isPublic = false;
-
-  /// time in milliseconds after which [atKey] expires.
-  int? ttl;
-
   /// time in milliseconds after which a notification expires.
   int? ttln;
-
-  /// time in milliseconds after which [atKey] becomes active.
-  int? ttb;
-
-  /// time in milliseconds to refresh [atKey].
-  int? ttr;
 
   OperationEnum? operation;
 
@@ -52,79 +33,50 @@ class NotifyVerbBuilder implements VerbBuilder {
   /// Latest N notifications to notify. Defaults to 1
   int? latestN;
 
-  bool? ccd;
-
-  /// Represents if the [MessageTypeEnum.text] is encrypted or not. Setting to false to preserve
-  /// backward compatibility.
-  bool isTextMessageEncrypted = false;
-
-  /// Will be set only when [sharedWith] is set. Will be encrypted using the public key of [sharedWith] atsign
-  String? sharedKeyEncrypted;
-
-  /// checksum of the the public key of [sharedWith] atsign. Will be set only when [sharedWith] is set.
-  String? pubKeyChecksum;
-
   @override
   String buildCommand() {
-    var command = 'notify:id:$id:';
+    StringBuffer sb = StringBuffer();
+    sb.write('notify:id:$id');
 
     if (operation != null) {
-      command += '${getOperationName(operation)}:';
+      sb.write(':${getOperationName(operation)}');
     }
     if (messageType != null) {
-      command += 'messageType:${getMessageType(messageType)}:';
+      sb.write(':messageType:${getMessageType(messageType)}');
     }
     if (priority != null) {
-      command += 'priority:${getPriority(priority)}:';
+      sb.write(':priority:${getPriority(priority)}');
     }
     if (strategy != null) {
-      command += 'strategy:${getStrategy(strategy)}:';
+      sb.write(':strategy:${getStrategy(strategy)}');
     }
     if (latestN != null) {
-      command += 'latestN:$latestN:';
+      sb.write(':latestN:$latestN');
     }
-    command += 'notifier:$notifier:';
-    if (ttl != null) {
-      command += 'ttl:$ttl:';
-    }
-    if (ttln != null) {
-      command += 'ttln:$ttln:';
-    }
-    if (ttb != null) {
-      command += 'ttb:$ttb:';
-    }
-    if (ttr != null) {
-      ccd ??= false;
-      command += 'ttr:$ttr:ccd:$ccd:';
-    }
-    if (isTextMessageEncrypted) {
-      command += '$IS_ENCRYPTED:$isTextMessageEncrypted:';
-    }
+    sb.write(':notifier:$notifier');
 
-    if (sharedKeyEncrypted != null) {
-      command += '$SHARED_KEY_ENCRYPTED:$sharedKeyEncrypted:';
-    }
-    if (pubKeyChecksum != null) {
-      command += '$SHARED_WITH_PUBLIC_KEY_CHECK_SUM:$pubKeyChecksum:';
-    }
+    // Add in all of the metadata parameters in atProtocol command format
+    sb.write(metadata.toAtProtocolFragment());
 
     if (sharedWith != null) {
-      command += '${VerbUtil.formatAtSign(sharedWith)}:';
+      sb.write(':${VerbUtil.formatAtSign(sharedWith)}');
     }
 
     if (isPublic) {
-      command += 'public:';
+      sb.write(':public');
     }
-    command += atKey!;
+    sb.write(':${atKey!}');
 
     if (sharedBy != null) {
-      command += '${VerbUtil.formatAtSign(sharedBy)}';
+      sb.write('${VerbUtil.formatAtSign(sharedBy)}');
     }
     if (value != null) {
-      command += ':$value';
+      sb.write(':$value');
     }
 
-    return '$command\n';
+    sb.write('\n');
+
+    return sb.toString();
   }
 
   @override

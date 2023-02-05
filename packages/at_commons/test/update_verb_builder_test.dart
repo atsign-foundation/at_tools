@@ -277,38 +277,30 @@ void main() {
                   'When isLocal is set to true, cannot set isPublic to true or set a non-null sharedWith')));
     });
 
-    test(
-        'test to verify local key with sharedWith populated throws invalid atkey exception',
-        () {
-      var updateVerbBuilder = UpdateVerbBuilder()
-        ..isLocal = true
-        ..sharedWith = '@alice'
-        ..atKey = 'phone'
-        ..sharedBy = '@bob';
-
-      expect(
-          () => updateVerbBuilder.buildCommand(),
-          throwsA(predicate((dynamic e) =>
-              e is InvalidAtKeyException &&
-              e.message ==
-                  'sharedWith must be null when isLocal is set to true')));
+    test('test to verify local key with sharedWith populated throws invalid atkey exception', () {
+      expect(() {
+        UpdateVerbBuilder()
+          ..isLocal = true
+          ..sharedWith = '@alice'
+          ..atKey = 'phone'
+          ..sharedBy = '@bob';
+      },
+          throwsA(predicate(
+              (dynamic e) => e is InvalidAtKeyException
+                  && e.message == 'isLocal or isPublic cannot be true when sharedWith is set')));
     });
 
-    test(
-        'test to verify isPublic set to true with sharedWith populated throws invalid atkey exception',
-        () {
-      var updateVerbBuilder = UpdateVerbBuilder()
-        ..isPublic = true
-        ..sharedWith = '@alice'
-        ..atKey = 'phone'
-        ..sharedBy = '@bob';
-
-      expect(
-          () => updateVerbBuilder.buildCommand(),
-          throwsA(predicate((dynamic e) =>
-              e is InvalidAtKeyException &&
-              e.message ==
-                  'When isPublic is set to true, sharedWith cannot be populated')));
+    test('test to verify isPublic set to true with sharedWith populated throws invalid atkey exception', () {
+      expect(() {
+        UpdateVerbBuilder()
+          ..isPublic = true
+          ..sharedWith = '@alice'
+          ..atKey = 'phone'
+          ..sharedBy = '@bob';
+      },
+          throwsA(predicate(
+              (dynamic e) => e is InvalidAtKeyException
+                  && e.message == 'isLocal or isPublic cannot be true when sharedWith is set')));
     });
 
     test('test to verify Key cannot be null or empty', () {
@@ -368,7 +360,7 @@ void main() {
       expect(updateVerbBuilder.buildKey(), 'public:phone@alice');
     });
 
-    UpdateVerbBuilder createBuilderWithAllMetadata() {
+    UpdateVerbBuilder createBuilderWithAllMetadata({String? sharedWith}) {
       var ttl = 12345;
       var ttb = 54321;
       var ccd = false;
@@ -388,7 +380,8 @@ void main() {
       return UpdateVerbBuilder()
         ..atKey = 'phone.details.wavi'
         ..sharedBy = '@alice'
-        ..sharedWith = '@bob'
+        ..sharedWith = sharedWith
+        ..isPublic = (sharedWith == null)
         ..ttl=ttl
         ..ttb=ttb
         ..ccd=ccd
@@ -409,7 +402,7 @@ void main() {
       ;
     }
     test('verify metadata is fully passed from builder to the atKeyObj which is built by buildKey', () {
-      var updateVerbBuilder = createBuilderWithAllMetadata();
+      var updateVerbBuilder = createBuilderWithAllMetadata(sharedWith: '@bob');
       expect(updateVerbBuilder.buildKey(), '@bob:phone.details.wavi@alice');
       expect(updateVerbBuilder.atKeyObj.metadata!.ttl, updateVerbBuilder.ttl);
       expect(updateVerbBuilder.atKeyObj.metadata!.ttb, updateVerbBuilder.ttb);
@@ -429,28 +422,50 @@ void main() {
       expect(updateVerbBuilder.atKeyObj.metadata!.skeEncAlgo, updateVerbBuilder.skeEncAlgo);
     });
 
-    test('verify round trip from builder, to command for update, to builder', () {
-      var initialBuilder = createBuilderWithAllMetadata();
-      var command = initialBuilder.buildCommand();
-      var roundTrippedBuilder = UpdateVerbBuilder.getBuilder(command.trim());
-      expect(initialBuilder == roundTrippedBuilder, true);
-    });
+    group('A group of tests to verify round-tripping of update commands from buildCommand and getBuilder', () {
+      UpdateVerbBuilder roundTripUpdateTest({String? sharedWith}) {
+        var initialBuilder = createBuilderWithAllMetadata(sharedWith: sharedWith);
+        var command = initialBuilder.buildCommand();
+        var roundTrippedBuilder = UpdateVerbBuilder.getBuilder(command.trim());
+        expect(initialBuilder == roundTrippedBuilder, true);
+        return roundTrippedBuilder!;
+      }
+      test('verify round trip from builder, to command for update, back to builder, for public key', () {
+        var roundTrippedBuilder = roundTripUpdateTest(sharedWith: null);
+        expect(roundTrippedBuilder.isPublic, true);
+      });
 
-    test('verify round trip from builder, to command for update meta, to builder', () {
-      var initialBuilder = createBuilderWithAllMetadata();
-      initialBuilder.operation = UPDATE_META;
+      test('verify round trip from builder, to command for update, back to builder, for shared key', () {
+        var roundTrippedBuilder = roundTripUpdateTest(sharedWith: '@bob');
+        expect(roundTrippedBuilder.isPublic, false);
+      });
 
-      // When the update:meta command is built, it will NOT include the value, so
-      // we'll make two assertions: (1) builder after round-tripping via buildCommandForMeta()
-      // will NOT be the same as the initial builder, and (2) builder after round-tripping via
-      // buildCommandForMeta() WILL be the same as the initial builder, if the `value` in the
-      // initial builder is set to null
-      var command = initialBuilder.buildCommandForMeta();
-      var roundTrippedBuilder = UpdateVerbBuilder.getBuilder(command.trim());
-      expect(initialBuilder == roundTrippedBuilder, false);
+      UpdateVerbBuilder roundTripUpdateMetaTest({String? sharedWith}) {
+        var initialBuilder = createBuilderWithAllMetadata(sharedWith: sharedWith);
+        initialBuilder.operation = UPDATE_META;
 
-      initialBuilder.value = null;
-      expect(initialBuilder == roundTrippedBuilder, true);
+        // When the update:meta command is built, it will NOT include the value, so
+        // we'll make two assertions: (1) builder after round-tripping via buildCommandForMeta()
+        // will NOT be the same as the initial builder, and (2) builder after round-tripping via
+        // buildCommandForMeta() WILL be the same as the initial builder, if the `value` in the
+        // initial builder is set to null
+        var command = initialBuilder.buildCommandForMeta();
+        var roundTrippedBuilder = UpdateVerbBuilder.getBuilder(command.trim());
+        expect(initialBuilder == roundTrippedBuilder, false);
+
+        initialBuilder.value = null;
+        expect(initialBuilder == roundTrippedBuilder, true);
+
+        return roundTrippedBuilder!;
+      }
+      test('verify round trip from builder, to command for update meta, back to builder, for public key', () {
+        var roundTrippedBuilder = roundTripUpdateMetaTest(sharedWith: null);
+        expect(roundTrippedBuilder.isPublic, true);
+      });
+      test('verify round trip from builder, to command for update meta, back to builder, for shared key', () {
+        var roundTrippedBuilder = roundTripUpdateMetaTest(sharedWith: '@bob');
+        expect(roundTrippedBuilder.isPublic, false);
+      });
     });
   });
 }

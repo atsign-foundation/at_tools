@@ -2,8 +2,8 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:at_commons/at_commons.dart';
-import 'package:at_commons/src/utils/string_utils.dart';
-import 'package:at_commons/src/verb/abstract_verb_builder.dart';
+import 'package:at_commons/src/verb/metadata_using_verb_builder.dart';
+
 
 /// Update builder generates a command to update [value] for a key [atKey] in the secondary server of [sharedBy].
 /// Use [getBuilder] method if you want to convert command to a builder.
@@ -40,172 +40,54 @@ import 'package:at_commons/src/verb/abstract_verb_builder.dart';
 ///                      ..sharedBy = '@bob'
 ///                      ..value = jsonEncode(myPrefObj)
 ///```
-class UpdateVerbBuilder extends AbstractVerbBuilder {
-  /// Key that represents a user's information. e.g phone, location, email etc.,
-  String? atKey;
-
+class UpdateVerbBuilder extends MetadataUsingVerbBuilder {
   /// Value of the key typically in string format. Images, files, etc.,
   /// must be converted to unicode string before storing.
   dynamic value;
 
-  /// AtSign to whom [atKey] has to be shared.
-  String? sharedWith;
-
-  /// AtSign of the client user calling this builder.
-  String? sharedBy;
-
-  /// if [isPublic] is true, then [atKey] is accessible by all atSigns.
-  /// if [isPublic] is false, then [atKey] is accessible either by [sharedWith] or [sharedBy]
-  bool isPublic = false;
-
-  /// See [Metadata.isBinary]
-  bool? isBinary;
-
-  /// See [Metadata.isEncrypted]
-  bool? isEncrypted;
+  /// See [AtKey.isLocal]
+  bool get isLocal => atKeyObj.isLocal;
+  /// See [AtKey.isLocal]
+  set isLocal (bool b) => atKeyObj.isLocal = b;
 
   String? operation;
 
   bool isJson = false;
 
-  /// Indicates if the key is local
-  /// If the key is local, the key does not sync between cloud and local secondary
-  bool isLocal = false;
-
-
-
-  /// See [Metadata.ttl]
-  int? ttl;
-
-  /// See [Metadata.ttb]
-  int? ttb;
-
-  /// See [Metadata.ttr]
-  int? ttr;
-
-  /// See [Metadata.ccd]
-  bool? ccd;
-
-  /// See [Metadata.dataSignature]
-  String? dataSignature;
-
-  /// See [Metadata.sharedKeyStatus]
-  String? sharedKeyStatus;
-
-  /// See [Metadata.sharedKeyEnc]
-  String? sharedKeyEncrypted;
-
-  /// checksum of the the public key of [sharedWith] atsign. Will be set only when [sharedWith] is set.
-  /// See [Metadata.pubKeyCS]
-  String? pubKeyChecksum;
-
-  /// See [Metadata.encoding]
-  String? encoding;
-
-  /// See [Metadata.encKeyName]
-  String? encKeyName;
-
-  /// See [Metadata.encAlgo]
-  String? encAlgo;
-
-  /// See [Metadata.ivNonce]
-  String? ivNonce;
-
-  /// See [Metadata.skeEncKeyName]
-  String? skeEncKeyName;
-
-  /// See [Metadata.skeEncAlgo]
-  String? skeEncAlgo;
-
   @override
   String buildCommand() {
+    String atKeyName = buildKey();
     if (isJson) {
-      var updateParams = UpdateParams();
-      var key = '';
-      if (sharedWith != null) {
-        key += '${VerbUtil.formatAtSign(sharedWith)}:';
-      }
-      key += atKey!;
-      if (sharedBy != null) {
-        key += '${VerbUtil.formatAtSign(sharedBy)}';
-      }
-      updateParams.atKey = key;
-      updateParams.value = value;
-      updateParams.sharedBy = sharedBy;
-      updateParams.sharedWith = sharedWith;
-      final metadata = Metadata();
-      metadata.isPublic = isPublic;
-      if (isEncrypted != null) {
-        metadata.isEncrypted = isEncrypted!;
-      }
-      if (isBinary != null) {
-        metadata.isBinary = isBinary!;
-      }
-      metadata.ttl = ttl;
-      metadata.ttb = ttb;
-      metadata.ttr = ttr;
-      metadata.ccd = ccd;
-      metadata.dataSignature = dataSignature;
-      metadata.sharedKeyStatus = sharedKeyStatus;
-      metadata.sharedKeyEnc = sharedKeyEncrypted;
-      metadata.pubKeyCS = pubKeyChecksum;
-      metadata.encoding = encoding;
-      metadata.encKeyName = encKeyName;
-      metadata.encAlgo = encAlgo;
-      metadata.ivNonce = ivNonce;
-      metadata.skeEncKeyName = skeEncKeyName;
-      metadata.skeEncAlgo = skeEncAlgo;
-      updateParams.metadata = metadata;
+      var updateParams = UpdateParams()
+      ..atKey = atKeyName
+      ..value = value
+      ..sharedBy = sharedBy
+      ..sharedWith = sharedWith
+      ..metadata = metadata;
       var json = updateParams.toJson();
       var command = 'update:json:${jsonEncode(json)}\n';
       return command;
+    } else {
+      var metadataFragment = atKeyObj.metadata!.toAtProtocolFragment();
+      var command = 'update$metadataFragment:$atKeyName $value\n';
+      return command;
     }
-    var command = 'update';
-    command += buildMetadataString();
-    command += ':${buildKey()}';
-    command += ' $value\n';
-    return command;
   }
 
+  /// Get the string representation (e.g. `@bob:city.address.my_app@alice`) of the key
+  /// for which this update command is being built.
+  ///
+  /// First of all calls [validateKey]. If validation fails an exception will be thrown. If not
+  /// then we return the string representation of the key.
   String buildKey() {
-    if (atKeyObj.key != null) {
-      return atKeyObj.toString();
-    }
-    super.atKeyObj
-      ..key = atKey
-      ..sharedWith = VerbUtil.formatAtSign(sharedWith)
-      ..sharedBy = VerbUtil.formatAtSign(sharedBy)
-      ..metadata = (Metadata()
-        ..isPublic = isPublic
-        ..isBinary = isBinary
-        ..isEncrypted = isEncrypted
-        ..ttl = ttl
-        ..ttb = ttb
-        ..ttr = ttr
-        ..ccd = ccd
-        ..dataSignature = dataSignature
-        ..sharedKeyStatus = sharedKeyStatus
-        ..sharedKeyEnc = sharedKeyEncrypted
-        ..pubKeyCS = pubKeyChecksum
-        ..encoding = encoding
-        ..encKeyName = encKeyName
-        ..encAlgo = encAlgo
-        ..ivNonce = ivNonce
-        ..skeEncKeyName = skeEncKeyName
-        ..skeEncAlgo = skeEncAlgo
-      )
-      ..isLocal = isLocal;
-    // If validation is successful, build the command and returns;
-    // else throws exception.
     validateKey();
     return super.atKeyObj.toString();
   }
 
   String buildCommandForMeta() {
-    var command = 'update:meta';
-    command += ':${buildKey()}';
-    command += buildMetadataString();
-    command += '\n';
+    String atKeyName = buildKey();
+    var metadataFragment = atKeyObj.metadata!.toAtProtocolFragment();
+    var command = 'update:meta:$atKeyName$metadataFragment\n';
     return command;
   }
 
@@ -224,7 +106,7 @@ class UpdateVerbBuilder extends AbstractVerbBuilder {
     if (verbParams == null) {
       return null;
     }
-    builder.isPublic = command.contains('public:');
+    builder.isPublic = verbParams[PUBLIC_SCOPE_PARAM] == 'public';
     builder.sharedWith = VerbUtil.formatAtSign(verbParams[FOR_AT_SIGN]);
     builder.sharedBy = VerbUtil.formatAtSign(verbParams[AT_SIGN]);
     builder.atKey = verbParams[AT_KEY];
@@ -284,63 +166,6 @@ class UpdateVerbBuilder extends AbstractVerbBuilder {
       return true;
     }
     return false;
-  }
-
-  /// Builds the metadata part of the command.
-  String buildMetadataString() {
-    String metadataString = '';
-
-    // NB The order of the verb parameters is important - it MUST match the order
-    // in the regular expressions [VerbSyntax.update] and [VerbSyntax.update_meta]
-    if (ttl != null) {
-      metadataString += ':ttl:$ttl';
-    }
-    if (ttb != null) {
-      metadataString += ':ttb:$ttb';
-    }
-    if (ttr != null) {
-      metadataString += ':ttr:$ttr';
-    }
-    if (ccd != null) {
-      metadataString += ':ccd:$ccd';
-    }
-    if (dataSignature.isNotNullOrEmpty) {
-      metadataString += ':$PUBLIC_DATA_SIGNATURE:$dataSignature';
-    }
-    if (sharedKeyStatus.isNotNullOrEmpty) {
-      metadataString += ':$SHARED_KEY_STATUS:$sharedKeyStatus';
-    }
-    if (isBinary != null) {
-      metadataString += ':isBinary:$isBinary';
-    }
-    if (isEncrypted != null) {
-      metadataString += ':isEncrypted:$isEncrypted';
-    }
-    if (sharedKeyEncrypted.isNotNullOrEmpty) {
-      metadataString += ':$SHARED_KEY_ENCRYPTED:$sharedKeyEncrypted';
-    }
-    if (pubKeyChecksum.isNotNullOrEmpty) {
-      metadataString += ':$SHARED_WITH_PUBLIC_KEY_CHECK_SUM:$pubKeyChecksum';
-    }
-    if (encoding.isNotNullOrEmpty) {
-      metadataString += ':$ENCODING:$encoding';
-    }
-    if (encKeyName.isNotNullOrEmpty) {
-      metadataString += ':$ENCRYPTING_KEY_NAME:$encKeyName';
-    }
-    if (encAlgo.isNotNullOrEmpty) {
-      metadataString += ':$ENCRYPTING_ALGO:$encAlgo';
-    }
-    if (ivNonce.isNotNullOrEmpty) {
-      metadataString += ':$IV_OR_NONCE:$ivNonce';
-    }
-    if (skeEncKeyName.isNotNullOrEmpty) {
-      metadataString += ':$SHARED_KEY_ENCRYPTED_ENCRYPTING_KEY_NAME:$skeEncKeyName';
-    }
-    if (skeEncAlgo.isNotNullOrEmpty) {
-      metadataString += ':$SHARED_KEY_ENCRYPTED_ENCRYPTING_ALGO:$skeEncAlgo';
-    }
-    return metadataString;
   }
 
   @override
