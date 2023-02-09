@@ -52,7 +52,7 @@ class VerbSyntax {
       r'|'
       r'^update'
       '$metadataFragment'
-      r'(:((?<publicScope>public)|(@(?<forAtSign>[^:@\s]+))))?'
+      r'(:((?<publicScope>public)|((?<forAtSign>@[^:@\s]+))))?'
       r':(?<atKey>(([^:@\s]+)|(privatekey:at_pkam_publickey)))'
       r'(@(?<atSign>[^:@\s]+))?'
       r' (?<value>.+)'
@@ -61,7 +61,7 @@ class VerbSyntax {
   // ignore: constant_identifier_names
   static const update_meta =
       r'^update:meta'
-      r'(:((?<publicScope>public)|(@(?<forAtSign>[^:@\s]+))))?'
+      r'(:((?<publicScope>public)|((?<forAtSign>@[^:@\s]+))))?'
       r':(?<atKey>[^:@]((?!:{2})[^:@])+)'
       r'@(?<atSign>[^:@\s]+)'
       '$metadataFragment'

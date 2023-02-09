@@ -101,6 +101,9 @@ class AtKey {
   }
 
   @override
+  ///Generates a String version of the AtKey instance
+  ///Varies depending on the parameters provided
+  ///Converts the entire key to lowercase once toString is called
   String toString() {
     if (key.isNullOrEmpty) {
       throw InvalidAtKeyException('Key cannot be null or empty');
