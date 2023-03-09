@@ -11,38 +11,34 @@ on:
     branches:
       - trunk
 
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - at_commons
+          - at_utils
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
-      - uses: dart-lang/setup-dart@v1
+      - uses: dart-lang/setup-dart@a57a6c04cf7d4840e88432aad6281d1e125f0d46 # v1.4
         with:
           sdk: stable
 
-      - name: Install dependencies in at_commons
-        working-directory: at_commons
+      - name: Install dependencies in ${{ matrix.package }}
+        working-directory: packages/${{ matrix.package }}
         run: dart pub get
 
-      - name: Analyze project source in at_commons
-        working-directory: at_commons
+      - name: Analyze project source in ${{ matrix.package }}
+        working-directory: packages/${{ matrix.package }}
         run: dart analyze
 
-      - name: Run tests in at_commons
-        working-directory: at_commons
-        run: dart test --concurrency=1
-
-      # Actions running in at_utils
-      - name: Install dependencies in at_utils
-        working-directory: at_utils
-        run: dart pub get
-
-      - name: Analyze project source in at_utils
-        working-directory: at_utils
-        run: dart analyze
-
-      - name: Run tests in at_utils
-        working-directory: at_utils
+      - name: Run tests in ${{ matrix.package }}
+        working-directory: packages/${{ matrix.package }}
         run: dart test --concurrency=1
