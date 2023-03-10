@@ -6,18 +6,33 @@ import 'package:at_dump_atKeys/commandline_parser.dart';
 import 'package:crypton/crypton.dart';
 import 'package:encrypt/encrypt.dart';
 
-/// The script accepts the .atKeys file and atSign and writes the decrypted pkam private key of the atSign
-/// to a new file
+/// The script accepts the path to the directory that contains ".atKeys" file(s),
+/// Iterates through all the ".atKeys" files, decrypts the keys and writes to a file.
+///
+/// Optionally accepts the following flags:
+///   * -o to set the destination directory to create the file. Defaults to the current directory
+///   * -f to set the filename. Defaults to at_demo_data.dart
+///   * -p This flag indicates to decrypt all keys or only PKAM keys. Defaults to "all"
+///        - When set to "all" all the keys are decrypted and written to output file.
+///        - Set the flag to "PKAM" to write only PKAM private key to the output file.
+///          For the end2end test in at_server, only PKAM keys are needed and for end2end tests
+///          in at_client all the keys are needed.
 ///
 /// Usage:
 ///
+///  The following command iterates through all the .atKeys file present in "/home/user" directory and
+///  writes the decrypted keys to an output file.
+///
 /// ```dart
-///   dart bin/generate_at_demo_data.dart -p /home/user/@27salty_keynew.atKeys -a @27salty
+///   dart bin/generate_at_demo_data.dart -d /home/user/atKeys
 ///```
 ///
-/// Optionally pass
-///   * -o to set the destination directory to create the file. Defaults to the current directory
-///   * -f to set the filename. Defaults to at_demo_data.dart
+/// With optional flags:
+///  The below command places the output file in "/home/user/destDir" and creates a file with name "at_credentials.dart"
+/// ```dart
+///   dart bin/generate/at_demo_data.dart -d /home/user/atKeys -o /home/user/destDir -f at_credentials.dart
+/// ```
+
 Future<void> main(List<String> arguments) async {
   try {
     ArgParser argParser = getArgParser();
@@ -29,32 +44,32 @@ Future<void> main(List<String> arguments) async {
       exit(0);
     }
     var args = CommandLineParser().getParserResults(arguments, argParser);
-    var filePath = args['filePath'];
-    var atSign = args['atSign'];
+    String dirPath = args['directoryPath'];
     String outputDir = args['outputDir'];
+    String fileName = args['fileName'];
+    String preference = args['preference'].toString().toLowerCase();
     if (!outputDir.endsWith('/')) {
       outputDir = '$outputDir/';
     }
-    String fileName = args['fileName'];
-    // Fetch the content from the .atKeys file
-    var isFileExists = await File(filePath).exists();
-    if (!isFileExists) {
-      throw Exception('atKeys file not found in the given filepath');
+    List<FileSystemEntity> listOfAtKeys = Directory(dirPath).listSync();
+
+    if (listOfAtKeys.isEmpty) {
+      print('The directory does not contains atKeys file(s)');
+      return;
     }
-    var fileContents = File(filePath).readAsStringSync();
-    var keysJSON = json.decode(fileContents);
+    // Setting recursive to true, to create non-existent path(s) in the output directory
+    var file = await File('$outputDir$fileName').create(recursive: true);
+    file.writeAsStringSync('var pkamPrivateKeyMap = ');
+    Map responseKeyMap = {};
 
-    var aesEncryptionKey = keysJSON['selfEncryptionKey'];
-    var pkamPrivateKey = RSAPrivateKey.fromString(
-        decryptValue(keysJSON['aesPkamPrivateKey'], aesEncryptionKey));
+    await Future.forEach(
+        listOfAtKeys,
+        (FileSystemEntity filePath) =>
+            processAtKeysContent(filePath, file, responseKeyMap, preference));
 
-    var pkamPrivateKeyMap = {atSign: pkamPrivateKey.toString()};
-    var encodedString = jsonEncode(pkamPrivateKeyMap);
-    // Construct the map. The variable and its key value pair.
-    encodedString = 'var pkamPrivateKeyMap = $encodedString;';
-    // Write the content to at_demo_data.dart file
-    var file = await File('$outputDir$fileName').create();
-    file.writeAsStringSync(encodedString);
+    file.writeAsStringSync(jsonEncode(responseKeyMap), mode: FileMode.append);
+    file.writeAsStringSync(';', mode: FileMode.append);
+
     print('The $fileName is successfully generated in $outputDir');
   } on ArgParserException catch (e) {
     print('$e');
@@ -63,11 +78,50 @@ Future<void> main(List<String> arguments) async {
   }
 }
 
+Future<void> processAtKeysContent(FileSystemEntity fileSystemEntity, File file,
+    Map decryptedKeysMaps, String preference) async {
+  // Ignore files that are other than ".atKeys" files. So return.
+  if (!fileSystemEntity.path.toLowerCase().endsWith('.atkeys')) {
+    return;
+  }
+
+  var filePath = fileSystemEntity.path;
+  var atSign = filePath.substring(filePath.lastIndexOf('/') + 1);
+  atSign = atSign.replaceFirst('_key.atKeys', '');
+  var fileContents = File(filePath).readAsStringSync();
+  var keysJSON = json.decode(fileContents);
+  var aesEncryptionKey = keysJSON['selfEncryptionKey'];
+
+  switch (preference) {
+    case 'all':
+      var keyMap = {};
+      var aesEncryptionKey = keysJSON['selfEncryptionKey'];
+      keyMap['pkamPublicKey'] = RSAPublicKey.fromString(
+              decryptValue(keysJSON['aesPkamPublicKey'], aesEncryptionKey))
+          .toString();
+      keyMap['pkamPrivateKey'] = RSAPrivateKey.fromString(
+              decryptValue(keysJSON['aesPkamPrivateKey'], aesEncryptionKey))
+          .toString();
+      keyMap['encryptionPublicKey'] = RSAPublicKey.fromString(
+              decryptValue(keysJSON['aesEncryptPublicKey'], aesEncryptionKey))
+          .toString();
+      keyMap['encryptionPrivateKey'] = RSAPrivateKey.fromString(
+              decryptValue(keysJSON['aesEncryptPrivateKey'], aesEncryptionKey))
+          .toString();
+      keyMap['selfEncryptionKey'] = aesEncryptionKey;
+      decryptedKeysMaps.putIfAbsent(atSign, () => keyMap);
+      break;
+    case 'pkam':
+      var pkamPrivateKey = RSAPrivateKey.fromString(
+          decryptValue(keysJSON['aesPkamPrivateKey'], aesEncryptionKey));
+      decryptedKeysMaps.putIfAbsent(atSign, () => pkamPrivateKey.toString());
+  }
+}
+
 ArgParser getArgParser() {
   var argParser = ArgParser()
-    ..addOption('filePath',
-        abbr: 'p', help: 'The .atKeys file path which contains keys')
-    ..addOption('atSign', abbr: 'a', help: 'atSign')
+    ..addOption('directoryPath',
+        abbr: 'd', help: 'The directory path which contains atKeys')
     ..addOption('outputDir',
         abbr: 'o',
         help: 'The output directory to place the generated file',
@@ -75,7 +129,9 @@ ArgParser getArgParser() {
     ..addOption('fileName',
         abbr: 'f',
         help: 'The filename to write the pkam private key',
-        defaultsTo: 'at_demo_data.dart');
+        defaultsTo: 'at_demo_data.dart')
+    ..addOption('preference',
+        abbr: 'p', help: 'Write all keys or only pkam', defaultsTo: 'all');
   return argParser;
 }
 
