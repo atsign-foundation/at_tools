@@ -7,7 +7,7 @@ class CommandLineParser {
   /// flags and options defined by this parser, and returns the result.
   static var parser = ArgParser();
   static ArgResults? getParserResults(List<String> arguments) {
-    var results;
+    ArgResults? results;
     // var parser = ArgParser();
     parser.addFlag('auth',
         help: 'Set this flag if command needs auth to server',
@@ -38,7 +38,7 @@ class CommandLineParser {
     parser.addOption('regex', abbr: 'r', help: 'regex for scan');
 
     try {
-      if (arguments != null && arguments.isNotEmpty) {
+      if (arguments.isNotEmpty) {
         results = parser.parse(arguments);
       }
       return results;

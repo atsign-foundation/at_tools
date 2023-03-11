@@ -17,14 +17,14 @@ class AtCli {
     return _singleton;
   }
 
-  var _atSign;
+  late String _atSign;
 
-  var _aesEncryptionKey;
-  var _pkamPrivateKey;
+  late String _aesEncryptionKey;
+  late String _pkamPrivateKey;
 
-  var _atClientImpl;
+  AtClient? _atClientImpl;
 
-  /// Method to create Atlookup instance with the preferences
+  /// Method to create AtLookup instance with the preferences
   Future<void> init(
       String currentAtSign, AtCliPreference atCliPreference) async {
     _atSign = currentAtSign;
@@ -37,10 +37,11 @@ class AtCli {
     var atClientPreference =
         _getAtClientPreference(_pkamPrivateKey, atCliPreference);
 
-    await AtClientImpl.createClient(
+    AtClientManager atClientManager = AtClientManager.getInstance();
+    await atClientManager.setCurrentAtSign(
         _atSign, atCliPreference.namespace, atClientPreference);
 
-    _atClientImpl = await AtClientImpl.getClient(_atSign);
+    _atClientImpl = atClientManager.atClient;
     if (_atClientImpl == null) {
       throw Exception('unable to create at client instance');
     }
@@ -53,7 +54,7 @@ class AtCli {
       AtCliPreference atCliPreference, ArgResults arguments) async {
     var verb = arguments['verb'];
     bool auth = arguments['auth'];
-    var result;
+    dynamic result;
     try {
       switch (verb) {
         case 'update':
@@ -165,7 +166,7 @@ class AtCli {
   Future<String> executeCommand(
       String currentAtSign, AtCliPreference atCliPreference, String command,
       {bool isAuth = false}) async {
-    var result;
+    dynamic result;
     try {
       command = command + '\n';
       if (isAuth) {
