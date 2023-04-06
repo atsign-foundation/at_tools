@@ -1,3 +1,5 @@
+## 3.0.44
+- feat: introduce enum for pkam authentication mode
 ## 3.0.43
 - feat: Enhanced the monitor verb syntax
   1. added `strict` flag to allow client to request that only regex-matching notifications are sent -
