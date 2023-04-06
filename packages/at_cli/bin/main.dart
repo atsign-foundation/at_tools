@@ -9,7 +9,6 @@ import 'package:at_utils/at_logger.dart';
 void main(List<String> arguments) async {
   AtSignLogger.root_level = 'severe';
   await ConfigUtil.init();
-  var logger = AtSignLogger('AtCli');
   try {
     var parsedArgs = CommandLineParser.getParserResults(arguments);
     if (parsedArgs == null || parsedArgs.arguments.isEmpty) {
@@ -18,16 +17,14 @@ void main(List<String> arguments) async {
     }
     var currentAtSign = _getCurrentAtSign(parsedArgs).trim();
     var preferences = await _getAtCliPreference(parsedArgs);
-    if (preferences.authKeyFile != null) {
-      if (!(await File(preferences.authKeyFile).exists())) {
-        print('Given Authentication key file is not exists. '
-            '\nPlease update correct file path in config or provide as commandline argument');
-        print('Usage: \n ${CommandLineParser.getUsage()}');
-        exit(0);
-      }
+    if (!(await File(preferences.authKeyFile).exists())) {
+      print('Given Authentication key file is not exists. '
+          '\nPlease update correct file path in config or provide as commandline argument');
+      print('Usage: \n ${CommandLineParser.getUsage()}');
+      exit(0);
     }
     await AtCli.getInstance().init(currentAtSign, preferences);
-    var result;
+    dynamic result;
     // If a verb is provided, call execute method with arguments
     // Else if command is provided as argument, we'll execute command directly.
     if (parsedArgs['verb'] != null) {
@@ -50,11 +47,9 @@ void main(List<String> arguments) async {
 }
 
 String _getCurrentAtSign(ArgResults arguments) {
-  return (arguments != null)
-      ? ((arguments['atsign'] != null)
-          ? arguments['atsign']
-          : ConfigUtil.getYaml()!['auth']['at_sign'])
-      : ConfigUtil.getYaml()!['auth']['at_sign'];
+  return ((arguments['atsign'] != null)
+      ? arguments['atsign']
+      : ConfigUtil.getYaml()!['auth']['at_sign']);
 }
 
 String getCommand(ArgResults arguments) {
@@ -70,17 +65,13 @@ Future<AtCliPreference> _getAtCliPreference(ArgResults? parsedArgs) async {
 
   preferences.authRequired = parsedArgs!['auth'];
 
-  preferences.authMode = (parsedArgs != null)
-      ? ((parsedArgs['mode'] != null)
-          ? parsedArgs['mode']
-          : ConfigUtil.getYaml()!['auth']['mode'])
-      : ConfigUtil.getYaml()!['auth']['mode'];
+  preferences.authMode = ((parsedArgs['mode'] != null)
+      ? parsedArgs['mode']
+      : ConfigUtil.getYaml()!['auth']['mode']);
 
-  preferences.authKeyFile = (parsedArgs != null)
-      ? ((parsedArgs['authKeyFile'] != null)
-          ? parsedArgs['authKeyFile']
-          : ConfigUtil.getYaml()!['auth']['key_file_location'])
-      : ConfigUtil.getYaml()!['auth']['key_file_location'];
+  preferences.authKeyFile = ((parsedArgs['authKeyFile'] != null)
+      ? parsedArgs['authKeyFile']
+      : ConfigUtil.getYaml()!['auth']['key_file_location']);
 
   return preferences;
 }
