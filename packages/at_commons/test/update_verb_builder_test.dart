@@ -465,7 +465,7 @@ void main() {
         var command = initialBuilder.buildCommand();
         var roundTrippedBuilder = UpdateVerbBuilder.getBuilder(command.trim());
         expect(initialBuilder == roundTrippedBuilder, true);
-        return roundTrippedBuilder!;
+        return roundTrippedBuilder;
       }
 
       test(
@@ -499,7 +499,7 @@ void main() {
         initialBuilder.value = null;
         expect(initialBuilder == roundTrippedBuilder, true);
 
-        return roundTrippedBuilder!;
+        return roundTrippedBuilder;
       }
 
       test(

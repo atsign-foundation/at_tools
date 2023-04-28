@@ -1,3 +1,4 @@
+import '../at_constants.dart';
 import '../keystore/at_key.dart';
 import 'abstract_verb_builder.dart';
 import 'verb_util.dart';
@@ -134,4 +135,43 @@ abstract class MetadataUsingVerbBuilder extends AbstractVerbBuilder {
 
   /// See [Metadata.skeEncAlgo]
   set skeEncAlgo(String? s) => metadata.skeEncAlgo = s;
+
+  setMetaDataFromParams(Map<String, String?> verbParams) {
+    if (verbParams[AT_TTL] != null) {
+      ttl = int.parse(verbParams[AT_TTL]!);
+    }
+    if (verbParams[AT_TTB] != null) {
+      ttb = int.parse(verbParams[AT_TTB]!);
+    }
+    if (verbParams[AT_TTR] != null) {
+      ttr = int.parse(verbParams[AT_TTR]!);
+    }
+    if (verbParams[CCD] != null) {
+      ccd = getBoolVerbParam(verbParams[CCD]!);
+    }
+
+    dataSignature = verbParams[PUBLIC_DATA_SIGNATURE];
+
+    if (verbParams[IS_BINARY] != null) {
+      isBinary = getBoolVerbParam(verbParams[IS_BINARY]!);
+    }
+    if (verbParams[IS_ENCRYPTED] != null) {
+      isEncrypted = getBoolVerbParam(verbParams[IS_ENCRYPTED]!);
+    }
+
+    sharedKeyEncrypted = verbParams[SHARED_KEY_ENCRYPTED];
+    pubKeyChecksum = verbParams[SHARED_WITH_PUBLIC_KEY_CHECK_SUM];
+    sharedKeyStatus = verbParams[SHARED_KEY_STATUS];
+    encoding = verbParams[ENCODING];
+    encKeyName = verbParams[ENCRYPTING_KEY_NAME];
+    encAlgo = verbParams[ENCRYPTING_ALGO];
+    ivNonce = verbParams[IV_OR_NONCE];
+    skeEncKeyName =
+    verbParams[SHARED_KEY_ENCRYPTED_ENCRYPTING_KEY_NAME];
+    skeEncAlgo = verbParams[SHARED_KEY_ENCRYPTED_ENCRYPTING_ALGO];
+  }
+
+  static bool getBoolVerbParam(String p) {
+    return p.toLowerCase() == 'true';
+  }
 }

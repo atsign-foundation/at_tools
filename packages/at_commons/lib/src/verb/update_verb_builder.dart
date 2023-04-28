@@ -91,22 +91,13 @@ class UpdateVerbBuilder extends MetadataUsingVerbBuilder {
     return command;
   }
 
-  static UpdateVerbBuilder? getBuilder(String command) {
-    if (command != command.trim()) {
-      throw IllegalArgumentException(
-          'Commands may not have leading or trailing whitespace');
-    }
+  static UpdateVerbBuilder fromVerbParams(Map<String, String?> verbParams, {bool forUpdateMeta=false}) {
     var builder = UpdateVerbBuilder();
-    HashMap<String, String?>? verbParams;
-    if (command.contains(UPDATE_META)) {
-      verbParams = VerbUtil.getVerbParam(VerbSyntax.update_meta, command);
+
+    if (forUpdateMeta) {
       builder.operation = UPDATE_META;
-    } else {
-      verbParams = VerbUtil.getVerbParam(VerbSyntax.update, command);
     }
-    if (verbParams == null) {
-      return null;
-    }
+
     builder.isPublic = verbParams[PUBLIC_SCOPE_PARAM] == 'public';
     builder.sharedWith = VerbUtil.formatAtSign(verbParams[FOR_AT_SIGN]);
     builder.sharedBy = VerbUtil.formatAtSign(verbParams[AT_SIGN]);
@@ -115,42 +106,31 @@ class UpdateVerbBuilder extends MetadataUsingVerbBuilder {
     if (builder.value is String) {
       builder.value = VerbUtil.replaceNewline(builder.value);
     }
-    if (verbParams[AT_TTL] != null) {
-      builder.ttl = int.parse(verbParams[AT_TTL]!);
-    }
-    if (verbParams[AT_TTB] != null) {
-      builder.ttb = int.parse(verbParams[AT_TTB]!);
-    }
-    if (verbParams[AT_TTR] != null) {
-      builder.ttr = int.parse(verbParams[AT_TTR]!);
-    }
-    if (verbParams[CCD] != null) {
-      builder.ccd = _getBoolVerbParams(verbParams[CCD]!);
-    }
 
-    builder.dataSignature = verbParams[PUBLIC_DATA_SIGNATURE];
-
-    if (verbParams[IS_BINARY] != null) {
-      builder.isBinary = _getBoolVerbParams(verbParams[IS_BINARY]!);
-    }
-    if (verbParams[IS_ENCRYPTED] != null) {
-      builder.isEncrypted = _getBoolVerbParams(verbParams[IS_ENCRYPTED]!);
-    }
-
-    builder.sharedKeyEncrypted = verbParams[SHARED_KEY_ENCRYPTED];
-    builder.pubKeyChecksum = verbParams[SHARED_WITH_PUBLIC_KEY_CHECK_SUM];
-    builder.sharedKeyStatus = verbParams[SHARED_KEY_STATUS];
-    builder.encoding = verbParams[ENCODING];
-    builder.encKeyName = verbParams[ENCRYPTING_KEY_NAME];
-    builder.encAlgo = verbParams[ENCRYPTING_ALGO];
-    builder.ivNonce = verbParams[IV_OR_NONCE];
-    builder.skeEncKeyName =
-        verbParams[SHARED_KEY_ENCRYPTED_ENCRYPTING_KEY_NAME];
-    builder.skeEncAlgo = verbParams[SHARED_KEY_ENCRYPTED_ENCRYPTING_ALGO];
-
-    builder.value = verbParams[VALUE];
+    builder.setMetaDataFromParams(verbParams);
 
     return builder;
+  }
+
+  static UpdateVerbBuilder getBuilder(String command) {
+    if (command != command.trim()) {
+      throw IllegalArgumentException(
+          'Commands may not have leading or trailing whitespace');
+    }
+    HashMap<String, String?>? verbParams;
+    bool forUpdateMeta = false;
+    if (command.contains(UPDATE_META)) {
+      forUpdateMeta = true;
+      verbParams = VerbUtil.getVerbParam(VerbSyntax.update_meta, command);
+    } else {
+      verbParams = VerbUtil.getVerbParam(VerbSyntax.update, command);
+    }
+    if (verbParams == null) {
+      throw IllegalArgumentException(
+          'UpdateVerbBuilder.getBuilder: Failed to extract any parameters from command');
+    }
+
+    return fromVerbParams(verbParams, forUpdateMeta: forUpdateMeta);
   }
 
   @override
@@ -161,13 +141,6 @@ class UpdateVerbBuilder extends MetadataUsingVerbBuilder {
       isValid = false;
     }
     return isValid;
-  }
-
-  static bool _getBoolVerbParams(String arg1) {
-    if (arg1.toLowerCase() == 'true') {
-      return true;
-    }
-    return false;
   }
 
   @override

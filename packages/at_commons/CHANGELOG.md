@@ -1,3 +1,6 @@
+## 3.0.46
+- feat: Made UpdateVerbBuilder and NotifyVerbBuilder easily reusable in atServer,
+  allowing elimination of some duplicated code in atServer
 ## 3.0.45
 - fix: Add constants for AtClientParticulars
 ## 3.0.44

@@ -1,6 +1,10 @@
+import 'dart:collection';
+
+import 'package:at_commons/at_builders.dart';
 import 'package:uuid/uuid.dart';
 
 import '../at_constants.dart';
+import '../exception/at_exceptions.dart';
 import 'metadata_using_verb_builder.dart';
 import 'operation_enum.dart';
 import 'verb_util.dart';
@@ -80,6 +84,28 @@ class NotifyVerbBuilder extends MetadataUsingVerbBuilder {
     sb.write('\n');
 
     return sb.toString();
+  }
+
+  static NotifyVerbBuilder fromVerbParams(Map<String, String?> verbParams) {
+    NotifyVerbBuilder builder = NotifyVerbBuilder();
+
+    builder.setMetaDataFromParams(verbParams);
+
+    return builder;
+  }
+
+  static NotifyVerbBuilder getBuilder(String command) {
+    if (command != command.trim()) {
+      throw IllegalArgumentException(
+          'Commands may not have leading or trailing whitespace');
+    }
+    HashMap<String, String?>? verbParams = VerbUtil.getVerbParam(VerbSyntax.notify, command);
+    if (verbParams == null) {
+      throw IllegalArgumentException(
+          'NotifyVerbBuilder.getBuilder: Failed to extract any parameters from command');
+    }
+
+    return fromVerbParams(verbParams);
   }
 
   @override
