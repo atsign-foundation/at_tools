@@ -74,3 +74,10 @@ class AtKeyNotFoundException extends AtClientException {
       : super.message(message,
             intent: intent, exceptionScenario: exceptionScenario);
 }
+
+class AtResetException extends AtClientException {
+  AtResetException(String message,
+      {Intent? intent, ExceptionScenario? exceptionScenario})
+      : super.message(message,
+      intent: intent, exceptionScenario: exceptionScenario);
+}
