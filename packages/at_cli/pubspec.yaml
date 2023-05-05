@@ -5,7 +5,7 @@ repository: https://github.com/atsign-foundation/at_tools
 homepage: https://atsign.dev
 
 executables:
-  at_cli: at_cli
+  at_cli: main
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
