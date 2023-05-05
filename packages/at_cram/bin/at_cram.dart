@@ -4,8 +4,8 @@ import 'package:crypto/crypto.dart';
 import 'package:path/path.dart';
 
 void main(List<String> arguments) {
-  var Name = arguments[0];
-  var secret = getSecret(Name);
+  var name = arguments[0];
+  var secret = getSecret(name);
   secret = secret.trim();
   var challenge = stdin.readLineSync()!;
   challenge = challenge.trim();
