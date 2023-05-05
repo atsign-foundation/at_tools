@@ -6,8 +6,8 @@ import 'package:crypton/crypton.dart';
 import 'package:path/path.dart';
 
 void main(List<String> arguments) {
-  var Name = arguments[0];
-  var privateKey = getSecret(Name);
+  var name = arguments[0];
+  var privateKey = getSecret(name);
   privateKey = privateKey.trim();
   var key = RSAPrivateKey.fromString(privateKey);
   var challenge = stdin.readLineSync()!;
