@@ -1,8 +1,11 @@
 name: at_ve_doctor
 description: A sample command-line application.
 publish_to: none
-version: 1.1.0
+version: 1.1.1
 # homepage: https://www.example.com
+
+executables:
+  at_ve_doctor: at_ve_doctor
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
