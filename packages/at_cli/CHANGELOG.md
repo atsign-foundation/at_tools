@@ -1,3 +1,5 @@
+## 3.1.1
+- Released pub global binary
 ## 3.1.0
 - Use latest packages
 - Fixed lint warnings
