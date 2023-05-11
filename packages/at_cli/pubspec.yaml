@@ -8,7 +8,7 @@ executables:
   at_cli: main
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.12.0 <4.0.0'
 
 dependencies:
   args: ^2.4.0
@@ -20,6 +20,28 @@ dependencies:
   encrypt: ^5.0.1
   yaml: ^3.1.1
   yaml_writer: ^1.0.3
+
+dependency_overrides:
+  at_lookup:
+    git:
+      url: https://github.com/atsign-foundation/at_libraries.git
+      path: packages/at_lookup
+      ref: dart-3
+  at_client:
+    git:
+      url: https://github.com/atsign-foundation/at_client_sdk.git
+      path: packages/at_client
+      ref: dart-3
+  at_commons:
+    git:
+      url: https://github.com/atsign-foundation/at_tools.git
+      path: packages/at_commons
+      ref: dart-3
+  at_utils:
+    git:
+      url: https://github.com/atsign-foundation/at_tools.git
+      path: packages/at_commons
+      ref: dart-3
 
 dev_dependencies:
   lints: ^1.0.1
