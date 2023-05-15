@@ -3,7 +3,7 @@ description: A command-line utility to dump keys from an atKeys file
 version: 1.0.0
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.12.0 <4.0.0'
 
 dependency_overrides:
   at_pkam:
