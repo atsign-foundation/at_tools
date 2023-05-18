@@ -7,13 +7,24 @@ import 'package:logging/logging.dart' as logging;
 /// Class for AtSignLogger Implementation
 class AtSignLogger {
   late logging.Logger logger;
+  String? _level;
   static String _root_level = 'info';
   bool _hierarchicalLoggingEnabled = false;
-  String? _level;
 
-  static var loggingHandler = ConsoleLoggingHandler();
+  static final ConsoleLoggingHandler _consoleLoggingHandler =
+      ConsoleLoggingHandler();
+  static final StdErrLoggingHandler _stdErrLoggingHandler =
+      StdErrLoggingHandler();
 
-  AtSignLogger(String name) {
+  /// The AtSignLogger is a wrapper on the Logger to log events.
+  ///
+  /// * name: Accepts String as input which represents the name of the AtSignLogger instance.
+  ///
+  /// * loggingType: This is an optionally parameter which specifies where to log
+  /// the events. Supported types are Console and StandardError.
+  /// The default loggingType is set to console which writes log messages to console.
+  AtSignLogger(String name, {LoggingType loggingType = LoggingType.console}) {
+    LoggingHandler loggingHandler = _getLoggingHandler(loggingType);
     logger = logging.Logger.detached(name);
     logger.onRecord.listen(loggingHandler);
     level = _root_level;
@@ -52,6 +63,18 @@ class AtSignLogger {
 
   static String get root_level {
     return _root_level;
+  }
+
+  /// Returns an instance of Logging Handler basing on the [LoggingType]
+  static LoggingHandler _getLoggingHandler(LoggingType loggingType) {
+    switch (loggingType) {
+      case LoggingType.console:
+        return _consoleLoggingHandler;
+      case LoggingType.stdErr:
+        return _stdErrLoggingHandler;
+      default:
+        return _consoleLoggingHandler;
+    }
   }
 
 //  static set rootLogFilePath(String path) {
@@ -96,3 +119,8 @@ class LogLevel {
     'all': logging.Level.ALL
   };
 }
+
+/// Enum to represent supported logging types.
+/// console: Writes the log output to the user screen
+/// standardError: Writes the log output to the standard error stream
+enum LoggingType { console, stdErr }
