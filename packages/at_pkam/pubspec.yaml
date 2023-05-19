@@ -1,15 +1,20 @@
 name: at_pkam
 description: A command-line utility to generate PKAM digest
-version: 1.1.0
-# homepage: https://www.example.com
+version: 1.1.1
+repository: https://github.com/atsign-foundation/at_tools
+
+executables:
+  at_pkam: main
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.12.0 <4.0.0'
 
 dependencies:
+  args: ^2.4.1
+  archive: ^3.1.2
   crypton: ^2.0.1
   encrypt: ^5.0.0
-  archive: ^3.1.2
+  path: ^1.8.3
 
 dev_dependencies:
   lints: ^1.0.1
