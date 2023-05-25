@@ -7,15 +7,20 @@ import 'dart:io';
 
 import 'package:io/ansi.dart';
 
-// REPL <rootUrl> <atSign> <verbose == true|false>
-// argparser args
+//make sure you cd to at_repl dir.
+// REPL ONLY REQUIRES AN ATSIGN OPTION
+//EX.
+//dart run at_repl -a @xavierlin0
+
+//FULL REPL COMMAND
+//dart run at_repl -r
 Future<void> main(List<String> arguments) async {
   String rootUrl = "";
   String atSign = "";
-  String secondaryUrl = "";
   bool verbose = false;
   bool enforceNamespace = false;
 
+// argparser args
   final ArgParser argParser = ArgParser()
     ..addOption("atSign", abbr: 'a', mandatory: true)
     ..addOption("rootUrl", abbr: 'r', mandatory: false, defaultsTo: "root.atsign.org:64")
@@ -24,7 +29,7 @@ Future<void> main(List<String> arguments) async {
 
   if (arguments.isEmpty || arguments.length > 3) {
     stdout.writeln(
-        "Usage: REPL <rootUrl: default = 'root.atsign.org:64'> <atSign: required> [<verbose == 'true|false'>] [enforceNamespaces == 'true|false'>]");
+        "Usage: REPL -r <rootUrl: default = 'root.atsign.org:64'> -a <atSign: required> -v [<verbose == 'true|false'>] -n [enforceNamespaces == 'true|false'>]");
   }
 
   try {
@@ -39,16 +44,22 @@ Future<void> main(List<String> arguments) async {
   }
 
   AtClient? atClient;
+  at_repl.REPL repl = at_repl.REPL(atSign);
   try {
     stdout.writeln(blue.wrap("Connecting..."));
-    at_repl.REPL repl = at_repl.REPL(atSign);
     var success = await repl.authenticate();
     atClient = repl.atClient;
     stdout.writeln(green.wrap("Successfully Connected."));
     stdout.writeln(lightGreen.wrap("use /help or help to see available commands"));
   } catch (e) {
-    stdout.writeln(red.wrap("disconnected.  $e"));
+    stdout.writeln(red.wrap("Disconnected, Invalid login. $e"));
   }
+
+  var namespaceMsg = (enforceNamespace
+      ? "You are enforcing namespaces, be sure to include them"
+      : "You don't need to include name spaces.");
+  stdout.writeln(yellow.wrap(namespaceMsg));
+
   // 3. REPL!
   stdout.write(magenta.wrap("$atSign "));
   while (true) {
@@ -74,87 +85,30 @@ Future<void> main(List<String> arguments) async {
               stdout.writeln(lightCyan.wrap(" => $values"));
               break;
             case "get":
-              String key = args[1];
-              KeyType type = AtKey.getKeyType(key);
-              String? name;
-              String atSign = key.substring(key.indexOf('@'));
-              String namespace = '';
-              if (enforceNamespace) {
-                name = key.substring(0, key.indexOf('.'));
-                namespace = key.substring(key.indexOf('.') + 1, key.indexOf('@'));
-              } else {
-                name = key.substring(0, key.indexOf('@'));
-              }
-              switch (type) {
-                case KeyType.selfKey:
-                  AtKey selfKey = AtKey.self(name, namespace: namespace, sharedBy: atSign).build();
-                  AtValue atValue = await atClient.get(selfKey);
-                  stdout.writeln(lightCyan.wrap(" => ${atValue.value}"));
-                  break;
-                case KeyType.sharedKey:
-                  AtKey sharedKey = AtKey.shared(name, namespace: namespace, sharedBy: atSign).build();
-                  AtValue atValue = await atClient.get(sharedKey);
-                  stdout.writeln(lightCyan.wrap(" => ${atValue.value}"));
-                  break;
-                case KeyType.publicKey:
-                  AtKey publicKey = AtKey.public(name, namespace: namespace, sharedBy: atSign).build();
-                  AtValue atValue = await atClient.get(publicKey);
-                  stdout.writeln(lightCyan.wrap(" => ${atValue.value}"));
-                  break;
-                case KeyType.privateKey:
-                  AtKey privateKey = AtKey.private(name, namespace: namespace).build();
-                  AtValue atValue = await atClient.get(privateKey);
-                  stdout.writeln(lightCyan.wrap(" => ${atValue.value}"));
-                  break;
-                case KeyType.invalidKey:
-                  stdout.writeln(lightCyan.wrap(" => make it properly please"));
-                  break;
-                default:
-                  stdout.writeln(lightCyan.wrap(" => i don't do funny key types ($type)"));
+              try {
+                var response = await repl.getKey(args, enforceNamespace);
+                stdout.writeln(lightCyan.wrap(response));
+              } catch (e) {
+                stdout.writeln(red.wrap(e.toString()));
               }
               break;
             case "put":
-              String key = args[1];
-              KeyType type = AtKey.getKeyType(key);
-              String value = args[2];
-              String? name;
-              String atSign = key.substring(key.indexOf('@'));
-              String namespace = '';
-              if (enforceNamespace) {
-                name = key.substring(0, key.indexOf('.'));
-                namespace = key.substring(key.indexOf('.') + 1, key.indexOf('@'));
-              } else {
-                name = key.substring(0, key.indexOf('@'));
+              try {
+                var response = await repl.put(args, enforceNamespace);
+                stdout.writeln(lightCyan.wrap(response));
+              } catch (e) {
+                stdout.writeln(red.wrap(e.toString()));
               }
-
-              stdout.writeln("Type: $type \nValue: $value \nKeyName: $key\nName: $name\n NameSpace: $namespace");
-              switch (type) {
-                case KeyType.selfKey:
-                  AtKey selfKey = AtKey.self(name, namespace: namespace, sharedBy: atSign).build();
-                  bool data = await atClient.put(selfKey, value);
-                  stdout.writeln(lightCyan.wrap(" => $data"));
-                  break;
-                case KeyType.sharedKey:
-                  AtKey sharedKey = AtKey.shared(name, namespace: namespace, sharedBy: atSign).build();
-                  bool data = await atClient.put(sharedKey, value);
-                  stdout.writeln(lightCyan.wrap(" => $data"));
-                  break;
-                case KeyType.publicKey:
-                  AtKey publicKey = AtKey.public(name, namespace: namespace, sharedBy: atSign).build();
-                  bool data = await atClient.put(publicKey, value);
-                  stdout.writeln(lightCyan.wrap(" => $data"));
-                  break;
-                case KeyType.privateKey:
-                  AtKey privateKey = AtKey.private(name, namespace: namespace).build();
-                  bool data = await atClient.put(privateKey, value);
-                  stdout.writeln(lightCyan.wrap(" => key creation result = $data"));
-                  break;
-                case KeyType.invalidKey:
-                  stdout.writeln(lightCyan.wrap(" => make it properly please"));
-                  break;
-                default:
-                  stdout.writeln(lightCyan.wrap(" => i don't do funny key types ($type)"));
+              break;
+            case "delete":
+              try {
+                var response = await repl.delete(args, enforceNamespace);
+                stdout.writeln(lightCyan.wrap(response));
+              } catch (e) {
+                stdout.writeln(red.wrap(e.toString()));
               }
+              break;
+            case "lookup":
               break;
             case "q":
               exit(0);
@@ -165,7 +119,11 @@ Future<void> main(List<String> arguments) async {
         stdout.write(magenta.wrap("$atSign "));
       }
     } on RangeError catch (e) {
-      stdout.writeln(red.wrap("You are enforcing namespaces, please use them."));
+      if (!command!.contains("@")) {
+        stdout.writeln(red.wrap("You are enforcing namespaces, please use them."));
+      } else {
+        stdout.writeln(red.wrap("You are missing the atsign"));
+      }
       stdout.write(magenta.wrap("$atSign "));
     }
     // run the command in AtClient
@@ -214,10 +172,16 @@ void printHelpInstructions() {
   stdout.write(green.wrap(" <atKeyName> "));
   stdout.writeln("- delete the record with this atKeyName (e.g. /delete test@alice) \n");
 
+  stdout.write(magenta.wrap("/lookup"));
+  stdout.write(cyan.wrap(" <context: public|shared|local> "));
+  stdout.write(green.wrap(" <operation: all|meta> "));
+  stdout.write(lightBlue.wrap(" <atKey> "));
+  stdout.write(yellow.wrap(" <atSign> "));
+  stdout.writeln("- used to lookup the value SHARED by ANOTHER atSign user.");
+  stdout.writeln(
+      "       Context: Public -> public atKey from another atSign  | Shared -> shared atKey from another atSign | Local -> atKeys on your atServer");
+  stdout.writeln("       Operation: All -> value and meta | Meta -> just meta data \n");
+
   stdout.write(magenta.wrap("/q or /quit"));
   stdout.writeln("- will quit the REPL \n");
-
-  stdout.write(red.wrap("NOTE: "));
-  stdout.write(magenta.wrap(" /put, /get, and /bold"));
-  stdout.writeln("->  will append the current atSign to the atKeyName if not supplied \n");
 }
