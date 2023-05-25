@@ -11,6 +11,7 @@ dependencies:
   args: ^2.4.1
   at_client: ^3.0.59
   at_onboarding_cli: ^1.3.0
+  at_lookup: ^3.0.36
   io: ^1.0.4
   # path: ^1.8.0
 
