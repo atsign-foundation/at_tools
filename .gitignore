@@ -26,3 +26,5 @@ doc/api/
 *.ipr
 *.iws
 *.idea/
+
+pubspec_overrides.yaml #melos
