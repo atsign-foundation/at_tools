@@ -1,16 +1,13 @@
 import 'package:at_client/at_client.dart';
-import 'package:at_commons/at_builders.dart';
-import 'package:at_lookup/at_lookup.dart';
 import 'package:at_onboarding_cli/at_onboarding_cli.dart';
 import 'package:at_repl/home_directory.dart';
 
 class REPL {
   final String atSign;
   late AtOnboardingService _atOnboardingService;
-
   REPL(this.atSign);
-
-  AtClient get atClient => _atOnboardingService.atClient!;
+  //or should I be using _atOnboardingService.atClient?
+  AtClient get atClient => AtClientManager.getInstance().atClient;
 
   Future<bool> authenticate() {
     AtOnboardingPreference pref = AtOnboardingPreference()
@@ -19,10 +16,10 @@ class REPL {
       ..commitLogPath = '${getHomeDirectory()}/.atsign/temp/commitlog'
       ..downloadPath = '${getHomeDirectory()}/.atsign/temp/download'
       ..namespace = 'soccer0'
+      ..syncIntervalMins = 1
       ..atKeysFilePath = "${getHomeDirectory()}/.atsign/keys/${atSign}_key.atKeys";
 
     _atOnboardingService = AtOnboardingServiceImpl(atSign, pref);
-
     return _atOnboardingService.authenticate();
   }
 
@@ -37,11 +34,7 @@ class REPL {
     if (_atOnboardingService.atClient!.getRemoteSecondary() == null) {
       throw Exception('RemoteSecondary is null for some reason...');
     }
-    final AtClient atClient = _atOnboardingService.atClient!;
-    for (var atKey in (await atClient.getAtKeys())) {
-      // print(atKey);
-    }
-    final RemoteSecondary rs = _atOnboardingService.atClient!.getRemoteSecondary()!;
+    final RemoteSecondary rs = atClient.getRemoteSecondary()!;
 
     final String? response = (await rs.executeCommand(command, auth: true));
 
@@ -66,6 +59,9 @@ class REPL {
       namespace = key.substring(key.indexOf('.') + 1, key.indexOf('@'));
     } else {
       name = key.substring(0, key.indexOf('@'));
+    }
+    if (name.contains(":")) {
+      name = name.substring(name.indexOf(':') + 1, (key.contains('.') ? key.indexOf(".") : key.indexOf("@")));
     }
     switch (type) {
       case KeyType.selfKey:
@@ -105,6 +101,10 @@ class REPL {
     } else {
       name = key.substring(0, key.indexOf('@'));
     }
+    //public keys
+    if (name.contains(":")) {
+      name = name.substring(name.indexOf(':') + 1, (key.contains('.') ? key.indexOf(".") : key.indexOf("@")));
+    }
     switch (type) {
       case KeyType.selfKey:
         AtKey selfKey = AtKey.self(name, namespace: namespace, sharedBy: atSign).build();
@@ -141,6 +141,9 @@ class REPL {
       namespace = key.substring(key.indexOf('.') + 1, key.indexOf('@'));
     } else {
       name = key.substring(0, key.indexOf('@'));
+    }
+    if (name.contains(":")) {
+      name = name.substring(name.indexOf(':') + 1, (key.contains('.') ? key.indexOf(".") : key.indexOf("@")));
     }
     switch (type) {
       case KeyType.selfKey:

@@ -1,8 +1,9 @@
 import 'dart:convert';
-
+import 'package:at_utils/at_logger.dart';
 import 'package:args/args.dart';
 import 'package:at_client/at_client.dart';
 import 'package:at_repl/at_repl.dart' as at_repl;
+import 'package:at_repl/repl_listener.dart';
 import 'dart:io';
 
 import 'package:io/ansi.dart';
@@ -15,10 +16,12 @@ import 'package:io/ansi.dart';
 //FULL REPL COMMAND
 //dart run at_repl -r
 Future<void> main(List<String> arguments) async {
+  AtClient? atClient;
   String rootUrl = "";
-  String atSign = "";
+  String atSign = "@chess69";
   bool verbose = false;
   bool enforceNamespace = false;
+  AtSignLogger.root_level = "warning";
 
 // argparser args
   final ArgParser argParser = ArgParser()
@@ -42,25 +45,32 @@ Future<void> main(List<String> arguments) async {
   } catch (e) {
     stdout.writeln(red.wrap("Missing arguments"));
   }
-
-  AtClient? atClient;
+  REPLListener replListener = REPLListener();
   at_repl.REPL repl = at_repl.REPL(atSign);
   try {
     stdout.writeln(blue.wrap("Connecting..."));
     var success = await repl.authenticate();
     atClient = repl.atClient;
+    atClient.syncService.addProgressListener(replListener);
+    while (!replListener.syncComplete) {
+      await Future.delayed(Duration(milliseconds: 100));
+    }
     stdout.writeln(green.wrap("Successfully Connected."));
     stdout.writeln(lightGreen.wrap("use /help or help to see available commands"));
   } catch (e) {
     stdout.writeln(red.wrap("Disconnected, Invalid login. $e"));
   }
 
+  if (atClient == null) {
+    stdout.writeln(red.wrap("Disconnected, atClient is null."));
+  }
   var namespaceMsg = (enforceNamespace
       ? "You are enforcing namespaces, be sure to include them"
       : "You don't need to include name spaces.");
   stdout.writeln(yellow.wrap(namespaceMsg));
 
   // 3. REPL!
+
   stdout.write(magenta.wrap("$atSign "));
   while (true) {
     // receive a String from stdin
@@ -74,14 +84,13 @@ Future<void> main(List<String> arguments) async {
           }
           var args = command.split(" ");
           String verb = args[0];
-          if (atClient == null) break;
           switch (verb) {
             case "help":
               printHelpInstructions();
               break;
             case "scan":
               String regex = (args.length > 1 ? args[1] : "");
-              var values = await atClient.getAtKeys(regex: regex);
+              var values = await atClient!.getAtKeys(regex: regex);
               stdout.writeln(lightCyan.wrap(" => $values"));
               break;
             case "get":
@@ -108,12 +117,19 @@ Future<void> main(List<String> arguments) async {
                 stdout.writeln(red.wrap(e.toString()));
               }
               break;
-            case "lookup":
-              break;
             case "q":
               exit(0);
             case "quit":
               exit(0);
+          }
+        } else if (command.isNotEmpty) {
+          try {
+            var response = await repl.executeCommand(command);
+            stdout.writeln(cyan.wrap("=> $response"));
+          } on AtException catch (e) {
+            stdout.writeln("atException: ${red.wrap(e.toString())}");
+          } on IOException catch (e) {
+            stdout.writeln(red.wrap(e.toString()));
           }
         }
         stdout.write(magenta.wrap("$atSign "));
@@ -126,6 +142,7 @@ Future<void> main(List<String> arguments) async {
       }
       stdout.write(magenta.wrap("$atSign "));
     }
+
     // run the command in AtClient
   }
 }
@@ -171,16 +188,6 @@ void printHelpInstructions() {
   stdout.write(magenta.wrap("/delete"));
   stdout.write(green.wrap(" <atKeyName> "));
   stdout.writeln("- delete the record with this atKeyName (e.g. /delete test@alice) \n");
-
-  stdout.write(magenta.wrap("/lookup"));
-  stdout.write(cyan.wrap(" <context: public|shared|local> "));
-  stdout.write(green.wrap(" <operation: all|meta> "));
-  stdout.write(lightBlue.wrap(" <atKey> "));
-  stdout.write(yellow.wrap(" <atSign> "));
-  stdout.writeln("- used to lookup the value SHARED by ANOTHER atSign user.");
-  stdout.writeln(
-      "       Context: Public -> public atKey from another atSign  | Shared -> shared atKey from another atSign | Local -> atKeys on your atServer");
-  stdout.writeln("       Operation: All -> value and meta | Meta -> just meta data \n");
 
   stdout.write(magenta.wrap("/q or /quit"));
   stdout.writeln("- will quit the REPL \n");
