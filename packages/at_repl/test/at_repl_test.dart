@@ -1,5 +1,3 @@
-
-
 import 'package:at_repl/at_repl.dart';
 
 void main() async {
@@ -8,5 +6,5 @@ void main() async {
   final bool authenticated = await repl.authenticate();
   print('authentication success: $authenticated');
   final String result = await repl.executeCommand('scan');
-  print('scan outputed: $result');
+  print('scan output: $result');
 }

@@ -4,8 +4,9 @@ import 'package:at_repl/home_directory.dart';
 
 class REPL {
   final String atSign;
+  final String rootUrl;
   late AtOnboardingService _atOnboardingService;
-  REPL(this.atSign);
+  REPL(this.atSign, {this.rootUrl = 'root.atsign.org:64'});
   //or should I be using _atOnboardingService.atClient?
   AtClient get atClient => AtClientManager.getInstance().atClient;
 
@@ -17,7 +18,10 @@ class REPL {
       ..downloadPath = '${getHomeDirectory()}/.atsign/temp/download'
       ..namespace = 'soccer0'
       ..syncIntervalMins = 1
-      ..atKeysFilePath = "${getHomeDirectory()}/.atsign/keys/${atSign}_key.atKeys";
+      ..rootDomain = rootUrl.split(':')[0]
+      ..rootPort = int.parse(rootUrl.split(':')[1])
+      ..atKeysFilePath =
+          "${getHomeDirectory()}/.atsign/keys/${atSign}_key.atKeys";
 
     _atOnboardingService = AtOnboardingServiceImpl(atSign, pref);
     return _atOnboardingService.authenticate();
@@ -25,9 +29,6 @@ class REPL {
 
   Future<String> executeCommand(String command) async {
     late String result;
-    if (_atOnboardingService == null) {
-      throw Exception('Not authenticated. Call `authenticate()` first.');
-    }
     if (_atOnboardingService.atClient == null) {
       throw Exception('AtClient is null for some reason...');
     }
@@ -39,7 +40,8 @@ class REPL {
     final String? response = (await rs.executeCommand(command, auth: true));
 
     if (response == null) {
-      throw Exception('Result is null for some reason after executing command: $command');
+      throw Exception(
+          'Result is null for some reason after executing command: $command');
     }
 
     result = response;
@@ -48,124 +50,33 @@ class REPL {
   }
 
   Future<String> getKey(List<String> args, bool enforceNamespace) async {
-    if (args.length != 2) throw Exception("Please enter an atKey -> /get test@alice");
-    String key = args[1];
-    KeyType type = AtKey.getKeyType(key);
-    String? name;
-    String atSign = key.substring(key.indexOf('@'));
-    String namespace = '';
-    if (enforceNamespace) {
-      name = key.substring(0, key.indexOf('.'));
-      namespace = key.substring(key.indexOf('.') + 1, key.indexOf('@'));
-    } else {
-      name = key.substring(0, key.indexOf('@'));
+    if (args.length != 2) {
+      throw Exception("Please enter a record ID - e.g. /get test@alice");
     }
-    if (name.contains(":")) {
-      name = name.substring(name.indexOf(':') + 1, (key.contains('.') ? key.indexOf(".") : key.indexOf("@")));
-    }
-    switch (type) {
-      case KeyType.selfKey:
-        AtKey selfKey = AtKey.self(name, namespace: namespace, sharedBy: atSign).build();
-        AtValue atValue = await atClient.get(selfKey);
-        return " => ${atValue.value}";
-      case KeyType.sharedKey:
-        AtKey sharedKey = AtKey.shared(name, namespace: namespace, sharedBy: atSign).build();
-        AtValue atValue = await atClient.get(sharedKey);
-        return " => ${atValue.value}";
-      case KeyType.publicKey:
-        AtKey publicKey = AtKey.public(name, namespace: namespace, sharedBy: atSign).build();
-        AtValue atValue = await atClient.get(publicKey);
-        return " => ${atValue.value}";
-      case KeyType.privateKey:
-        AtKey privateKey = AtKey.private(name, namespace: namespace).build();
-        AtValue atValue = await atClient.get(privateKey);
-        return " => ${atValue.value}";
-      case KeyType.invalidKey:
-        return " => Keyname is typed incorrectly";
-      default:
-        return " => i don't do funny key types ($type)";
-    }
+    String id = args[1];
+
+    AtValue atValue = await atClient.get(AtKey.fromString(id));
+    return " => ${atValue.value}";
   }
 
   Future<String> put(List<String> args, bool enforceNamespace) async {
-    if (args.length != 3) throw Exception("Please enter an atKey and a value -> /put test@alice value");
-    String key = args[1];
+    if (args.length != 3) {
+      throw Exception(
+          "Please enter a record ID and a value - e.g. /put test@alice value");
+    }
+    String id = args[1];
     String value = args[2];
-    KeyType type = AtKey.getKeyType(key);
-    String? name;
-    String atSign = key.substring(key.indexOf('@'));
-    String namespace = '';
-    if (enforceNamespace) {
-      name = key.substring(0, key.indexOf('.'));
-      namespace = key.substring(key.indexOf('.') + 1, key.indexOf('@'));
-    } else {
-      name = key.substring(0, key.indexOf('@'));
-    }
-    //public keys
-    if (name.contains(":")) {
-      name = name.substring(name.indexOf(':') + 1, (key.contains('.') ? key.indexOf(".") : key.indexOf("@")));
-    }
-    switch (type) {
-      case KeyType.selfKey:
-        AtKey selfKey = AtKey.self(name, namespace: namespace, sharedBy: atSign).build();
-        bool data = await atClient.put(selfKey, value);
-        return " key creation result - $data";
-      case KeyType.sharedKey:
-        AtKey sharedKey = AtKey.shared(name, namespace: namespace, sharedBy: atSign).build();
-        bool data = await atClient.put(sharedKey, value);
-        return " key creation result - $data";
-      case KeyType.publicKey:
-        AtKey publicKey = AtKey.public(name, namespace: namespace, sharedBy: atSign).build();
-        bool data = await atClient.put(publicKey, value);
-        return " key creation result - $data";
-      case KeyType.privateKey:
-        AtKey privateKey = AtKey.private(name, namespace: namespace).build();
-        bool data = await atClient.put(privateKey, value);
-        return " => key creation result - $data";
-      case KeyType.invalidKey:
-        return " => make it properly please";
-      default:
-        return " => i don't do funny key types ($type)";
-    }
+
+    dynamic result = await atClient.put(AtKey.fromString(id), value);
+    return " key creation result - $result";
   }
 
   Future<String> delete(List<String> args, bool enforceNamespace) async {
-    if (args.length != 2) throw Exception("Please enter an atKey -> /delete test@alice");
-    String key = args[1];
-    KeyType type = AtKey.getKeyType(key);
-    String? name;
-    String atSign = key.substring(key.indexOf('@'));
-    String namespace = '';
-    if (enforceNamespace) {
-      name = key.substring(0, key.indexOf('.'));
-      namespace = key.substring(key.indexOf('.') + 1, key.indexOf('@'));
-    } else {
-      name = key.substring(0, key.indexOf('@'));
+    if (args.length != 2) {
+      throw Exception("Please enter a record ID - e.g. /delete test@alice");
     }
-    if (name.contains(":")) {
-      name = name.substring(name.indexOf(':') + 1, (key.contains('.') ? key.indexOf(".") : key.indexOf("@")));
-    }
-    switch (type) {
-      case KeyType.selfKey:
-        AtKey selfKey = AtKey.self(name, namespace: namespace, sharedBy: atSign).build();
-        bool response = await atClient.delete(selfKey);
-        return (" => $response");
-      case KeyType.sharedKey:
-        AtKey sharedKey = AtKey.shared(name, namespace: namespace, sharedBy: atSign).build();
-        bool response = await atClient.delete(sharedKey);
-        return (" => $response");
-      case KeyType.publicKey:
-        AtKey publicKey = AtKey.public(name, namespace: namespace, sharedBy: atSign).build();
-        bool response = await atClient.delete(publicKey);
-        return (" => $response");
-      case KeyType.privateKey:
-        AtKey privateKey = AtKey.private(name, namespace: namespace).build();
-        bool response = await atClient.delete(privateKey);
-        return (" => $response");
-      case KeyType.invalidKey:
-        return (" => Keyname is typed incorrectly");
-      default:
-        return (" => i don't do funny key types ($type)");
-    }
+    String id = args[1];
+    dynamic response = await atClient.delete(AtKey.fromString(id));
+    return (" => $response");
   }
 }
