@@ -29,3 +29,5 @@ doc/api/
 
 #vscode
 .vscode
+
+pubspec_overrides.yaml #melos

@@ -23,7 +23,7 @@ class VerbSyntax {
   static const config =
       r'^config:(?:(?<=config:)block:(?<operation>add|remove|show)(?:(?<=show)\s?$|(?:(?<=add|remove):(?<atSign>(?:@[^:@\s]+)( (?:@[^\s@]+))*$))))|(?:(?<=config:)(?<setOperation>set|reset|print):(?<configNew>.+)$)';
   static const stats =
-      r'^stats(?<statId>:((?!0)\d+)?(,(\d+))*)?(:(?<regex>(?<=:3:).+))?$';
+      r'^stats(?<statId>:((?!0)\d+)?(,(\d+))*)?(:(?<regex>(?<=:3:|:15:).+))?$';
   static const sync = r'^sync:(?<from_commit_seq>[0-9]+|-1)(:(?<regex>.+))?$';
   static const syncFrom =
       r'^sync:from:(?<from_commit_seq>[0-9]+|-1)(:limit:(?<limit>\d+))(:(?<regex>.+))?$';
@@ -125,4 +125,6 @@ class VerbSyntax {
   static const info = r'^info(:brief)?$';
   static const noOp = r'^noop:(?<delayMillis>\d+)$';
   static const notifyRemove = r'notify:remove:(?<id>[\w\d\-\_]+)';
+  static const enroll =
+      r'^enroll:(?<operation>request|approve|deny)(:appName:(?<appName>(\w+)))(:deviceName:(?<deviceName>(\w+)))(:namespaces:(?<namespaces>(.*(?:;.*)*)))(:apkamPublicKey:(?<apkamPublicKey>.*))$';
 }
