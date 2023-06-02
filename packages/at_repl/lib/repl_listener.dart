@@ -23,7 +23,7 @@ class REPLListener implements SyncProgressListener {
     if (syncProgress.syncStatus == SyncStatus.success) {
       syncResult = 'Succeeded';
     }
-
+    print("synching before close");
     return;
   }
 }

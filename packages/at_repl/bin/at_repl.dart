@@ -45,7 +45,6 @@ Future<void> main(List<String> arguments) async {
     stdout.write(blue.wrap("Connecting...   "));
     var success = await repl.authenticate();
     if (success) {
-      await repl.syncSecondary();
       stdout.writeln(green.wrap("Connected."));
     } else {
       stdout.writeln(red.wrap("Failed to authenticate"));
@@ -114,8 +113,14 @@ Future<void> main(List<String> arguments) async {
               }
               break;
             case "q":
+              if (!await atClient!.syncService.isInSync()) {
+                await repl.syncSecondary();
+              }
               exit(0);
             case "quit":
+              if (!await atClient!.syncService.isInSync()) {
+                await repl.syncSecondary();
+              }
               exit(0);
           }
         } else {
