@@ -1,7 +1,8 @@
 import 'package:at_client/at_client.dart';
-import 'package:at_repl/at_repl.dart';
+import 'package:at_repl/src/at_repl.dart';
 import 'package:at_utils/at_logger.dart';
 import 'package:at_commons/src/verb/scan_verb_builder.dart';
+import 'package:build_verify/build_verify.dart';
 import 'package:test/test.dart';
 
 void main() async {
@@ -9,6 +10,9 @@ void main() async {
   REPL repl = REPL(atSign, rootUrl: "root.atsign.org:64");
   AtSignLogger.root_level = 'warning';
   final bool authenticated = await repl.authenticate();
+
+  test("Test Build", expectBuildClean);
+
   group("Test REPL protocol functionality", () {
     test("test Authenticate", () async {
       expect(repl.atClient, AtClientManager.getInstance().atClient);
