@@ -2,18 +2,20 @@ import 'dart:convert';
 import 'package:at_utils/at_logger.dart';
 import 'package:args/args.dart';
 import 'package:at_client/at_client.dart';
-import 'package:at_repl/at_repl.dart' as at_repl;
+import 'package:at_repl/src/at_repl.dart' as at_repl;
 import 'dart:io';
-
 import 'package:io/ansi.dart';
 
 //make sure you cd to at_repl dir.
+//cd packages\at_repl
+
 // REPL ONLY REQUIRES AN ATSIGN OPTION
 //EX.
 //dart run at_repl -a @xavierlin0
 
 //FULL REPL COMMAND
-//dart run at_repl -r
+//dart run at_repl -a @xavierlin -r root.atsign.org:64 -v -n
+
 Future<void> main(List<String> arguments) async {
   AtClient? atClient;
   String rootUrl = "";
@@ -38,17 +40,28 @@ Future<void> main(List<String> arguments) async {
     stdout.writeln(red.wrap('Invalid arguments. Usage:\n${argParser.usage}'));
     exit(1);
   }
-  AtSignLogger.root_level = verbose ? 'info' : 'warning';
 
+  //Define logger and REPL.
+  AtSignLogger.root_level = verbose ? 'info' : 'warning';
   at_repl.REPL repl = at_repl.REPL(atSign, rootUrl: rootUrl);
+
+  //Try to authenticate using the inputted atsigns keys.
+  //Keys are usually located in C:\Users\{user}\.atsign\keys
+  //or home directory\.atsign\keys
   try {
     stdout.write(blue.wrap("Connecting...   "));
     var success = await repl.authenticate();
+    atClient = repl.atClient;
+    if (!await atClient.syncService.isInSync()) {
+      await repl.syncSecondary();
+    }
+
     if (success) {
       stdout.writeln(green.wrap("Connected."));
     } else {
       stdout.writeln(red.wrap("Failed to authenticate"));
     }
+
     atClient = repl.atClient;
     stdout.writeln(lightGreen.wrap("use /help or help to see available commands"));
   } catch (e) {
@@ -113,17 +126,12 @@ Future<void> main(List<String> arguments) async {
               }
               break;
             case "q":
-              if (!await atClient!.syncService.isInSync()) {
-                await repl.syncSecondary();
-              }
               exit(0);
             case "quit":
-              if (!await atClient!.syncService.isInSync()) {
-                await repl.syncSecondary();
-              }
               exit(0);
           }
         } else {
+          // run protocol verbs
           try {
             var response = await repl.executeCommand('$command\n');
             stdout.writeln(cyan.wrap("=> $response"));
@@ -143,8 +151,6 @@ Future<void> main(List<String> arguments) async {
       }
       stdout.write(magenta.wrap("$atSign "));
     }
-
-    // run the command in AtClient
   }
 }
 
