@@ -5,7 +5,8 @@ import 'package:at_client/at_client.dart';
 import 'package:at_repl/src/at_repl.dart' as at_repl;
 import 'dart:io';
 import 'package:io/ansi.dart';
-
+import 'package:pub_updater/pub_updater.dart';
+import 'package:at_repl/src/version.dart' as version;
 //make sure you cd to at_repl dir.
 //cd packages\at_repl
 
@@ -29,6 +30,13 @@ Future<void> main(List<String> arguments) async {
     ..addFlag("verbose", abbr: 'v', defaultsTo: false)
     ..addFlag("enforceNamespace", abbr: 'n', defaultsTo: false);
 
+  final pubUpdater = PubUpdater();
+  final upToDate = await pubUpdater.isUpToDate(packageName: "at_repl", currentVersion: version.packageVersion);
+  if (!upToDate) {
+    stdout.writeln(red.wrap("Package out of date, updating..."));
+    await pubUpdater.update(packageName: 'at_repl');
+    stdout.write(green.wrap("Updated."));
+  }
   try {
     var results = argParser.parse(arguments);
     rootUrl = results["rootUrl"];

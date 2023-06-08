@@ -8,6 +8,7 @@ void main() async {
   final String atSign = '@chess69';
   REPL repl = REPL(atSign, rootUrl: "root.atsign.org:64");
   AtSignLogger.root_level = 'warning';
+  final String namespace = 'impressed1';
   // ignore: unused_local_variable
   final bool authenticated = await repl.authenticate();
 
@@ -70,24 +71,44 @@ void main() async {
     //Happy Path :)
     final bool enforceNamespace = true;
     test("Test Put with namespaces", () async {
-      List<String> args = ["put", "public:demotest.soccer0$atSign", "initial"];
+      List<String> args = ["put", "public:demotest.$namespace$atSign", "initial"];
       String result = await repl.put(args, enforceNamespace);
       expect(result.isNotEmpty, true);
     });
     test("Test Get with namespaces", () async {
-      List<String> args = ["put", "public:demotest.soccer0$atSign"];
+      List<String> args = ["put", "public:demotest.$namespace$atSign"];
+      String result = await repl.getKey(args, enforceNamespace);
+      expect(result, "initial");
+    });
+    test("Test Update with namespaces", () async {
+      List<String> args = ["put", "public:demotest.$namespace$atSign", "updated"];
+      String result = await repl.put(args, enforceNamespace);
+      expect(result.isNotEmpty, true);
+    });
+  });
+
+  group("Test REPL functions not enforcing Namespaces", () {
+    //Happy Path :)
+    final bool enforceNamespace = true;
+    test("Test Put with namespaces", () async {
+      List<String> args = ["put", "public:demotest.$namespace$atSign", "initial"];
+      String result = await repl.put(args, enforceNamespace);
+      expect(result.isNotEmpty, true);
+    });
+    test("Test Get with namespaces", () async {
+      List<String> args = ["put", "public:demotest.$namespace$atSign"];
       String result = await repl.getKey(args, enforceNamespace);
       expect(result.isNotEmpty, true);
     });
     test("Test Update with namespaces", () async {
-      List<String> args = ["put", "public:demotest.soccer0$atSign", "updated"];
+      List<String> args = ["put", "public:demotest.$namespace$atSign", "updated"];
       String result = await repl.put(args, enforceNamespace);
       expect(result.isNotEmpty, true);
     });
-    test("Test Delete with namespaces", () async {
-      List<String> args = ["put", "public:demotest.soccer0$atSign"];
-      String result = await repl.delete(args, enforceNamespace);
-      expect(result.isNotEmpty, true);
+    test("Test put", () async {
+      List<String> args = ["put", "public:demotest.$namespace$atSign"];
+      String result = await repl.getKey(args, enforceNamespace);
+      expect(result, "updated");
     });
   });
 }

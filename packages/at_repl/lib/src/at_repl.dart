@@ -7,6 +7,7 @@ import 'repl_listener.dart';
 class REPL {
   ///User's atSign
   final String atSign;
+  final String namespace = 'impressed1';
 
   ///defaults to root.atsign.org:64 which is the atDirectory
   final String rootUrl;
@@ -24,7 +25,7 @@ class REPL {
       ..hiveStoragePath = '${getHomeDirectory()}/.atsign/temp/hive'
       ..commitLogPath = '${getHomeDirectory()}/.atsign/temp/commitlog'
       ..downloadPath = '${getHomeDirectory()}/.atsign/temp/download'
-      ..namespace = 'soccer0'
+      ..namespace = 'impressed1'
       ..syncIntervalMins = 1
       ..rootDomain = rootUrl.split(':')[0]
       ..rootPort = int.parse(rootUrl.split(':')[1])
@@ -62,7 +63,11 @@ class REPL {
       throw Exception("Please enter a record ID - e.g. /get test@alice");
     }
     if (!enforceNamespace) {
-      args[1] = "${args[1].substring(0, args[1].indexOf('@'))}.soccer0${args[1].substring(args[1].indexOf('@'))}";
+      if (args[1].contains('.')) {
+        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}${args[1].substring(args[1].indexOf('@'))}";
+      } else {
+        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}.$namespace${args[1].substring(args[1].indexOf('@'))}";
+      }
     }
     String id = args[1];
 
@@ -76,7 +81,11 @@ class REPL {
       throw Exception("Please enter a record ID and a value - e.g. /put test@alice value");
     }
     if (!enforceNamespace) {
-      args[1] = "${args[1].substring(0, args[1].indexOf('@'))}.soccer0${args[1].substring(args[1].indexOf('@'))}";
+      if (args[1].contains('.')) {
+        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}${args[1].substring(args[1].indexOf('@'))}";
+      } else {
+        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}.$namespace${args[1].substring(args[1].indexOf('@'))}";
+      }
     }
     String id = args[1];
     String value = args[2];
@@ -91,7 +100,11 @@ class REPL {
       throw Exception("Please enter a record ID - e.g. /delete test@alice");
     }
     if (!enforceNamespace) {
-      args[1] = "${args[1].substring(0, args[1].indexOf('@'))}.soccer0${args[1].substring(args[1].indexOf('@'))}";
+      if (args[1].contains('.')) {
+        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}${args[1].substring(args[1].indexOf('@'))}";
+      } else {
+        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}.$namespace${args[1].substring(args[1].indexOf('@'))}";
+      }
     }
     String id = args[1];
     dynamic response = await atClient.delete(AtKey.fromString(id));
