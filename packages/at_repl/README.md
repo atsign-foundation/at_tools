@@ -7,7 +7,7 @@
 A CLI application that talks directly to the atPlatform.
 
 ## Getting Started 
-Ensure you have you atSign keys, keys are usually located in "homeDirectory\.atsign\keys".
+Ensure you have your atSign keys. Keys are usually located in `$HOME/.atsign/keys`.
 
 If you don't have an atSign, visit here https://my.atsign.com/login. 
 
