@@ -66,7 +66,7 @@ class REPL {
       if (args[1].contains('.')) {
         args[1] = "${args[1].substring(0, args[1].indexOf('@'))}${args[1].substring(args[1].indexOf('@'))}";
       } else {
-        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}.$namespace${args[1].substring(args[1].indexOf('@'))}";
+        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}${args[1].substring(args[1].indexOf('@'))}";
       }
     }
     String id = args[1];
@@ -84,7 +84,7 @@ class REPL {
       if (args[1].contains('.')) {
         args[1] = "${args[1].substring(0, args[1].indexOf('@'))}${args[1].substring(args[1].indexOf('@'))}";
       } else {
-        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}.$namespace${args[1].substring(args[1].indexOf('@'))}";
+        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}${args[1].substring(args[1].indexOf('@'))}";
       }
     }
     String id = args[1];
@@ -103,7 +103,7 @@ class REPL {
       if (args[1].contains('.')) {
         args[1] = "${args[1].substring(0, args[1].indexOf('@'))}${args[1].substring(args[1].indexOf('@'))}";
       } else {
-        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}.$namespace${args[1].substring(args[1].indexOf('@'))}";
+        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}${args[1].substring(args[1].indexOf('@'))}";
       }
     }
     String id = args[1];
