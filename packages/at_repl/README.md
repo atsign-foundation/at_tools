@@ -20,7 +20,8 @@ dart pub global activate at_repl
 Or locally via:
 
 ```sh
-dart pub global activate --source=path <path to this package>
+cd packages/at_repl
+dart pub global activate .  --source path
 ```
 
 ## Usage
