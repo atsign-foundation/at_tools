@@ -2,7 +2,6 @@ import 'package:at_client/at_client.dart';
 import 'package:at_onboarding_cli/at_onboarding_cli.dart';
 import 'package:at_repl/src/home_directory.dart';
 
-import 'repl_listener.dart';
 
 class REPL {
   ///User's atSign
@@ -58,14 +57,9 @@ class REPL {
   }
 
   ///gets the value of desired key
-  Future<String> getKey(List<String> args, bool enforceNamespace) async {
+  Future<String> getKey(List<String> args) async {
     if (args.length != 2) {
       throw Exception("Please enter a record ID - e.g. /get test@alice");
-    }
-    if (!enforceNamespace) {
-      if (args[1].contains('.')) {
-        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}${args[1].substring(args[1].indexOf('@'))}";
-      }
     }
     String id = args[1];
 
@@ -79,8 +73,8 @@ class REPL {
       throw Exception("Please enter a record ID and a value - e.g. /put test@alice value");
     }
     if (!enforceNamespace) {
-      if (args[1].contains('.')) {
-        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}${args[1].substring(args[1].indexOf('@'))}";
+      if (!args[1].contains('.')) {
+        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}.$namespace${args[1].substring(args[1].indexOf('@'))}";
       }
     }
     String id = args[1];
@@ -91,14 +85,9 @@ class REPL {
   }
 
   ///deletes atKey from secondary server
-  Future<String> delete(List<String> args, bool enforceNamespace) async {
+  Future<String> delete(List<String> args) async {
     if (args.length != 2) {
       throw Exception("Please enter a record ID - e.g. /delete test@alice");
-    }
-    if (!enforceNamespace) {
-      if (args[1].contains('.')) {
-        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}${args[1].substring(args[1].indexOf('@'))}";
-      }
     }
     String id = args[1];
     dynamic response = await atClient.delete(AtKey.fromString(id));
@@ -106,12 +95,4 @@ class REPL {
   }
 
   ///syncs local secondary with remote secondary
-  Future<void> syncSecondary() async {
-    REPLListener replListener = REPLListener();
-    atClient.syncService.addProgressListener(replListener);
-    while (!replListener.syncComplete) {
-      await Future.delayed(Duration(milliseconds: 100));
-    }
-    return;
-  }
 }

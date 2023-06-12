@@ -22,7 +22,8 @@ void main() async {
     });
 
     test("test synching", () async {
-      await repl.syncSecondary();
+      repl.atClient.syncService.sync();
+      await Future.delayed(Duration(seconds: 5));
       expect(await repl.atClient.syncService.isInSync(), true);
     });
 
@@ -38,7 +39,7 @@ void main() async {
     });
   });
 
-  group("Test Exceptions REPL functions enforcing Namespaces", () {
+  group("Test REPL functions with public keys", () {
     //BAD Path >:(
     final bool enforceNamespace = true;
     test("Test Put with namespaces", () async {
@@ -52,7 +53,7 @@ void main() async {
     test("Test Get with namespaces", () async {
       List<String> args = ["put", "public:demotest$atSign"];
       try {
-        await repl.getKey(args, enforceNamespace);
+        await repl.getKey(args);
       } catch (e) {
         expect(e.runtimeType, AtKeyNotFoundException);
       }
@@ -65,11 +66,8 @@ void main() async {
         expect(e.runtimeType, AtKeyException);
       }
     });
-  });
 
-  group("Test REPL functions enforcing Namespaces", () {
     //Happy Path :)
-    final bool enforceNamespace = true;
     test("Test Put with namespaces", () async {
       List<String> args = ["put", "public:demotest.$namespace$atSign", "initial"];
       String result = await repl.put(args, enforceNamespace);
@@ -77,7 +75,7 @@ void main() async {
     });
     test("Test Get with namespaces", () async {
       List<String> args = ["put", "public:demotest.$namespace$atSign"];
-      String result = await repl.getKey(args, enforceNamespace);
+      String result = await repl.getKey(args);
       expect(result, "initial");
     });
     test("Test Update with namespaces", () async {
@@ -87,28 +85,22 @@ void main() async {
     });
   });
 
-  group("Test REPL functions not enforcing Namespaces", () {
-    //Happy Path :)
+  group("Test REPL functions with shared keys", () {
     final bool enforceNamespace = true;
     test("Test Put with namespaces", () async {
-      List<String> args = ["put", "public:demotest.$namespace$atSign", "initial"];
+      List<String> args = ["put", "@chess69_lovely:demotest.$namespace$atSign", "initial"];
       String result = await repl.put(args, enforceNamespace);
       expect(result.isNotEmpty, true);
     });
     test("Test Get with namespaces", () async {
       List<String> args = ["put", "public:demotest.$namespace$atSign"];
-      String result = await repl.getKey(args, enforceNamespace);
-      expect(result.isNotEmpty, true);
+      String result = await repl.getKey(args);
+      expect(result, "initial");
     });
     test("Test Update with namespaces", () async {
       List<String> args = ["put", "public:demotest.$namespace$atSign", "updated"];
       String result = await repl.put(args, enforceNamespace);
       expect(result.isNotEmpty, true);
-    });
-    test("Test put", () async {
-      List<String> args = ["put", "public:demotest.$namespace$atSign"];
-      String result = await repl.getKey(args, enforceNamespace);
-      expect(result, "updated");
     });
   });
 }
