@@ -173,7 +173,7 @@ void printHelpInstructions() {
 
   stdout.write(magenta.wrap("/scan"));
   stdout.write(green.wrap(" [regex] "));
-  stdout.writeln("- scan for all records, or all records whose keyNames match the regex (e.g. _scan test@alice.*) \n");
+  stdout.writeln("- scan for all records, or all records whose keyNames match the regex (e.g. /scan test@alice.*) \n");
 
   stdout.write(magenta.wrap("/put"));
   stdout.write(green.wrap(" <atKeyName> "));
