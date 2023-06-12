@@ -28,7 +28,7 @@ Future<void> main(List<String> arguments) async {
     ..addOption("atSign", abbr: 'a', mandatory: true)
     ..addOption("rootUrl", abbr: 'r', mandatory: false, defaultsTo: "root.atsign.org:64")
     ..addFlag("verbose", abbr: 'v', defaultsTo: false)
-    ..addFlag("enforceNamespace", abbr: 'n', defaultsTo: false);
+    ..addFlag("enforceNamespace", abbr: 'n', defaultsTo: true);
 
   final pubUpdater = PubUpdater();
   final upToDate = await pubUpdater.isUpToDate(packageName: "at_repl", currentVersion: version.packageVersion);
@@ -61,7 +61,7 @@ Future<void> main(List<String> arguments) async {
     var success = await repl.authenticate();
     atClient = repl.atClient;
     if (!await atClient.syncService.isInSync()) {
-      await repl.syncSecondary();
+      atClient.syncService.sync();
     }
 
     if (success) {
@@ -74,14 +74,12 @@ Future<void> main(List<String> arguments) async {
     stdout.writeln(lightGreen.wrap("use /help or help to see available commands"));
   } catch (e) {
     stdout.writeln(red.wrap('Authentication failed: $e'));
+    exit(2);
   }
 
-  if (atClient == null) {
-    stdout.writeln(red.wrap("Disconnected, atClient is null."));
-  }
   var namespaceMsg = (enforceNamespace
-      ? "You are enforcing namespaces, be sure to include them"
-      : "You don't need to include name spaces.");
+      ? ""
+      : "Namespaces will default to impressed1 when needed.");
   stdout.writeln(yellow.wrap(namespaceMsg));
 
   // 3. REPL!
@@ -111,7 +109,7 @@ Future<void> main(List<String> arguments) async {
               break;
             case "get":
               try {
-                var response = await repl.getKey(args, enforceNamespace);
+                var response = await repl.getKey(args);
                 stdout.writeln(lightCyan.wrap(response));
               } catch (e) {
                 stdout.writeln(red.wrap(e.toString()));
@@ -127,7 +125,7 @@ Future<void> main(List<String> arguments) async {
               break;
             case "delete":
               try {
-                var response = await repl.delete(args, enforceNamespace);
+                var response = await repl.delete(args);
                 stdout.writeln(lightCyan.wrap(response));
               } catch (e) {
                 stdout.writeln(red.wrap(e.toString()));
