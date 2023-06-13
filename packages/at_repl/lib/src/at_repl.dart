@@ -79,7 +79,7 @@ class REPL {
     }
     String id = args[1];
     String value = args[2];
-
+    
     dynamic result = await atClient.put(AtKey.fromString(id), value);
     return " key creation result - $result";
   }
@@ -94,5 +94,4 @@ class REPL {
     return (" => $response");
   }
 
-  ///syncs local secondary with remote secondary
 }

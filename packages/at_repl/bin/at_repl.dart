@@ -23,7 +23,7 @@ Future<void> main(List<String> arguments) async {
   String atSign = "@chess69";
   bool verbose = false;
   bool enforceNamespace = false;
-
+  AtSignLogger logger = AtSignLogger("repl");
   final ArgParser argParser = ArgParser()
     ..addOption("atSign", abbr: 'a', mandatory: true)
     ..addOption("rootUrl", abbr: 'r', mandatory: false, defaultsTo: "root.atsign.org:64")
@@ -72,14 +72,14 @@ Future<void> main(List<String> arguments) async {
 
     atClient = repl.atClient;
     stdout.writeln(lightGreen.wrap("use /help or help to see available commands"));
-  } catch (e) {
-    stdout.writeln(red.wrap('Authentication failed: $e'));
+  } on PathNotFoundException catch (e) {
+    stdout.writeln(red.wrap('Authentication failed: You do not have the keys to this atSign'));
+    logger.info("$e :Could not authenticate atsign, either you don't own the keys or you have a typo in the atsign");
+
     exit(2);
   }
 
-  var namespaceMsg = (enforceNamespace
-      ? ""
-      : "Namespaces will default to impressed1 when needed.");
+  var namespaceMsg = (enforceNamespace ? "" : "Namespaces will default to impressed1 when needed.");
   stdout.writeln(yellow.wrap(namespaceMsg));
 
   // 3. REPL!
@@ -104,7 +104,7 @@ Future<void> main(List<String> arguments) async {
               break;
             case "scan":
               String regex = (args.length > 1 ? args[1] : "");
-              var values = await atClient!.getAtKeys(regex: regex);
+              var values = await atClient.getAtKeys(regex: regex);
               stdout.writeln(lightCyan.wrap(" => $values"));
               break;
             case "get":
