@@ -1,4 +1,5 @@
 import 'package:at_commons/src/verb/abstract_verb_builder.dart';
+import 'package:meta/meta.dart';
 
 import 'operation_enum.dart';
 
@@ -16,6 +17,10 @@ class EnrollVerbBuilder extends AbstractVerbBuilder {
   /// Public key of an asymmetric key pair generated on the app or client.
   String? apkamPublicKey;
 
+  /// totp for the enroll request. totp must be fetched from an already enrolled app.
+  @experimental
+  int? totp;
+
   List<String> namespaces = [];
 
   @override
@@ -32,7 +37,10 @@ class EnrollVerbBuilder extends AbstractVerbBuilder {
       sb.write(':deviceName:$deviceName');
     }
     if (namespaces.isNotEmpty) {
-      sb.write(':namespaces:${namespaces.join(';')}');
+      sb.write(':namespaces:[${namespaces.join(';')}]');
+    }
+    if (totp != null) {
+      sb.write(':totp:${totp.toString()}');
     }
     if (apkamPublicKey != null) {
       sb.write(':apkamPublicKey:$apkamPublicKey');
@@ -48,6 +56,7 @@ class EnrollVerbBuilder extends AbstractVerbBuilder {
     return appName != null &&
         deviceName != null &&
         namespaces.isNotEmpty &&
+        totp != null &&
         apkamPublicKey != null;
   }
 }
