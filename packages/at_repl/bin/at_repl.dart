@@ -25,10 +25,15 @@ Future<void> main(List<String> arguments) async {
   bool enforceNamespace = false;
   AtSignLogger logger = AtSignLogger("repl");
   final ArgParser argParser = ArgParser()
-    ..addOption("atSign", abbr: 'a', mandatory: true)
+    ..addOption(
+      "atSign",
+      abbr: 'a',
+      mandatory: true,
+    )
     ..addOption("rootUrl", abbr: 'r', mandatory: false, defaultsTo: "root.atsign.org:64")
     ..addFlag("verbose", abbr: 'v', defaultsTo: false)
-    ..addFlag("enforceNamespace", abbr: 'n', defaultsTo: true);
+    ..addFlag("enforceNamespace",
+        abbr: 'n', defaultsTo: true, help: "specifically for /put, if false namespaces will automatically by placed.");
 
   final pubUpdater = PubUpdater();
   final upToDate = await pubUpdater.isUpToDate(packageName: "at_repl", currentVersion: version.packageVersion);

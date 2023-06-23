@@ -2,7 +2,6 @@ import 'package:at_client/at_client.dart';
 import 'package:at_onboarding_cli/at_onboarding_cli.dart';
 import 'package:at_repl/src/home_directory.dart';
 
-
 class REPL {
   ///User's atSign
   final String atSign;
@@ -62,6 +61,10 @@ class REPL {
       throw Exception("Please enter a record ID - e.g. /get test@alice");
     }
     String id = args[1];
+    RegExp encryptedSharedKeyMatcher = RegExp(r'^shared_key\..+@.+|@.+:shared_key@.+');
+    if (id.contains(encryptedSharedKeyMatcher)) {
+      throw AtKeyException("The given key is a symmetric shared key.");
+    }
 
     AtValue atValue = await atClient.get(AtKey.fromString(id));
     return " => ${atValue.value}";
@@ -79,7 +82,11 @@ class REPL {
     }
     String id = args[1];
     String value = args[2];
-    
+    RegExp encryptedSharedKeyMatcher = RegExp(r'^shared_key\..+@.+|@.+:shared_key@.+');
+    if (id.contains(encryptedSharedKeyMatcher)) {
+      throw AtKeyException("The given key is a symmetric shared key.");
+    }
+
     dynamic result = await atClient.put(AtKey.fromString(id), value);
     return " key creation result - $result";
   }
@@ -93,5 +100,4 @@ class REPL {
     dynamic response = await atClient.delete(AtKey.fromString(id));
     return (" => $response");
   }
-
 }
