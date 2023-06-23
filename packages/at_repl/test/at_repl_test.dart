@@ -118,6 +118,23 @@ void main() async {
       String result = await repl.delete(args);
       expect(result, " => true");
     });
+    test("Test get symmetric shared keys", () async {
+      List<String> args = ["get", "shared_key.$namespace@$atSign"];
+      try {
+        await repl.getKey(args);
+      } catch (e) {
+        expect(e.runtimeType, AtKeyException);
+      }
+    });
+
+    test("Test put symmetric shared keys", () async {
+      List<String> args = ["put", "shared_key.$namespace@$atSign"];
+      try {
+        await repl.getKey(args);
+      } catch (e) {
+        expect(e.runtimeType, AtKeyException);
+      }
+    });
   });
 
   group("Test REPL functions with self keys", () {
