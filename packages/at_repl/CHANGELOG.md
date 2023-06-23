@@ -6,3 +6,7 @@
 
 - Fixed very obvious bugs
 
+## 1.0.2
+
+- A more proper release. 
+

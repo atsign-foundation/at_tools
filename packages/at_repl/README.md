@@ -21,7 +21,7 @@ Or locally via:
 
 ```sh
 cd packages/at_repl
-dart pub global activate .  --source path
+dart pub global activate . --s path
 ```
 
 ## Usage
@@ -29,7 +29,7 @@ dart pub global activate .  --source path
 -a, user's atsign (REQUIRED)
 -r, root URL (defaults to root.atsign.org:64) 
 -v, verbose
--n, enforce namespaces (defaults to false)
+-n, enforce namespaces (defaults to true)
 
 
 ```sh
@@ -39,4 +39,8 @@ $ at_repl -a @xavierlin -r root.atsign.org:64 -v -n
 #example of shortened REPL command
 $ at_repl -a @xavierlin
 
+```
+Use /help or help for instructions/usage.
+```sh
+@chess69
 ```
