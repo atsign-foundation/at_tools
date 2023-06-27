@@ -16,14 +16,37 @@ class AtSignLogger {
   static final StdErrLoggingHandler _stdErrLoggingHandler =
       StdErrLoggingHandler();
 
+  /// Represents the default loggingType.
+  /// Supported types are Console and StandardError.
+  ///
+  /// To set the default log type to StandardError
+  /// ```dart
+  ///  AtSignLogger.defaultLoggingType = LoggingType.stdErr
+  /// ```
+  ///
+  /// To set the default log type to Console
+  /// ```dart
+  /// AtSignLogger.defaultLoggingType = LoggingType.console
+  /// ```
+  /// The default log type is LoggingType.console which logs to console.
+  ///
+  static LoggingType defaultLoggingType = LoggingType.console;
+
   /// The AtSignLogger is a wrapper on the Logger to log events.
   ///
   /// * name: Accepts String as input which represents the name of the AtSignLogger instance.
   ///
-  /// * loggingType: This is an optionally parameter which specifies where to log
-  /// the events. Supported types are Console and StandardError.
-  /// The default loggingType is set to console which writes log messages to console.
-  AtSignLogger(String name, {LoggingType loggingType = LoggingType.console}) {
+  /// * loggingType: This is an optional parameter that determines the destination for logging events.
+  /// If the loggingType is not provided it will default to the value of [defaultLoggingType].
+  ///
+  ///  The supported LoggingTypes are:
+  ///
+  ///  * [LoggingType.Console] : Logging events with this type will be displayed in the console or command line where the program is running.
+  ///
+  ///  * [LoggingType.stdErr] : Logging events with this type will be sent to the standard error stream, which is typically displayed separately from the standard output.
+  ///
+  AtSignLogger(String name, {LoggingType? loggingType}) {
+    loggingType ??= defaultLoggingType;
     LoggingHandler loggingHandler = _getLoggingHandler(loggingType);
     logger = logging.Logger.detached(name);
     logger.onRecord.listen(loggingHandler);
