@@ -27,4 +27,7 @@ doc/api/
 *.iws
 *.idea/
 
+#vscode
+.vscode
+
 pubspec_overrides.yaml #melos
