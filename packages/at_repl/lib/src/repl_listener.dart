@@ -10,11 +10,13 @@ class REPLListener implements SyncProgressListener {
   void onSyncProgressEvent(SyncProgress syncProgress) {
     if (syncProgress.localCommitIdBeforeSync! < syncProgress.serverCommitId!) {
       _logger.info("Local is behind Remote, syncing to cloud.");
-    } else if (syncProgress.localCommitIdBeforeSync! > syncProgress.serverCommitId!) {
+    } else if (syncProgress.localCommitIdBeforeSync! >
+        syncProgress.serverCommitId!) {
       _logger.info("Remote is behind Local, syncing locally.");
     }
 
-    if (syncProgress.syncStatus == SyncStatus.failure || syncProgress.syncStatus == SyncStatus.success) {
+    if (syncProgress.syncStatus == SyncStatus.failure ||
+        syncProgress.syncStatus == SyncStatus.success) {
       syncComplete = true;
     }
     if (syncProgress.syncStatus == SyncStatus.failure) {
