@@ -8,5 +8,4 @@
 
 ## 1.0.2
 
-- A more proper release. 
-
+- A more proper release. Fixed bugs, added more documentation.
