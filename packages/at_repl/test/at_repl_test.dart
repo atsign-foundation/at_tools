@@ -26,8 +26,10 @@ void main() async {
         ..showHiddenKeys = false
         ..sharedBy = '@chess69';
 
-      var verbResult =
-          await AtClientManager.getInstance().atClient.getRemoteSecondary()!.executeVerb(scanVerbBuilder, sync: true);
+      var verbResult = await AtClientManager.getInstance()
+          .atClient
+          .getRemoteSecondary()!
+          .executeVerb(scanVerbBuilder, sync: true);
       var commandResult = await repl.executeCommand("scan\n");
       expect(commandResult, verbResult);
     });
@@ -63,7 +65,11 @@ void main() async {
 
     //Happy Path :)
     test("Put", () async {
-      List<String> args = ["put", "public:demotest.$namespace$atSign", "initial"];
+      List<String> args = [
+        "put",
+        "public:demotest.$namespace$atSign",
+        "initial"
+      ];
       String result = await repl.put(args, enforceNamespace);
       expect(result.isNotEmpty, true);
     });
@@ -73,7 +79,11 @@ void main() async {
       expect(result, " => initial");
     });
     test("Update", () async {
-      List<String> args = ["put", "public:demotest.$namespace$atSign", "updated"];
+      List<String> args = [
+        "put",
+        "public:demotest.$namespace$atSign",
+        "updated"
+      ];
       String result = await repl.put(args, enforceNamespace);
       expect(result.isNotEmpty, true);
     });
@@ -93,7 +103,11 @@ void main() async {
   group("Test REPL functions with shared keys", () {
     final bool enforceNamespace = true;
     test("Test Put", () async {
-      List<String> args = ["put", "@chess69lovely:demotest.$namespace$atSign", "initial"];
+      List<String> args = [
+        "put",
+        "@chess69lovely:demotest.$namespace$atSign",
+        "initial"
+      ];
       String result = await repl.put(args, enforceNamespace);
       expect(result.isNotEmpty, true);
     });
@@ -103,7 +117,11 @@ void main() async {
       expect(result, " => initial");
     });
     test("Test Update from another atsign", () async {
-      List<String> args = ["put", "@chess69lovely:demotest.$namespace$atSign", "updated"];
+      List<String> args = [
+        "put",
+        "@chess69lovely:demotest.$namespace$atSign",
+        "updated"
+      ];
       String result = await repl.put(args, enforceNamespace);
       expect(result.isNotEmpty, true);
     });
@@ -114,7 +132,10 @@ void main() async {
     });
 
     test("Test Delete", () async {
-      List<String> args = ["delete", "$atSign:demotest.$namespace@chess69lovely"];
+      List<String> args = [
+        "delete",
+        "$atSign:demotest.$namespace@chess69lovely"
+      ];
       String result = await repl.delete(args);
       expect(result, " => true");
     });

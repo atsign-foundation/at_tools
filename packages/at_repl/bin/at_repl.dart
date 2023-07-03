@@ -30,13 +30,18 @@ Future<void> main(List<String> arguments) async {
       abbr: 'a',
       mandatory: true,
     )
-    ..addOption("rootUrl", abbr: 'r', mandatory: false, defaultsTo: "root.atsign.org:64")
+    ..addOption("rootUrl",
+        abbr: 'r', mandatory: false, defaultsTo: "root.atsign.org:64")
     ..addFlag("verbose", abbr: 'v', defaultsTo: false)
     ..addFlag("enforceNamespace",
-        abbr: 'n', defaultsTo: true, help: "specifically for /put, if false namespaces will automatically by placed.");
+        abbr: 'n',
+        defaultsTo: true,
+        help:
+            "specifically for /put, if false namespaces will automatically by placed.");
 
   final pubUpdater = PubUpdater();
-  final upToDate = await pubUpdater.isUpToDate(packageName: "at_repl", currentVersion: version.packageVersion);
+  final upToDate = await pubUpdater.isUpToDate(
+      packageName: "at_repl", currentVersion: version.packageVersion);
   if (!upToDate) {
     stdout.writeln(red.wrap("Package out of date, updating..."));
     await pubUpdater.update(packageName: 'at_repl');
@@ -48,7 +53,8 @@ Future<void> main(List<String> arguments) async {
     atSign = results["atSign"];
     verbose = results["verbose"];
     enforceNamespace = results["enforceNamespace"];
-    stdout.writeln("Looking up secondary server address for $atSign on $rootUrl");
+    stdout
+        .writeln("Looking up secondary server address for $atSign on $rootUrl");
   } catch (e) {
     stdout.writeln(red.wrap('Invalid arguments. Usage:\n${argParser.usage}'));
     exit(1);
@@ -76,15 +82,20 @@ Future<void> main(List<String> arguments) async {
     }
 
     atClient = repl.atClient;
-    stdout.writeln(lightGreen.wrap("use /help or help to see available commands"));
+    stdout.writeln(
+        lightGreen.wrap("use /help or help to see available commands"));
   } on PathNotFoundException catch (e) {
-    stdout.writeln(red.wrap('Authentication failed: You do not have the keys to this atSign'));
-    logger.info("$e :Could not authenticate atsign, either you don't own the keys or you have a typo in the atsign");
+    stdout.writeln(red.wrap(
+        'Authentication failed: You do not have the keys to this atSign'));
+    logger.info(
+        "$e :Could not authenticate atsign, either you don't own the keys or you have a typo in the atsign");
 
     exit(2);
   }
 
-  var namespaceMsg = (enforceNamespace ? "" : "Namespaces will default to impressed1 when needed.");
+  var namespaceMsg = (enforceNamespace
+      ? ""
+      : "Namespaces will default to impressed1 when needed.");
   stdout.writeln(yellow.wrap(namespaceMsg));
 
   // 3. REPL!
@@ -97,7 +108,10 @@ Future<void> main(List<String> arguments) async {
     try {
       if (command.isNotEmpty) {
         command = command.trim();
-        if (command == "help" || command.startsWith("_") || command.startsWith("/") || command.startsWith("\\")) {
+        if (command == "help" ||
+            command.startsWith("_") ||
+            command.startsWith("/") ||
+            command.startsWith("\\")) {
           if (command != "help") {
             command = command.substring(1);
           }
@@ -171,33 +185,39 @@ void printHelpInstructions() {
   stdout.writeln(
       "    1) By default, REPL treats input as atProtocol commands. Use / for additional commands listed below");
 
-  stdout.write("    2) In the usage examples below, it is assumed that the atSign being used is ");
+  stdout.write(
+      "    2) In the usage examples below, it is assumed that the atSign being used is ");
   stdout.writeln(green.wrap("@alice \n"));
   stdout.write(magenta.wrap(" help or /help"));
   stdout.writeln("- print this help message \n");
 
   stdout.write(magenta.wrap("/scan"));
   stdout.write(green.wrap(" [regex] "));
-  stdout.writeln("- scan for all records, or all records whose keyNames match the regex (e.g. /scan test@alice.*) \n");
+  stdout.writeln(
+      "- scan for all records, or all records whose keyNames match the regex (e.g. /scan test@alice.*) \n");
 
   stdout.write(magenta.wrap("/put"));
   stdout.write(green.wrap(" <atKeyName> "));
   stdout.write(lightBlue.wrap(" <value> "));
-  stdout.writeln("- create or update a record with the given atKeyName and with the supplied value \n  For example: ");
+  stdout.writeln(
+      "- create or update a record with the given atKeyName and with the supplied value \n  For example: ");
 
   stdout.write(magenta.wrap("   /put"));
   stdout.write(green.wrap(" test@alice "));
   stdout.write(lightBlue.wrap(" secrets  "));
-  stdout.writeln("->  will create or update a 'self' record (a record private just to @alice)");
+  stdout.writeln(
+      "->  will create or update a 'self' record (a record private just to @alice)");
 
   stdout.write(magenta.wrap("   /put"));
   stdout.write(green.wrap(" @bob:test@alice "));
   stdout.write(lightBlue.wrap(" Hello, Bob!  "));
-  stdout.writeln("->  will create or update a record encrypted for, and then shared with, @bob \n");
+  stdout.writeln(
+      "->  will create or update a record encrypted for, and then shared with, @bob \n");
 
   stdout.write(magenta.wrap("/get"));
   stdout.write(green.wrap(" <atKeyName> "));
-  stdout.writeln("- retrieve a value from the record with this atKeyName \n For example: ");
+  stdout.writeln(
+      "- retrieve a value from the record with this atKeyName \n For example: ");
 
   stdout.write(magenta.wrap("   /get"));
   stdout.write(green.wrap(" test@alice "));
@@ -205,7 +225,8 @@ void printHelpInstructions() {
 
   stdout.write(magenta.wrap("/delete"));
   stdout.write(green.wrap(" <atKeyName> "));
-  stdout.writeln("- delete the record with this atKeyName (e.g. /delete test@alice) \n");
+  stdout.writeln(
+      "- delete the record with this atKeyName (e.g. /delete test@alice) \n");
 
   stdout.write(magenta.wrap("/q or /quit"));
   stdout.writeln("- will quit the REPL \n");

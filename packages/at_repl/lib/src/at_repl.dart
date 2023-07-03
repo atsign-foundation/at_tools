@@ -27,7 +27,8 @@ class REPL {
       ..syncIntervalMins = 1
       ..rootDomain = rootUrl.split(':')[0]
       ..rootPort = int.parse(rootUrl.split(':')[1])
-      ..atKeysFilePath = "${getHomeDirectory()}/.atsign/keys/${atSign}_key.atKeys";
+      ..atKeysFilePath =
+          "${getHomeDirectory()}/.atsign/keys/${atSign}_key.atKeys";
 
     _atOnboardingService = AtOnboardingServiceImpl(atSign, pref);
     return _atOnboardingService.authenticate();
@@ -47,7 +48,8 @@ class REPL {
     final String? response = (await rs.executeCommand(command, auth: true));
 
     if (response == null) {
-      throw Exception('Result is null for some reason after executing command: $command');
+      throw Exception(
+          'Result is null for some reason after executing command: $command');
     }
 
     result = response;
@@ -61,7 +63,8 @@ class REPL {
       throw Exception("Please enter a record ID - e.g. /get test@alice");
     }
     String id = args[1];
-    RegExp encryptedSharedKeyMatcher = RegExp(r'^shared_key\..+@.+|@.+:shared_key@.+');
+    RegExp encryptedSharedKeyMatcher =
+        RegExp(r'^shared_key\..+@.+|@.+:shared_key@.+');
     if (id.contains(encryptedSharedKeyMatcher)) {
       throw AtKeyException("The given key is a symmetric shared key.");
     }
@@ -73,16 +76,19 @@ class REPL {
   ///puts the atKey to secondary server
   Future<String> put(List<String> args, bool enforceNamespace) async {
     if (args.length != 3) {
-      throw Exception("Please enter a record ID and a value - e.g. /put test@alice value");
+      throw Exception(
+          "Please enter a record ID and a value - e.g. /put test@alice value");
     }
     if (!enforceNamespace) {
       if (!args[1].contains('.')) {
-        args[1] = "${args[1].substring(0, args[1].indexOf('@'))}.$namespace${args[1].substring(args[1].indexOf('@'))}";
+        args[1] =
+            "${args[1].substring(0, args[1].indexOf('@'))}.$namespace${args[1].substring(args[1].indexOf('@'))}";
       }
     }
     String id = args[1];
     String value = args[2];
-    RegExp encryptedSharedKeyMatcher = RegExp(r'^shared_key\..+@.+|@.+:shared_key@.+');
+    RegExp encryptedSharedKeyMatcher =
+        RegExp(r'^shared_key\..+@.+|@.+:shared_key@.+');
     if (id.contains(encryptedSharedKeyMatcher)) {
       throw AtKeyException("The given key is a symmetric shared key.");
     }
