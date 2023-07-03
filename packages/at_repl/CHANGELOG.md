@@ -1,11 +1,15 @@
-## 1.0.0
+## 1.0.2
 
-- Initial version.
+- feat: added tests
+- feat: more verbose exceptions
 
 ## 1.0.1
 
-- Fixed very obvious bugs
+- fix: improper formatting of shared keys
+- fix: modified namespace formatting
 
-## 1.0.2
+## 1.0.0
 
-- A more proper release. Fixed bugs, added more documentation.
+- feat: initial version.
+
+
