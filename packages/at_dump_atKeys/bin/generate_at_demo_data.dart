@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:args/args.dart';
 import 'package:at_dump_atKeys/commandline_parser.dart';
@@ -138,6 +139,6 @@ ArgParser getArgParser() {
 String decryptValue(String encryptedValue, String decryptionKey) {
   var aesKey = AES(Key.fromBase64(decryptionKey));
   var decrypter = Encrypter(aesKey);
-  var iv2 = IV.fromLength(16);
+  var iv2 = IV(Uint8List(16));
   return decrypter.decrypt64(encryptedValue, iv: iv2);
 }

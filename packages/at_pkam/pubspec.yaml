@@ -1,6 +1,6 @@
 name: at_pkam
 description: A command-line utility to generate PKAM digest
-version: 1.1.1
+version: 1.1.2
 repository: https://github.com/atsign-foundation/at_tools
 
 executables:

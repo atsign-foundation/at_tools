@@ -1,3 +1,6 @@
+## 1.1.2
+- work around a breaking change in `encrypt` package 5.0.2
+
 ## 1.1.1
 
 - Released pub global binary
