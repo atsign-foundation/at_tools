@@ -2,6 +2,7 @@
 
 [![GitHub License](https://img.shields.io/badge/license-BSD3-blue.svg)](./LICENSE)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/atsign-foundation/at_tools/badge)](https://api.securityscorecards.dev/projects/github.com/atsign-foundation/at_tools)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/8121/badge)](https://www.bestpractices.dev/projects/8121)
 
 ## at_tools
 
