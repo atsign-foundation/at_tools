@@ -8,6 +8,8 @@ build/
 pubspec.lock
 pubspec_overrides.yaml
 
+build-tools/
+
 # Directory created by dartdoc
 # If you don't generate documentation locally you can remove this line.
 doc/api/
