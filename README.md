@@ -40,7 +40,7 @@ dart run melos run build-tools
 Then move the tools to a folder which you've exposed to the path for
 convenience, for example:
 
-```
+```bash
 cp ./build-tools/* ~/.local/bin/
 # or
 sudo cp ./build-tools/* /usr/local/bin/
