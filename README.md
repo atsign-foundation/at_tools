@@ -26,3 +26,23 @@ atProtocol.
 [at_ve_doctor](./packages/at_ve_doctor) A very simple way to test the status of the
 secondaries running in the Virtual Environment. Using the
 [at_server_status](https://pub.dev/packages/at_server_status) package.
+
+### Quickly build tools
+
+Using melos, we can quickly build at_pkam, at_cram, at_cli, and at_repl via the
+following commands:
+
+```bash
+dart pub get
+dart run melos run build-tools
+```
+
+Then move the tools to a folder which you've exposed to the path for
+convenience, for example:
+
+```
+cp ./build-tools/* ~/.local/bin/
+# or
+sudo cp ./build-tools/* /usr/local/bin/
+```
+
