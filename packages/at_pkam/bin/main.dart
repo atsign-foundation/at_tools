@@ -37,7 +37,7 @@ Future<void> main(List<String> arguments) async {
       var key = RSAPrivateKey.fromString(privateKey);
       challenge = challenge.trim();
       var signature =
-          base64.encode(key.createSHA256Signature(utf8.encode(challenge) as Uint8List));
+          base64.encode(key.createSHA256Signature(utf8.encode(challenge)));
       stdout.write(signature);
       stdout.write('\n');
     }
