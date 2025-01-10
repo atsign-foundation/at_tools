@@ -1,6 +1,6 @@
 name: at_test_proxy
 description: A CLI proxy for debugging and testing TLS/TCP communication.
-version: 0.1.0-rc.1
+version: 0.1.0
 repository: https://github.com/atsign-foundation/at_mono.git
 
 executables:
