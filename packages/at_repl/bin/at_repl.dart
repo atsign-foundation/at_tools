@@ -100,6 +100,13 @@ Future<void> main(List<String> arguments) async {
 
   // 3. REPL!
 
+  // Interactive mode state
+  bool inInteractiveMode = false;
+  bool waitingForAction = false;
+  List<AtKey> interactiveAtKeys = [];
+  AtKey? selectedKey;
+  String interactiveRegex = "";
+
   stdout.write(magenta.wrap("$atSign "));
 
   var lines = stdin.transform(utf8.decoder).transform(const LineSplitter());
@@ -108,6 +115,94 @@ Future<void> main(List<String> arguments) async {
     try {
       if (command.isNotEmpty) {
         command = command.trim();
+        
+        // Handle interactive mode
+        if (inInteractiveMode) {
+          if (waitingForAction && selectedKey != null) {
+            String action = command.toLowerCase();
+            waitingForAction = false;
+            
+            if (action == 'v' || action == 'view') {
+              try {
+                var atValue = await atClient.get(selectedKey);
+                String rawValue = atValue.value ?? '';
+                
+                stdout.writeln(lightCyan.wrap("Raw Value: $rawValue"));
+                
+                // Try to parse as JSON and format it
+                try {
+                  var jsonObject = jsonDecode(rawValue);
+                  JsonEncoder encoder = JsonEncoder.withIndent('  ');
+                  String formattedJson = encoder.convert(jsonObject);
+                  stdout.writeln(lightGreen.wrap("JSON Formatted:"));
+                  stdout.writeln(lightGreen.wrap(formattedJson));
+                } catch (e) {
+                  // Not valid JSON, just show raw value
+                }
+              } catch (e) {
+                stdout.writeln(red.wrap("Error getting value: ${e.toString()}"));
+              }
+            } else if (action == 'd' || action == 'delete') {
+              try {
+                var response = await atClient.delete(selectedKey);
+                stdout.writeln(lightCyan.wrap("Deleted: $response"));
+                
+                var allAtKeys = await atClient.getAtKeys();
+                interactiveAtKeys = await atClient.getAtKeys(regex: interactiveRegex);
+                stdout.writeln(lightGreen.wrap("AtKey deleted successfully."));
+                
+                if (interactiveAtKeys.isEmpty) {
+                  if (interactiveRegex.isNotEmpty) {
+                    stdout.writeln(yellow.wrap("No more AtKeys found matching regex '$interactiveRegex'. Exiting interactive mode."));
+                  } else {
+                    stdout.writeln(yellow.wrap("No more AtKeys found. Exiting interactive mode."));
+                  }
+                  inInteractiveMode = false;
+                  stdout.write(magenta.wrap("$atSign "));
+                  continue;
+                }
+                
+                if (interactiveRegex.isNotEmpty) {
+                  stdout.writeln(lightGreen.wrap("Updated AtKeys list: ${interactiveAtKeys.length}/${allAtKeys.length} keys shown with regex '$interactiveRegex'"));
+                } else {
+                  stdout.writeln(lightGreen.wrap("Updated AtKeys list:"));
+                }
+                
+                for (int i = 0; i < interactiveAtKeys.length; i++) {
+                  stdout.writeln("${i + 1}. ${interactiveAtKeys[i].toString()}");
+                }
+              } catch (e) {
+                stdout.writeln(red.wrap("Error deleting: ${e.toString()}"));
+              }
+            } else {
+              stdout.writeln(yellow.wrap("Invalid action. Use 'v' for view or 'd' for delete."));
+            }
+            
+            stdout.writeln(lightBlue.wrap("\nEnter the number of the AtKey you want to interact with (or 'q' to quit):"));
+            continue;
+          }
+          
+          if (command.toLowerCase() == 'q' || command.toLowerCase() == 'quit') {
+            stdout.writeln(lightGreen.wrap("Exiting interactive mode..."));
+            inInteractiveMode = false;
+            stdout.write(magenta.wrap("$atSign "));
+            continue;
+          }
+          
+          int? index = int.tryParse(command);
+          if (index != null && index >= 1 && index <= interactiveAtKeys.length) {
+            selectedKey = interactiveAtKeys[index - 1];
+            stdout.writeln(lightCyan.wrap("Selected: ${selectedKey.toString()}"));
+            stdout.writeln(lightBlue.wrap("Choose action: (v)iew or (d)elete"));
+            waitingForAction = true;
+            continue;
+          } else {
+            stdout.writeln(yellow.wrap("Invalid selection. Please enter a number between 1 and ${interactiveAtKeys.length}, or 'q' to quit."));
+            stdout.writeln(lightBlue.wrap("\nEnter the number of the AtKey you want to interact with (or 'q' to quit):"));
+            continue;
+          }
+        }
+        
         if (command == "help" ||
             command.startsWith("_") ||
             command.startsWith("/") ||
@@ -150,6 +245,58 @@ Future<void> main(List<String> arguments) async {
                 stdout.writeln(red.wrap(e.toString()));
               }
               break;
+            case "interactive":
+              stdout.writeln(lightGreen.wrap("Entering interactive mode..."));
+              stdout.writeln(lightGreen.wrap("Scanning for AtKeys..."));
+              
+              interactiveRegex = (args.length > 1 ? args[1] : "");
+              var allAtKeys = await atClient.getAtKeys();
+              interactiveAtKeys = await atClient.getAtKeys(regex: interactiveRegex);
+              
+              if (interactiveAtKeys.isEmpty) {
+                if (interactiveRegex.isNotEmpty) {
+                  stdout.writeln(yellow.wrap("No AtKeys found matching regex '$interactiveRegex'."));
+                } else {
+                  stdout.writeln(yellow.wrap("No AtKeys found."));
+                }
+                break;
+              }
+              
+              if (interactiveRegex.isNotEmpty) {
+                stdout.writeln(lightGreen.wrap("${interactiveAtKeys.length}/${allAtKeys.length} keys shown with regex '$interactiveRegex'"));
+              } else {
+                stdout.writeln(lightGreen.wrap("Found ${interactiveAtKeys.length} AtKeys:"));
+              }
+              
+              for (int i = 0; i < interactiveAtKeys.length; i++) {
+                stdout.writeln("${i + 1}. ${interactiveAtKeys[i].toString()}");
+              }
+              
+              stdout.writeln(lightBlue.wrap("\nEnter the number of the AtKey you want to interact with (or 'q' to quit):"));
+              inInteractiveMode = true;
+              break;
+            case "interactive_special":
+              stdout.writeln(lightGreen.wrap("Entering interactive mode (special filter)..."));
+              stdout.writeln(lightGreen.wrap("Scanning for AtKeys..."));
+              
+              interactiveRegex = r"^(?!.*shared_key)(?!.*publickey)(?!.*signing_privatekey).*$";
+              var allAtKeys = await atClient.getAtKeys();
+              interactiveAtKeys = await atClient.getAtKeys(regex: interactiveRegex);
+              
+              if (interactiveAtKeys.isEmpty) {
+                stdout.writeln(yellow.wrap("No AtKeys found matching special filter."));
+                break;
+              }
+              
+              stdout.writeln(lightGreen.wrap("${interactiveAtKeys.length}/${allAtKeys.length} keys shown with special filter (excluding shared_key, publickey, and signing_privatekey)"));
+              
+              for (int i = 0; i < interactiveAtKeys.length; i++) {
+                stdout.writeln("${i + 1}. ${interactiveAtKeys[i].toString()}");
+              }
+              
+              stdout.writeln(lightBlue.wrap("\nEnter the number of the AtKey you want to interact with (or 'q' to quit):"));
+              inInteractiveMode = true;
+              break;
             case "q":
               exit(0);
             case "quit":
@@ -167,14 +314,20 @@ Future<void> main(List<String> arguments) async {
           }
         }
       }
-      stdout.write(magenta.wrap("$atSign "));
+      
+      if (!inInteractiveMode) {
+        stdout.write(magenta.wrap("$atSign "));
+      }
     } on RangeError catch (e) {
       if (!command.contains(".")) {
         stdout.writeln(red.wrap(e.toString()));
       } else {
         stdout.writeln(red.wrap("You are missing the atsign"));
       }
-      stdout.write(magenta.wrap("$atSign "));
+      
+      if (!inInteractiveMode) {
+        stdout.write(magenta.wrap("$atSign "));
+      }
     }
   }
 }
@@ -230,4 +383,11 @@ void printHelpInstructions() {
 
   stdout.write(magenta.wrap("/q or /quit"));
   stdout.writeln("- will quit the REPL \n");
+
+  stdout.write(magenta.wrap("/interactive"));
+  stdout.write(green.wrap(" [regex] "));
+  stdout.writeln("- enter interactive mode to browse and manage AtKeys, optionally filtered by regex \n");
+
+  stdout.write(magenta.wrap("/interactive_special"));
+  stdout.writeln("- enter interactive mode excluding shared_key, publickey, and signing_privatekey entries \n");
 }
