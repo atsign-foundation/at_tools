@@ -2,10 +2,12 @@ import 'package:at_client/at_client.dart';
 import 'package:at_onboarding_cli/at_onboarding_cli.dart';
 import 'package:at_repl/src/home_directory.dart';
 
+// /inspect command provides interactive key browsing with default filtering
+
 class REPL {
   ///User's atSign
   final String atSign;
-  final String namespace = 'impressed1';
+  final String namespace = 'at_repl';
 
   ///defaults to root.atsign.org:64 which is the atDirectory
   final String rootUrl;
@@ -23,7 +25,7 @@ class REPL {
       ..hiveStoragePath = '${getHomeDirectory()}/.atsign/temp/hive'
       ..commitLogPath = '${getHomeDirectory()}/.atsign/temp/commitlog'
       ..downloadPath = '${getHomeDirectory()}/.atsign/temp/download'
-      ..namespace = 'impressed1'
+      ..namespace = 'at_repl'
       ..syncIntervalMins = 1
       ..rootDomain = rootUrl.split(':')[0]
       ..rootPort = int.parse(rootUrl.split(':')[1])

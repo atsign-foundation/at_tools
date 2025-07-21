@@ -95,7 +95,7 @@ Future<void> main(List<String> arguments) async {
 
   var namespaceMsg = (enforceNamespace
       ? ""
-      : "Namespaces will default to impressed1 when needed.");
+      : "Namespaces will default to at_repl when needed.");
   stdout.writeln(yellow.wrap(namespaceMsg));
 
   // 3. REPL!
@@ -116,7 +116,7 @@ Future<void> main(List<String> arguments) async {
       if (command.isNotEmpty) {
         command = command.trim();
         
-        // Handle interactive mode
+        // Handle inspect mode
         if (inInteractiveMode) {
           if (waitingForAction && selectedKey != null) {
             String action = command.toLowerCase();
@@ -153,9 +153,9 @@ Future<void> main(List<String> arguments) async {
                 
                 if (interactiveAtKeys.isEmpty) {
                   if (interactiveRegex.isNotEmpty) {
-                    stdout.writeln(yellow.wrap("No more AtKeys found matching regex '$interactiveRegex'. Exiting interactive mode."));
+                    stdout.writeln(yellow.wrap("No more AtKeys found matching regex '$interactiveRegex'. Exiting inspect mode."));
                   } else {
-                    stdout.writeln(yellow.wrap("No more AtKeys found. Exiting interactive mode."));
+                    stdout.writeln(yellow.wrap("No more AtKeys found. Exiting inspect mode."));
                   }
                   inInteractiveMode = false;
                   stdout.write(magenta.wrap("$atSign "));
@@ -183,7 +183,7 @@ Future<void> main(List<String> arguments) async {
           }
           
           if (command.toLowerCase() == 'q' || command.toLowerCase() == 'quit') {
-            stdout.writeln(lightGreen.wrap("Exiting interactive mode..."));
+            stdout.writeln(lightGreen.wrap("Exiting inspect mode..."));
             inInteractiveMode = false;
             stdout.write(magenta.wrap("$atSign "));
             continue;
@@ -245,11 +245,11 @@ Future<void> main(List<String> arguments) async {
                 stdout.writeln(red.wrap(e.toString()));
               }
               break;
-            case "interactive":
-              stdout.writeln(lightGreen.wrap("Entering interactive mode..."));
+            case "inspect":
+              stdout.writeln(lightGreen.wrap("Entering inspect mode..."));
               stdout.writeln(lightGreen.wrap("Scanning for AtKeys..."));
               
-              interactiveRegex = (args.length > 1 ? args[1] : "");
+              interactiveRegex = (args.length > 1 ? args[1] : r"^(?!.*shared_key)(?!.*publickey)(?!.*signing_privatekey).*$");
               var allAtKeys = await atClient.getAtKeys();
               interactiveAtKeys = await atClient.getAtKeys(regex: interactiveRegex);
               
@@ -267,28 +267,6 @@ Future<void> main(List<String> arguments) async {
               } else {
                 stdout.writeln(lightGreen.wrap("Found ${interactiveAtKeys.length} AtKeys:"));
               }
-              
-              for (int i = 0; i < interactiveAtKeys.length; i++) {
-                stdout.writeln("${i + 1}. ${interactiveAtKeys[i].toString()}");
-              }
-              
-              stdout.writeln(lightBlue.wrap("\nEnter the number of the AtKey you want to interact with (or 'q' to quit):"));
-              inInteractiveMode = true;
-              break;
-            case "interactive_special":
-              stdout.writeln(lightGreen.wrap("Entering interactive mode (special filter)..."));
-              stdout.writeln(lightGreen.wrap("Scanning for AtKeys..."));
-              
-              interactiveRegex = r"^(?!.*shared_key)(?!.*publickey)(?!.*signing_privatekey).*$";
-              var allAtKeys = await atClient.getAtKeys();
-              interactiveAtKeys = await atClient.getAtKeys(regex: interactiveRegex);
-              
-              if (interactiveAtKeys.isEmpty) {
-                stdout.writeln(yellow.wrap("No AtKeys found matching special filter."));
-                break;
-              }
-              
-              stdout.writeln(lightGreen.wrap("${interactiveAtKeys.length}/${allAtKeys.length} keys shown with special filter (excluding shared_key, publickey, and signing_privatekey)"));
               
               for (int i = 0; i < interactiveAtKeys.length; i++) {
                 stdout.writeln("${i + 1}. ${interactiveAtKeys[i].toString()}");
@@ -384,10 +362,7 @@ void printHelpInstructions() {
   stdout.write(magenta.wrap("/q or /quit"));
   stdout.writeln("- will quit the REPL \n");
 
-  stdout.write(magenta.wrap("/interactive"));
+  stdout.write(magenta.wrap("/inspect"));
   stdout.write(green.wrap(" [regex] "));
-  stdout.writeln("- enter interactive mode to browse and manage AtKeys, optionally filtered by regex \n");
-
-  stdout.write(magenta.wrap("/interactive_special"));
-  stdout.writeln("- enter interactive mode excluding shared_key, publickey, and signing_privatekey entries \n");
+  stdout.writeln("- enter inspect mode to browse and manage AtKeys, optionally filtered by regex (default: excludes shared_key, publickey, and signing_privatekey) \n");
 }
