@@ -1,8 +1,9 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:at_utils/at_logger.dart';
 import 'package:args/args.dart';
 import 'package:at_client/at_client.dart';
-import 'package:at_repl/src/at_repl.dart' as at_repl;
+import 'package:at_repl/src/at_repl.dart';
 import 'dart:io';
 import 'package:io/ansi.dart';
 import 'package:pub_updater/pub_updater.dart';
@@ -62,7 +63,7 @@ Future<void> main(List<String> arguments) async {
 
   //Define logger and REPL.
   AtSignLogger.root_level = verbose ? 'info' : 'warning';
-  at_repl.REPL repl = at_repl.REPL(atSign, rootUrl: rootUrl);
+  REPL repl = REPL(atSign, rootUrl: rootUrl);
 
   //Try to authenticate using the inputted atsigns keys.
   //Keys are usually located in C:\Users\{user}\.atsign\keys
@@ -106,6 +107,16 @@ Future<void> main(List<String> arguments) async {
   List<AtKey> interactiveAtKeys = [];
   AtKey? selectedKey;
   String interactiveRegex = "";
+  
+  // Notification interactive mode state
+  bool inNotifyInteractiveMode = false;
+  bool notifyWaitingForAction = false;
+  List<dynamic> notifyInteractiveList = [];
+  int? selectedNotifyIndex;
+  
+  // Monitor mode state
+  bool inMonitorMode = false;
+  StreamSubscription<AtNotification>? monitorSubscription;
 
   stdout.write(magenta.wrap("$atSign "));
 
@@ -115,6 +126,89 @@ Future<void> main(List<String> arguments) async {
     try {
       if (command.isNotEmpty) {
         command = command.trim();
+        
+        // Handle monitor mode
+        if (inMonitorMode) {
+          if (command.toLowerCase() == 'q' || command.toLowerCase() == 'quit' || command.toLowerCase() == 'stop') {
+            stdout.writeln(lightGreen.wrap("Stopping monitor mode..."));
+            inMonitorMode = false;
+            await monitorSubscription?.cancel();
+            monitorSubscription = null;
+            stdout.write(magenta.wrap("$atSign "));
+            continue;
+          } else {
+            stdout.writeln(yellow.wrap("Monitor mode is active. Use 'q', 'quit', or 'stop' to exit monitor mode."));
+            continue;
+          }
+        }
+        
+        // Handle notification inspect mode
+        if (inNotifyInteractiveMode) {
+          if (notifyWaitingForAction && selectedNotifyIndex != null) {
+            String action = command.toLowerCase();
+            notifyWaitingForAction = false;
+            
+            if (action == 'v' || action == 'view' || action == 'd' || action == 'delete') {
+              bool shouldRefresh = await repl.handleNotifyAction(action, notifyInteractiveList, selectedNotifyIndex);
+              
+              if (shouldRefresh) {
+                // Refresh the notification list
+                var notifyResult = await repl.inspectNotify();
+                if (notifyResult.shouldEnterInteractiveMode) {
+                  notifyInteractiveList = notifyResult.notifications;
+                } else {
+                  inNotifyInteractiveMode = false;
+                  stdout.write(magenta.wrap("$atSign "));
+                  continue;
+                }
+              }
+              
+              selectedNotifyIndex = null;
+              stdout.writeln(lightBlue.wrap("\nEnter notification index (1-${notifyInteractiveList.length}), 'l' to refresh list, or 'q' to quit:"));
+              continue;
+            } else {
+              stdout.writeln(yellow.wrap("Invalid action. Use 'v' to view or 'd' to delete."));
+              selectedNotifyIndex = null;
+              stdout.writeln(lightBlue.wrap("\nEnter notification index (1-${notifyInteractiveList.length}), 'l' to refresh list, or 'q' to quit:"));
+              continue;
+            }
+          }
+          
+          if (command.toLowerCase() == 'q' || command.toLowerCase() == 'quit') {
+            stdout.writeln(lightGreen.wrap("Exiting notification inspect mode..."));
+            inNotifyInteractiveMode = false;
+            stdout.write(magenta.wrap("$atSign "));
+            continue;
+          }
+          
+          if (command.toLowerCase() == 'l' || command.toLowerCase() == 'list') {
+            // Refresh the notification list
+            var notifyResult = await repl.inspectNotify();
+            if (notifyResult.shouldEnterInteractiveMode) {
+              notifyInteractiveList = notifyResult.notifications;
+            } else {
+              inNotifyInteractiveMode = false;
+              stdout.write(magenta.wrap("$atSign "));
+            }
+            continue;
+          }
+          
+          int? index = int.tryParse(command);
+          if (index != null && index >= 1 && index <= notifyInteractiveList.length) {
+            selectedNotifyIndex = index;
+            var notification = notifyInteractiveList[index - 1];
+            String from = notification['from'] ?? 'N/A';
+            String to = notification['to'] ?? 'N/A';
+            stdout.writeln(lightCyan.wrap("Selected notification #$index from $from to $to"));
+            stdout.writeln(lightBlue.wrap("Choose action: (v)iew or (d)elete"));
+            notifyWaitingForAction = true;
+            continue;
+          } else {
+            stdout.writeln(yellow.wrap("Invalid selection. Please enter a number between 1 and ${notifyInteractiveList.length}, 'l' to refresh list, or 'q' to quit."));
+            stdout.writeln(lightBlue.wrap("\nEnter notification index (1-${notifyInteractiveList.length}), 'l' to refresh list, or 'q' to quit:"));
+            continue;
+          }
+        }
         
         // Handle inspect mode
         if (inInteractiveMode) {
@@ -217,9 +311,7 @@ Future<void> main(List<String> arguments) async {
               printHelpInstructions();
               break;
             case "scan":
-              String regex = (args.length > 1 ? args[1] : "");
-              var values = await atClient.getAtKeys(regex: regex);
-              stdout.writeln(lightCyan.wrap(" => $values"));
+              await repl.scan(args);
               break;
             case "get":
               try {
@@ -246,34 +338,26 @@ Future<void> main(List<String> arguments) async {
               }
               break;
             case "inspect":
-              stdout.writeln(lightGreen.wrap("Entering inspect mode..."));
-              stdout.writeln(lightGreen.wrap("Scanning for AtKeys..."));
-              
-              interactiveRegex = (args.length > 1 ? args[1] : r"^(?!.*shared_key)(?!.*publickey)(?!.*signing_privatekey).*$");
-              var allAtKeys = await atClient.getAtKeys();
-              interactiveAtKeys = await atClient.getAtKeys(regex: interactiveRegex);
-              
-              if (interactiveAtKeys.isEmpty) {
-                if (interactiveRegex.isNotEmpty) {
-                  stdout.writeln(yellow.wrap("No AtKeys found matching regex '$interactiveRegex'."));
-                } else {
-                  stdout.writeln(yellow.wrap("No AtKeys found."));
-                }
-                break;
+              var inspectResult = await repl.inspect(args);
+              if (inspectResult.shouldEnterInteractiveMode) {
+                interactiveAtKeys = inspectResult.atKeys;
+                interactiveRegex = inspectResult.regex;
+                inInteractiveMode = true;
               }
-              
-              if (interactiveRegex.isNotEmpty) {
-                stdout.writeln(lightGreen.wrap("${interactiveAtKeys.length}/${allAtKeys.length} keys shown with regex '$interactiveRegex'"));
-              } else {
-                stdout.writeln(lightGreen.wrap("Found ${interactiveAtKeys.length} AtKeys:"));
+              break;
+            case "inspect_notify":
+              var notifyResult = await repl.inspectNotify();
+              if (notifyResult.shouldEnterInteractiveMode) {
+                notifyInteractiveList = notifyResult.notifications;
+                inNotifyInteractiveMode = true;
               }
-              
-              for (int i = 0; i < interactiveAtKeys.length; i++) {
-                stdout.writeln("${i + 1}. ${interactiveAtKeys[i].toString()}");
+              break;
+            case "monitor":
+              var subscription = await repl.monitor(args);
+              if (subscription != null) {
+                monitorSubscription = subscription;
+                inMonitorMode = true;
               }
-              
-              stdout.writeln(lightBlue.wrap("\nEnter the number of the AtKey you want to interact with (or 'q' to quit):"));
-              inInteractiveMode = true;
               break;
             case "q":
               exit(0);
@@ -293,7 +377,7 @@ Future<void> main(List<String> arguments) async {
         }
       }
       
-      if (!inInteractiveMode) {
+      if (!inInteractiveMode && !inNotifyInteractiveMode && !inMonitorMode) {
         stdout.write(magenta.wrap("$atSign "));
       }
     } on RangeError catch (e) {
@@ -303,7 +387,7 @@ Future<void> main(List<String> arguments) async {
         stdout.writeln(red.wrap("You are missing the atsign"));
       }
       
-      if (!inInteractiveMode) {
+      if (!inInteractiveMode && !inNotifyInteractiveMode && !inMonitorMode) {
         stdout.write(magenta.wrap("$atSign "));
       }
     }
@@ -365,4 +449,11 @@ void printHelpInstructions() {
   stdout.write(magenta.wrap("/inspect"));
   stdout.write(green.wrap(" [regex] "));
   stdout.writeln("- enter inspect mode to browse and manage AtKeys, optionally filtered by regex (default: excludes shared_key, publickey, and signing_privatekey) \n");
+
+  stdout.write(magenta.wrap("/inspect_notify"));
+  stdout.writeln("- enter notification inspect mode to browse and manage notifications (view/delete) \n");
+
+  stdout.write(magenta.wrap("/monitor"));
+  stdout.write(green.wrap(" [regex] "));
+  stdout.writeln("- start monitoring notifications from the atServer with optional regex filtering (default: ignores statsNotification) \n");
 }
