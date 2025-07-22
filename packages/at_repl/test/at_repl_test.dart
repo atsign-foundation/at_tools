@@ -1,5 +1,5 @@
 import 'package:at_client/at_client.dart';
-import 'package:at_repl/src/at_repl.dart';
+import 'package:at_repl/repl.dart';
 import 'package:at_utils/at_logger.dart';
 import 'package:at_commons/src/verb/scan_verb_builder.dart';
 import 'package:test/test.dart';
