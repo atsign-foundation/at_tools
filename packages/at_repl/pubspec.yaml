@@ -9,15 +9,14 @@ executables:
   at_repl: at_repl
 
 dependencies:
-  args: ^2.4.1
   at_client: ^3.0.61
-  at_commons: ^3.0.47
-  at_onboarding_cli: ^1.3.0
+  at_commons: ^5.0.2
+  at_onboarding_cli: ^1.11.0
   at_utils: ^3.0.12
-  io: ^1.0.4
   build_version: ^2.1.1
   build_runner: ^2.4.5
   pub_updater: ^0.3.0
+  at_cli_commons: ^1.2.1
   # path: ^1.8.0
 
 dev_dependencies:
