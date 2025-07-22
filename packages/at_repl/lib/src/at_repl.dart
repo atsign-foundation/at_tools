@@ -158,10 +158,21 @@ class REPL {
       var notificationService = atClient.notificationService;
       
       // Subscribe to notification stream
-      StreamSubscription<AtNotification> subscription = notificationService.subscribe(regex: monitorRegex).listen(
+      StreamSubscription<AtNotification> subscription = notificationService.subscribe(regex: monitorRegex, shouldDecrypt: true).listen(
         (notification) {
           var timestamp = DateTime.now().toString();
           stdout.writeln(lightCyan.wrap("[$timestamp] $notification"));
+          if (notification.value != null) {
+            stdout.writeln(lightCyan.wrap("\nValue: ${notification.value}"));
+            // Try to parse and pretty-print if it's JSON
+            try {
+              var jsonValue = jsonDecode(notification.value.toString());
+              var prettyJson = JsonEncoder.withIndent('  ').convert(jsonValue);
+              stdout.writeln(lightCyan.wrap("\nPretty JSON Value:\n$prettyJson"));
+            } catch (e) {
+              // Not JSON, just print the raw value
+            }
+          }
         },
         onError: (error) {
           stdout.writeln(red.wrap("Monitor error: ${error.toString()}"));
