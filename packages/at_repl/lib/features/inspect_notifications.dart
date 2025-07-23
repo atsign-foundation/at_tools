@@ -6,3 +6,5 @@ class InspectNotificationsResult {
 
   InspectNotificationsResult(this.notifications, this.shouldEnterInteractiveMode);
 }
+
+// write function to handle /inspect_notifications

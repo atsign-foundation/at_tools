@@ -10,3 +10,5 @@ class InspectKeysResult {
 
   InspectKeysResult(this.atKeys, this.regex, this.shouldEnterInteractiveMode);
 }
+
+// write function to handle /inspect
