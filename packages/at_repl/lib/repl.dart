@@ -10,9 +10,9 @@ import 'features/get.dart';
 import 'features/put.dart';
 import 'features/delete.dart';
 import 'features/scan.dart';
-import 'features/inspect_keys.dart';
-import 'features/inspect_notifications.dart';
-import 'features/monitor.dart';
+import 'features/inspect_keys.dart' as inspect_keys;
+import 'features/inspect_notifications.dart' as inspect_notifications;
+import 'features/monitor.dart' as monitor;
 
 // /inspect command provides interactive key browsing with default filtering
 
@@ -35,60 +35,64 @@ class REPL {
 
   void start() {
     outputStream.writeln("${green.wrap("at_repl started") ?? "at_repl started"}. ${cyan.wrap("Type /help for available commands or /exit to quit.") ?? "Type /help for available commands or /exit to quit."}");
+    _showPrompt();
 
     inputStream.listen((String input) {
       input = input.trim();
 
-      if (input.isEmpty) return;
+      if (input.isEmpty) {
+        _showPrompt();
+        return;
+      }
+
+      // Check if we're in interactive mode
+      if (_handleInteractiveInput(input)) {
+        return;
+      }
 
       if (input.startsWith('/')) {
         _handleCommand(input);
       } else {
         _handleRawProtocolCommand(input);
       }
+      
+      _showPrompt();
     });
   }
 
-
-  void _handleCommand(String input) {
-    try {
-      if (input == '/q' || input == '/quit') {
-        outputStream.writeln(green.wrap("Goodbye!"));
-        exit(0);
-      } else if (input == '/help') {
-        printUsage(outputStream);
-      } else if (input.startsWith('/get ')) {
-        handleGet(input, atClient, outputStream);
-      } else if (input.startsWith('/put ')) {
-        handlePut(input, atClient, outputStream);
-      } else if (input.startsWith('/delete ')) {
-        handleDelete(input, atClient, outputStream);
-      } else if (input.startsWith('/scan')) {
-        handleScan(input, atClient, outputStream);
-      } else if (input.startsWith('/inspect')) {
-        handleInspectKeys(input, atClient, outputStream);
-      } else if (input.startsWith('/interactive')) {
-        handleInspectNotifications(input, atClient, outputStream, executeCommand: _executeCommand);
-      } else if (input.startsWith('/monitor')) {
-        handleMonitor(input, atClient, outputStream);
+  void _showPrompt() {
+    final atSign = _getAtSign();
+    
+    // Check if we're in interactive mode and show appropriate prompt
+    if (inspect_keys.isInInteractiveMode) {
+      if (inspect_keys.isWaitingForAction) {
+        outputStream.write("$atSign (v/d): ");
       } else {
-        outputStream.writeln(red.wrap("Unknown command: $input"));
+        outputStream.write("$atSign (inspect): ");
       }
-    } catch (e) {
-      outputStream.writeln(red.wrap("Error: $e"));
+    } else if (inspect_notifications.isInNotificationInteractiveMode) {
+      if (inspect_notifications.isWaitingForNotificationAction) {
+        outputStream.write("$atSign (v/d): ");
+      } else {
+        outputStream.write("$atSign (notify): ");
+      }
+    } else if (monitor.isInMonitorMode) {
+      outputStream.write("$atSign (monitor): ");
+    } else {
+      outputStream.write("$atSign: ");
+    }
+    
+    if (outputStream == stdout) {
+      stdout.flush();
     }
   }
-  
-  void _handleRawProtocolCommand(String input) {
-    if (!input.endsWith('\n')) {
-      input += '\n';
+
+  String _getAtSign() {
+    try {
+      return atClient.getCurrentAtSign() ?? "@unknown";
+    } catch (e) {
+      return "@unknown";
     }
-    outputStream.writeln("Executing raw command: ${input.trim()}");
-    _executeCommand(input).then((response) {
-      outputStream.writeln("Response: $response");
-    }).catchError((error) {
-      outputStream.writeln(red.wrap("Error executing command: $error"));
-    });
   }
 
   Future<bool> _pkamAuth(final String rootDomain, final int rootPort, final String atSign) async {
@@ -105,9 +109,18 @@ class REPL {
     }
     return success;
   }
-
-
-  // TODO write function to handle raw protocol command, which uses _executeCommand
+  
+  void _handleRawProtocolCommand(String input) {
+    if (!input.endsWith('\n')) {
+      input += '\n';
+    }
+    outputStream.writeln("Executing raw command: ${input.trim()}");
+    _executeCommand(input).then((response) {
+      outputStream.writeln("Response: $response");
+    }).catchError((error) {
+      outputStream.writeln(red.wrap("Error executing command: $error"));
+    });
+  }
 
   /// This function is for executing protocol verbs
   /// Make sure that you add a \n at the end of the command so that you can get a return string back
@@ -119,6 +132,83 @@ class REPL {
           'Result is null for some reason after executing command: $command');
     }
     return response;
+  }
+
+  void _handleCommand(String input) {
+    try {
+      if (input == '/q' || input == '/quit') {
+        outputStream.writeln(green.wrap("Goodbye!"));
+        exit(0);
+      } else if (input == '/help') {
+        printUsage(outputStream);
+      } else if (input.startsWith('/get ')) {
+        handleGet(input, atClient, outputStream);
+      } else if (input.startsWith('/put ')) {
+        handlePut(input, atClient, outputStream);
+      } else if (input.startsWith('/delete ')) {
+        handleDelete(input, atClient, outputStream);
+      } else if (input.startsWith('/scan')) {
+        handleScan(input, atClient, outputStream);
+      } else if (input.startsWith('/inspect_notify')) {
+        inspect_notifications.handleInspectNotifications(input, atClient, outputStream, executeCommand: _executeCommand);
+      } else if (input.startsWith('/inspect')) {
+        inspect_keys.handleInspectKeys(input, atClient, outputStream);
+      } else if (input.startsWith('/monitor')) {
+        monitor.handleMonitor(input, atClient, outputStream);
+      } else {
+        outputStream.writeln(red.wrap("Unknown command: $input"));
+      }
+    } catch (e) {
+      outputStream.writeln(red.wrap("Error: $e"));
+    }
+  }
+
+  bool _handleInteractiveInput(String input) {
+    // Check if we're in key inspection interactive mode
+    if (inspect_keys.isInInteractiveMode) {
+      if (inspect_keys.isWaitingForAction) {
+        final handled = inspect_keys.handleActionInput(input);
+        if (handled) {
+          // Show prompt after async operations complete
+          Future.delayed(Duration(milliseconds: 10), () => _showPrompt());
+        }
+        return handled;
+      } else {
+        final handled = inspect_keys.handleInteractiveInput(input);
+        if (handled) {
+          Future.delayed(Duration(milliseconds: 10), () => _showPrompt());
+        }
+        return handled;
+      }
+    }
+    
+    // Check if we're in notification inspection interactive mode
+    if (inspect_notifications.isInNotificationInteractiveMode) {
+      if (inspect_notifications.isWaitingForNotificationAction) {
+        final handled = inspect_notifications.handleNotificationActionInput(input);
+        if (handled) {
+          Future.delayed(Duration(milliseconds: 10), () => _showPrompt());
+        }
+        return handled;
+      } else {
+        final handled = inspect_notifications.handleNotificationInteractiveInput(input);
+        if (handled) {
+          Future.delayed(Duration(milliseconds: 10), () => _showPrompt());
+        }
+        return handled;
+      }
+    }
+    
+    // Check if we're in monitor mode
+    if (monitor.isInMonitorMode) {
+      final handled = monitor.handleMonitorInput(input);
+      if (handled) {
+        Future.delayed(Duration(milliseconds: 10), () => _showPrompt());
+      }
+      return handled;
+    }
+    
+    return false;
   }
 
 }
