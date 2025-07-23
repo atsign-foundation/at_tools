@@ -13,11 +13,3 @@ abstract class InteractiveSession {
   /// Exit the session and clean up resources
   void exit();
 }
-
-/// Represents the mode the REPL is currently in
-enum ReplMode {
-  main,
-  inspectKeys,
-  inspectNotifications,
-  monitor
-}

@@ -6,6 +6,7 @@ import 'package:at_onboarding_cli/at_onboarding_cli.dart';
 import 'package:at_repl/repl_exception.dart';
 import 'package:io/ansi.dart';
 import 'interactive_session.dart';
+import 'repl_mode.dart';
 import 'features/help.dart';
 import 'features/get.dart';
 import 'features/put.dart';
@@ -15,8 +16,6 @@ import 'features/inspect_keys.dart';
 import 'features/inspect_notifications.dart';
 import 'features/monitor.dart';
 import 'constants.dart';
-
-// /inspect command provides interactive key browsing with default filtering
 
 class REPL {
   late Stream<String> inputStream;
@@ -167,7 +166,6 @@ class REPL {
     final parts = input.split(' ');
     String? userRegex = parts.length > 1 ? parts.sublist(1).join(' ') : null;
     
-    // Clean up the regex - remove extra whitespace
     if (userRegex != null) {
       userRegex = userRegex.trim();
       if (userRegex.isEmpty) {
@@ -175,17 +173,11 @@ class REPL {
       }
     }
     
-    // Use default regex if none provided, otherwise use user regex
     String actualRegex = userRegex ?? defaultInspectRegex;
     
     try {
-      if (userRegex != null) {
-        outputStream.writeln(cyan.wrap("Inspecting keys with regex: '$userRegex'..."));
-      } else {
-        outputStream.writeln(cyan.wrap("Inspecting keys with regex: '$defaultInspectRegex'..."));
-      }
+      outputStream.writeln(cyan.wrap("Inspecting keys with regex: '$actualRegex' ..."));
       
-      // Get total count of all keys for comparison
       final totalKeys = await getAtKeys(atClient, regex: '.*', showHiddenKeys: true);
       final keys = await getAtKeys(atClient, regex: actualRegex, showHiddenKeys: true);
       
@@ -216,7 +208,6 @@ class REPL {
         outputStream.writeln(lightYellow.wrap("No notifications found"));
         return;
       }
-      // Parse the response as JSON
       final notifications = parseNotifications(cleanedResponse);
 
       if (notifications.isEmpty) {
@@ -226,7 +217,6 @@ class REPL {
       
       outputStream.writeln(green.wrap("\nFound ${notifications.length} notification(s):"));
       
-      // Create and set the new session
       currentSession = InspectNotificationsSession(notifications, outputStream, _executeCommand);
       currentMode = ReplMode.inspectNotifications;
       
@@ -239,13 +229,11 @@ class REPL {
     final parts = input.split(' ');
     String? regex = parts.length > 1 ? parts.sublist(1).join(' ') : null;
 
-    // If no regex provided, use default filter to exclude statsNotification
     if (regex == null || regex.isEmpty) {
       regex = defaultMonitorRegex;
     }
 
     try {
-      // Create and set the new session
       currentSession = MonitorSession(atClient, regex: regex, output: outputStream);
       currentMode = ReplMode.monitor;
       

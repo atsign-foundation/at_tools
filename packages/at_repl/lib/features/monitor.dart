@@ -5,18 +5,6 @@ import 'package:io/ansi.dart';
 import '../constants.dart';
 import '../interactive_session.dart';
 
-void handleMonitor(String input, AtClient atClient, IOSink outputStream) {
-  // This function is kept for backwards compatibility but should not be used
-  // Use MonitorSession instead
-  throw UnsupportedError("Use MonitorSession instead of this deprecated function");
-}
-
-bool handleMonitorInput(String input) {
-  // This function is kept for backwards compatibility but should not be used
-  // Use MonitorSession instead
-  throw UnsupportedError("Use MonitorSession instead of this deprecated function");
-}
-
 bool get isInMonitorMode => throw UnsupportedError("Use session-based approach instead");
 
 class MonitorSession implements InteractiveSession {
@@ -51,14 +39,10 @@ class MonitorSession implements InteractiveSession {
     if (_shouldDecrypt && atNotification.value != null) {
       _output.writeln(green.wrap('Decrypted value:'));
       _output.writeln(atNotification.value!);
-      try {
-        final Map<String, dynamic> jsonValue =
-            jsonDecode(atNotification.value!);
-        _output.writeln(cyan.wrap('JSON formatted value:'));
-        _output.writeln(jsonValue);
-      } catch (e) {
-        // Not JSON, that's fine
-      }
+      final Map<String, dynamic> jsonValue =
+          jsonDecode(atNotification.value!);
+      _output.writeln(cyan.wrap('JSON formatted value:'));
+      _output.writeln(jsonValue);
     }
   }
 
@@ -74,7 +58,6 @@ class MonitorSession implements InteractiveSession {
       return false;
     }
 
-    // For any other input during monitoring, show help
     _output.writeln(cyan.wrap("Type 'q' to quit monitoring"));
     return true;
   }
