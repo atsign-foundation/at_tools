@@ -37,7 +37,7 @@ class REPL {
   }
 
   void start() {
-    outputStream.writeln("${green.wrap("at_repl started") ?? "at_repl started"}. ${cyan.wrap("Type /help for available commands or /exit to quit.") ?? "Type /help for available commands or /exit to quit."}");
+    outputStream.writeln("${green.wrap("at_repl started") ?? "at_repl started"}. ${cyan.wrap("Type /help for available commands or /quit to quit.") ?? "Type /help for available commands or /quit to quit."}");
     _showPrompt();
 
     inputStream.listen((String input) {
