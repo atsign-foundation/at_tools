@@ -28,7 +28,8 @@ Future<void> main(List<String> args) async {
   AtSignLogger.root_level = verbose ? 'info' : 'shout';
 
   REPL repl = REPL();
-  repl.authenticate(rootDomain: rootDomain, rootPort: rootPort, atSign: atSign);
+  repl.outputStream.writeln(blue.wrap("Starting at_repl with atSign: $atSign ($rootDomain:$rootPort) ..."));
+  bool success = await repl.authenticate(rootDomain: rootDomain, rootPort: rootPort, atSign: atSign);
   repl.start();
 }
 

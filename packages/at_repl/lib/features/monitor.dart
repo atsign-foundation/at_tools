@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:at_client/at_client.dart';
+import 'package:io/ansi.dart';
 
 const String defaultRegex = 'TODO';
 
@@ -42,5 +43,27 @@ class MonitorSession {
         output!.writeln('Error parsing JSON: $e');
       }
     }
+  }
+}
+
+void handleMonitor(String input, AtClient atClient, IOSink outputStream) {
+  final parts = input.split(' ');
+  final regex = parts.length > 1 ? parts.sublist(1).join(' ') : null;
+  
+  try {
+    outputStream.writeln(green.wrap("Starting monitor${regex != null ? ' with regex: $regex' : ''}..."));
+    outputStream.writeln(cyan.wrap("Press Ctrl+C to stop monitoring"));
+    
+    final monitorSession = MonitorSession(
+      atClient,
+      regex: regex,
+      shouldDecrypt: true,
+      output: outputStream,
+    );
+    
+    outputStream.writeln(lightYellow.wrap("Monitor session started. Waiting for notifications..."));
+    
+  } catch (e) {
+    outputStream.writeln(red.wrap("Error starting monitor: $e"));
   }
 }
