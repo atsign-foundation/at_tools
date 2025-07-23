@@ -5,14 +5,16 @@ import 'package:at_client/at_client.dart';
 import 'package:at_onboarding_cli/at_onboarding_cli.dart';
 import 'package:at_repl/repl_exception.dart';
 import 'package:io/ansi.dart';
+import 'interactive_session.dart';
 import 'features/help.dart';
 import 'features/get.dart';
 import 'features/put.dart';
 import 'features/delete.dart';
 import 'features/scan.dart';
-import 'features/inspect_keys.dart' as inspect_keys;
-import 'features/inspect_notifications.dart' as inspect_notifications;
-import 'features/monitor.dart' as monitor;
+import 'features/inspect_keys.dart';
+import 'features/inspect_notifications.dart';
+import 'features/monitor.dart';
+import 'constants.dart';
 
 // /inspect command provides interactive key browsing with default filtering
 
@@ -20,6 +22,8 @@ class REPL {
   late Stream<String> inputStream;
   late IOSink outputStream;
   late AtClient atClient;
+  InteractiveSession? currentSession;
+  ReplMode currentMode = ReplMode.main;
 
   REPL({
     Stream<String>? inputStream,
@@ -46,7 +50,13 @@ class REPL {
       }
 
       // Check if we're in interactive mode
-      if (_handleInteractiveInput(input)) {
+      if (currentSession != null && currentSession!.isActive) {
+        final continueSession = currentSession!.handleInput(input);
+        if (!continueSession || !currentSession!.isActive) {
+          currentSession = null;
+          currentMode = ReplMode.main;
+        }
+        _showPrompt();
         return;
       }
 
@@ -62,20 +72,8 @@ class REPL {
 
   void _showPrompt() {
     final atSign = _getAtSign();
-    if (inspect_keys.isInInteractiveMode) {
-      if (inspect_keys.isWaitingForAction) {
-        outputStream.write("$atSign (v/d): ");
-      } else {
-        outputStream.write("$atSign (inspect): ");
-      }
-    } else if (inspect_notifications.isInNotificationInteractiveMode) {
-      if (inspect_notifications.isWaitingForNotificationAction) {
-        outputStream.write("$atSign (v/d): ");
-      } else {
-        outputStream.write("$atSign (notify): ");
-      }
-    } else if (monitor.isInMonitorMode) {
-      outputStream.write("$atSign (monitor): ");
+    if (currentSession != null && currentSession!.isActive) {
+      outputStream.write("$atSign ${currentSession!.getPrompt()}");
     } else {
       outputStream.write("$atSign: ");
     }
@@ -152,11 +150,11 @@ class REPL {
       } else if (input.startsWith('/scan')) {
         handleScan(input, atClient, outputStream);
       } else if (input.startsWith('/inspect_notify')) {
-        inspect_notifications.handleInspectNotifications(input, atClient, outputStream, executeCommand: _executeCommand);
+        _handleInspectNotifications(input);
       } else if (input.startsWith('/inspect')) {
-        inspect_keys.handleInspectKeys(input, atClient, outputStream);
+        _handleInspectKeys(input);  
       } else if (input.startsWith('/monitor')) {
-        monitor.handleMonitor(input, atClient, outputStream);
+        _handleMonitor(input);
       } else {
         outputStream.writeln(red.wrap("Unknown command: $input"));
       }
@@ -165,52 +163,95 @@ class REPL {
     }
   }
 
-  bool _handleInteractiveInput(String input) {
-    // Check if we're in key inspection interactive mode
-    if (inspect_keys.isInInteractiveMode) {
-      if (inspect_keys.isWaitingForAction) {
-        final handled = inspect_keys.handleActionInput(input);
-        if (handled) {
-          // Show prompt after async operations complete
-          Future.delayed(Duration(milliseconds: 10), () => _showPrompt());
-        }
-        return handled;
+  void _handleInspectKeys(String input) async {
+    final parts = input.split(' ');
+    String? userRegex = parts.length > 1 ? parts.sublist(1).join(' ') : null;
+    
+    // Clean up the regex - remove extra whitespace
+    if (userRegex != null) {
+      userRegex = userRegex.trim();
+      if (userRegex.isEmpty) {
+        userRegex = null;
+      }
+    }
+    
+    // Use default regex if none provided, otherwise use user regex
+    String actualRegex = userRegex ?? defaultInspectRegex;
+    
+    try {
+      if (userRegex != null) {
+        outputStream.writeln(cyan.wrap("Inspecting keys with regex: '$userRegex'..."));
       } else {
-        final handled = inspect_keys.handleInteractiveInput(input);
-        if (handled) {
-          Future.delayed(Duration(milliseconds: 10), () => _showPrompt());
-        }
-        return handled;
+        outputStream.writeln(cyan.wrap("Inspecting keys with regex: '$defaultInspectRegex'..."));
       }
-    }
-    
-    // Check if we're in notification inspection interactive mode
-    if (inspect_notifications.isInNotificationInteractiveMode) {
-      if (inspect_notifications.isWaitingForNotificationAction) {
-        final handled = inspect_notifications.handleNotificationActionInput(input);
-        if (handled) {
-          Future.delayed(Duration(milliseconds: 10), () => _showPrompt());
-        }
-        return handled;
-      } else {
-        final handled = inspect_notifications.handleNotificationInteractiveInput(input);
-        if (handled) {
-          Future.delayed(Duration(milliseconds: 10), () => _showPrompt());
-        }
-        return handled;
+      
+      // Get total count of all keys for comparison
+      final totalKeys = await getAtKeys(atClient, regex: '.*', showHiddenKeys: true);
+      final keys = await getAtKeys(atClient, regex: actualRegex, showHiddenKeys: true);
+      
+      if (keys.isEmpty) {
+        outputStream.writeln(lightYellow.wrap("No keys found (0 of ${totalKeys.length} total keys)"));
+        return;
       }
+      
+      outputStream.writeln(green.wrap("\nShowing ${keys.length} of ${totalKeys.length} key(s):"));
+      
+      // Create and set the new session
+      currentSession = InspectKeysSession(keys, atClient, outputStream);
+      currentMode = ReplMode.inspectKeys;
+      
+    } catch (e) {
+      outputStream.writeln(red.wrap("Error inspecting keys: $e"));
     }
-    
-    // Check if we're in monitor mode
-    if (monitor.isInMonitorMode) {
-      final handled = monitor.handleMonitorInput(input);
-      if (handled) {
-        Future.delayed(Duration(milliseconds: 10), () => _showPrompt());
+  }
+
+  void _handleInspectNotifications(String input) async {
+    try {
+      outputStream.writeln(cyan.wrap("Fetching notifications..."));
+      
+      final response = await _executeCommand("notify:list\n");
+      // remove data: prefix if present
+      final cleanedResponse = response.replaceAll(RegExp(r'^data:\s*'), '');
+      if (cleanedResponse.isEmpty || cleanedResponse == '[]') {
+        outputStream.writeln(lightYellow.wrap("No notifications found"));
+        return;
       }
-      return handled;
+      // Parse the response as JSON
+      final notifications = parseNotifications(cleanedResponse);
+
+      if (notifications.isEmpty) {
+        outputStream.writeln(lightYellow.wrap("No notifications found"));
+        return;
+      }
+      
+      outputStream.writeln(green.wrap("\nFound ${notifications.length} notification(s):"));
+      
+      // Create and set the new session
+      currentSession = InspectNotificationsSession(notifications, outputStream, _executeCommand);
+      currentMode = ReplMode.inspectNotifications;
+      
+    } catch (e) {
+      outputStream.writeln(red.wrap("Error inspecting notifications: $e"));
     }
-    
-    return false;
+  }
+
+  void _handleMonitor(String input) {
+    final parts = input.split(' ');
+    String? regex = parts.length > 1 ? parts.sublist(1).join(' ') : null;
+
+    // If no regex provided, use default filter to exclude statsNotification
+    if (regex == null || regex.isEmpty) {
+      regex = defaultMonitorRegex;
+    }
+
+    try {
+      // Create and set the new session
+      currentSession = MonitorSession(atClient, regex: regex, output: outputStream);
+      currentMode = ReplMode.monitor;
+      
+    } catch (e) {
+      outputStream.writeln(red.wrap("Error starting monitor: $e"));
+    }
   }
 
 }

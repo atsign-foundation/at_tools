@@ -1,105 +1,95 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:at_client/at_client.dart';
 import 'package:io/ansi.dart';
 import '../constants.dart';
+import '../interactive_session.dart';
 
-// Global state for monitor interactive mode
-MonitorSession? _currentMonitorSession;
-bool _inMonitorMode = false;
+void handleMonitor(String input, AtClient atClient, IOSink outputStream) {
+  // This function is kept for backwards compatibility but should not be used
+  // Use MonitorSession instead
+  throw UnsupportedError("Use MonitorSession instead of this deprecated function");
+}
 
-class MonitorSession {
-  late AtClient atClient;
-  late String? regex;
-  late bool shouldDecrypt;
-  late IOSink? output;
+bool handleMonitorInput(String input) {
+  // This function is kept for backwards compatibility but should not be used
+  // Use MonitorSession instead
+  throw UnsupportedError("Use MonitorSession instead of this deprecated function");
+}
 
-  MonitorSession(this.atClient,
-      {this.regex, this.shouldDecrypt = true, this.output}) {
-    if (regex == null || regex!.isEmpty) {
-      regex = defaultMonitorRegex;
-    }
-    output ??= stdout;
-    Stream<AtNotification> stream = atClient.notificationService
-        .subscribe(regex: regex, shouldDecrypt: shouldDecrypt);
+bool get isInMonitorMode => throw UnsupportedError("Use session-based approach instead");
+
+class MonitorSession implements InteractiveSession {
+  final AtClient _atClient;
+  final String _regex;
+  final bool _shouldDecrypt;
+  final IOSink _output;
+  bool _isActive = true;
+
+  MonitorSession(this._atClient, {String? regex, bool shouldDecrypt = true, IOSink? output})
+      : _regex = regex ?? defaultMonitorRegex,
+        _shouldDecrypt = shouldDecrypt,
+        _output = output ?? stdout {
+    
+    _output.writeln(green.wrap(
+        "Starting monitor${_regex != defaultMonitorRegex ? ' with regex: $_regex' : ' (excluding statsNotification)'}..."));
+    _output.writeln(cyan.wrap("Type 'q' to stop monitoring"));
+    
+    Stream<AtNotification> stream = _atClient.notificationService
+        .subscribe(regex: _regex, shouldDecrypt: _shouldDecrypt);
     stream.listen(_onData);
+    
+    _output.writeln(lightYellow.wrap(
+        "Monitor session started. Using regex: '$_regex'. Waiting for notifications..."));
   }
 
   void _onData(AtNotification atNotification) {
-    output!.writeln(yellow.wrap('\nRaw notification:'));
-    output!.writeln(atNotification);
-    if (shouldDecrypt && atNotification.value != null) {
-      output!.writeln(green.wrap('Decrypted value:'));
-      output!.writeln(atNotification.value!);
+    if (!_isActive) return;
+    
+    _output.writeln(yellow.wrap('\nRaw notification:'));
+    _output.writeln(atNotification);
+    if (_shouldDecrypt && atNotification.value != null) {
+      _output.writeln(green.wrap('Decrypted value:'));
+      _output.writeln(atNotification.value!);
       try {
         final Map<String, dynamic> jsonValue =
             jsonDecode(atNotification.value!);
-        output!.writeln(cyan.wrap('JSON formatted value:'));
-        output!.writeln(jsonValue);
+        _output.writeln(cyan.wrap('JSON formatted value:'));
+        _output.writeln(jsonValue);
       } catch (e) {
-        // output!.writeln('Error parsing JSON: $e');
+        // Not JSON, that's fine
       }
     }
   }
 
-  void stop() {
-    atClient.notificationService.stopAllSubscriptions();
-    output!.writeln('Monitor session stopped.');
-  }
-}
+  @override
+  bool handleInput(String input) {
+    if (!_isActive) return false;
+    
+    input = input.trim().toLowerCase();
 
-void handleMonitor(String input, AtClient atClient, IOSink outputStream) {
-  final parts = input.split(' ');
-  String? regex = parts.length > 1 ? parts.sublist(1).join(' ') : null;
+    if (input == 'q' || input == 'quit') {
+      _output.writeln(green.wrap("Monitor session stopped"));
+      exit();
+      return false;
+    }
 
-  // If no regex provided, use default filter to exclude statsNotification
-  if (regex == null || regex.isEmpty) {
-    regex = defaultMonitorRegex;
-  }
-
-  try {
-    outputStream.writeln(green.wrap(
-        "Starting monitor${regex != defaultMonitorRegex ? ' with regex: $regex' : ' (excluding statsNotification)'}..."));
-    outputStream.writeln(cyan.wrap("Type 'q' to stop monitoring"));
-
-    _currentMonitorSession = MonitorSession(
-      atClient,
-      regex: regex,
-      shouldDecrypt: true,
-      output: outputStream,
-    );
-
-    _inMonitorMode = true;
-    outputStream.writeln(lightYellow.wrap(
-        "Monitor session started. Using regex: '${_currentMonitorSession!.regex}'. Waiting for notifications..."));
-  } catch (e) {
-    outputStream.writeln(red.wrap("Error starting monitor: $e"));
-  }
-}
-
-bool handleMonitorInput(String input) {
-  if (!_inMonitorMode || _currentMonitorSession == null) return false;
-
-  input = input.trim().toLowerCase();
-
-  if (input == 'q' || input == 'quit') {
-    _currentMonitorSession!.stop();
-    _currentMonitorSession!.output!.writeln(green.wrap("Monitor session stopped"));
-    _exitMonitorMode();
+    // For any other input during monitoring, show help
+    _output.writeln(cyan.wrap("Type 'q' to quit monitoring"));
     return true;
   }
 
-  // For any other input during monitoring, show help
-  _currentMonitorSession!.output!
-      .writeln(cyan.wrap("Type 'q' to quit monitoring"));
-  return true;
-}
+  @override
+  String getPrompt() {
+    return "monitor> ";
+  }
 
-void _exitMonitorMode() {
-  _currentMonitorSession?.stop();
-  _currentMonitorSession = null;
-  _inMonitorMode = false;
-}
+  @override
+  bool get isActive => _isActive;
 
-bool get isInMonitorMode => _inMonitorMode;
+  @override
+  void exit() {
+    _isActive = false;
+    _atClient.notificationService.stopAllSubscriptions();
+  }
+}
