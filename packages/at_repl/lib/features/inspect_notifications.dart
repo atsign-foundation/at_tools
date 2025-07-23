@@ -5,19 +5,6 @@ import 'package:at_client/at_client.dart';
 import 'package:io/ansi.dart';
 import '../interactive_session.dart';
 
-class InspectNotificationsResult {
-  final List<dynamic> notifications; // list of notification objects
-  final bool shouldEnterInteractiveMode;
-
-  InspectNotificationsResult(this.notifications, this.shouldEnterInteractiveMode);
-}
-
-void handleInspectNotifications(String input, AtClient atClient, IOSink outputStream, {required Future<String> Function(String) executeCommand}) async {
-  // This function is kept for backwards compatibility but should not be used
-  // Use InspectNotificationsSession instead
-  throw UnsupportedError("Use InspectNotificationsSession instead of this deprecated function");
-}
-
 class InspectNotificationsSession implements InteractiveSession {
   final List<Map<String, dynamic>> _notifications;
   final IOSink _outputStream;

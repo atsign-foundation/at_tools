@@ -7,14 +7,6 @@ import '../interactive_session.dart';
 import 'get.dart';
 import 'delete.dart';
 
-class InspectKeysResult {
-  final List<AtKey> atKeys;
-  final String regex;
-  final bool shouldEnterInteractiveMode;
-
-  InspectKeysResult(this.atKeys, this.regex, this.shouldEnterInteractiveMode);
-}
-
 class InspectKeysSession implements InteractiveSession {
   final List<AtKey> _keys;
   final AtClient _atClient;
