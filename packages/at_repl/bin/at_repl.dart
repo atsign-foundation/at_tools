@@ -10,12 +10,14 @@ Future<void> main(List<String> args) async {
   final parser = ArgParser()
     ..addOption('atSign', abbr: 'a', mandatory: true, help: 'The atSign to use')
     ..addOption('rootUrl', defaultsTo: 'root.atsign.org:64', help: 'The root URL to connect to')
+    ..addOption('keys-file', abbr: 'k', help: 'Path to the atKeys file')
     ..addFlag('verbose', abbr: 'v', defaultsTo: false, help: 'Enable verbose output');
 
   final results = parser.parse(args);
 
   final String atSign = results['atSign'] as String;
   String rootUrl = results['rootUrl'] as String;
+  final String? keysFile = results['keys-file'] as String?;
   final bool verbose = results['verbose'] as bool;
 
   if (!rootUrl.contains(':')) {
@@ -29,7 +31,7 @@ Future<void> main(List<String> args) async {
 
   REPL repl = REPL();
   repl.outputStream.writeln(blue.wrap("Starting at_repl with atSign: $atSign ($rootDomain:$rootPort) ..."));
-  bool success = await repl.authenticate(rootDomain: rootDomain, rootPort: rootPort, atSign: atSign);
+  bool success = await repl.authenticate(rootDomain: rootDomain, rootPort: rootPort, atSign: atSign, keysFile: keysFile);
   repl.start();
 }
 

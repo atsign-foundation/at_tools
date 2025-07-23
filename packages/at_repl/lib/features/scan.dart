@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:at_client/at_client.dart';
 import 'package:io/ansi.dart';
 
-Future<List<AtKey>> getAtKeys(AtClient atClient, {String? regex}) async {
-  return await atClient.getAtKeys(regex: regex);
+Future<List<AtKey>> getAtKeys(AtClient atClient, {String? regex, bool showHiddenKeys = true}) async {
+  return await atClient.getAtKeys(regex: regex, showHiddenKeys: showHiddenKeys);
 }
 
 void handleScan(String input, AtClient atClient, IOSink outputStream) async {

@@ -55,16 +55,29 @@ void handleInspectNotifications(String input, AtClient atClient, IOSink outputSt
 }
 
 void _showNotificationTable(List<Map<String, dynamic>> notifications, IOSink outputStream) {
-  outputStream.writeln("${'#'.padRight(5)} | ${'ID'.padRight(36)} | ${'From'.padRight(15)} | To");
-  outputStream.writeln("${'─' * 5}─┼─${'─' * 36}─┼─${'─' * 15}─┼─${'─' * 15}");
+  outputStream.writeln("${'#'.padRight(5)} | ${'ID'.padRight(36)} | ${'From'.padRight(15)} | ${'To'.padRight(15)} | Timestamp");
+  outputStream.writeln("${'─' * 5}─┼─${'─' * 36}─┼─${'─' * 15}─┼─${'─' * 15}─┼─${'─' * 20}");
   
   for (int i = 0; i < notifications.length; i++) {
     final indexStr = (i + 1).toString().padRight(5);
     final notification = notifications[i];
     final id = (notification['id'] ?? 'Unknown').toString().padRight(36);
     final from = (notification['from'] ?? 'Unknown').toString().padRight(15);
-    final to = (notification['to'] ?? 'Unknown').toString();
-    outputStream.writeln("$indexStr | $id | $from | $to");
+    final to = (notification['to'] ?? 'Unknown').toString().padRight(15);
+    
+    // Convert epochMillis to readable timestamp
+    String timestamp = 'Unknown';
+    if (notification['epochMillis'] != null) {
+      try {
+        final epochMillis = notification['epochMillis'] as int;
+        final dateTime = DateTime.fromMillisecondsSinceEpoch(epochMillis);
+        timestamp = '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
+      } catch (e) {
+        timestamp = 'Invalid';
+      }
+    }
+    
+    outputStream.writeln("$indexStr | $id | $from | $to | $timestamp");
   }
 }
 
@@ -160,22 +173,6 @@ bool handleNotificationActionInput(String input) {
 
 void _handleViewNotification(Map<String, dynamic> notification) {
   _currentNotificationOutputStream!.writeln(green.wrap("Notification details:"));
-  
-  // Show key details first
-  _currentNotificationOutputStream!.writeln("ID: ${notification['id']}");
-  _currentNotificationOutputStream!.writeln("From: ${notification['from']}");
-  _currentNotificationOutputStream!.writeln("To: ${notification['to']}");
-  _currentNotificationOutputStream!.writeln("Key: ${notification['key']}");
-  _currentNotificationOutputStream!.writeln("Operation: ${notification['operation']}");
-  _currentNotificationOutputStream!.writeln("Encrypted: ${notification['isEncrypted']}");
-  
-  if (notification['epochMillis'] != null) {
-    final timestamp = DateTime.fromMillisecondsSinceEpoch(notification['epochMillis']);
-    _currentNotificationOutputStream!.writeln("Timestamp: $timestamp");
-  }
-  
-  // Show full JSON
-  _currentNotificationOutputStream!.writeln(cyan.wrap("\nFull JSON:"));
   const JsonEncoder encoder = JsonEncoder.withIndent('  ');
   _currentNotificationOutputStream!.writeln(encoder.convert(notification));
 }

@@ -29,8 +29,8 @@ class REPL {
     this.outputStream = outputStream ?? stdout;
   }
 
-  Future<bool> authenticate({required String rootDomain, required int rootPort, required String atSign}) async {
-    return await _pkamAuth(rootDomain, rootPort, atSign);
+  Future<bool> authenticate({required String rootDomain, required int rootPort, required String atSign, String? keysFile}) async {
+    return await _pkamAuth(rootDomain, rootPort, atSign, keysFile);
   }
 
   void start() {
@@ -62,8 +62,6 @@ class REPL {
 
   void _showPrompt() {
     final atSign = _getAtSign();
-    
-    // Check if we're in interactive mode and show appropriate prompt
     if (inspect_keys.isInInteractiveMode) {
       if (inspect_keys.isWaitingForAction) {
         outputStream.write("$atSign (v/d): ");
@@ -95,12 +93,16 @@ class REPL {
     }
   }
 
-  Future<bool> _pkamAuth(final String rootDomain, final int rootPort, final String atSign) async {
+  Future<bool> _pkamAuth(final String rootDomain, final int rootPort, final String atSign, final String? keysFile) async {
     AtOnboardingPreference pref = AtOnboardingPreference()
       ..namespace = 'at_repl'
       ..rootDomain = rootDomain
-      ..rootPort = rootPort
-      ;
+      ..rootPort = rootPort;
+    
+    if (keysFile != null) {
+      pref.atKeysFilePath = keysFile;
+    }
+    
     AtOnboardingService service = AtOnboardingServiceImpl(atSign, pref);
     bool success = await service.authenticate();
     if(success) {

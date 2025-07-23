@@ -3,8 +3,7 @@ import 'dart:io';
 
 import 'package:at_client/at_client.dart';
 import 'package:io/ansi.dart';
-
-const String defaultRegex = '^(?!.*statsNotification).*';
+import '../constants.dart';
 
 // Global state for monitor interactive mode
 MonitorSession? _currentMonitorSession;
@@ -19,7 +18,7 @@ class MonitorSession {
   MonitorSession(this.atClient,
       {this.regex, this.shouldDecrypt = true, this.output}) {
     if (regex == null || regex!.isEmpty) {
-      regex = defaultRegex;
+      regex = defaultMonitorRegex;
     }
     output ??= stdout;
     Stream<AtNotification> stream = atClient.notificationService
@@ -28,13 +27,6 @@ class MonitorSession {
   }
 
   void _onData(AtNotification atNotification) {
-    // --- raw notification ---
-    // <raw notification>
-    // --- decrypted value ---
-    // <decrypted value>
-    // --- json formatted value ---
-    // <json value>
-
     output!.writeln(yellow.wrap('\nRaw notification:'));
     output!.writeln(atNotification);
     if (shouldDecrypt && atNotification.value != null) {
@@ -63,12 +55,12 @@ void handleMonitor(String input, AtClient atClient, IOSink outputStream) {
 
   // If no regex provided, use default filter to exclude statsNotification
   if (regex == null || regex.isEmpty) {
-    regex = defaultRegex;
+    regex = defaultMonitorRegex;
   }
 
   try {
     outputStream.writeln(green.wrap(
-        "Starting monitor${regex != defaultRegex ? ' with regex: $regex' : ' (excluding statsNotification)'}..."));
+        "Starting monitor${regex != defaultMonitorRegex ? ' with regex: $regex' : ' (excluding statsNotification)'}..."));
     outputStream.writeln(cyan.wrap("Type 'q' to stop monitoring"));
 
     _currentMonitorSession = MonitorSession(
@@ -93,8 +85,7 @@ bool handleMonitorInput(String input) {
 
   if (input == 'q' || input == 'quit') {
     _currentMonitorSession!.stop();
-    _currentMonitorSession!.output!
-        .writeln(green.wrap("Monitor session stopped"));
+    _currentMonitorSession!.output!.writeln(green.wrap("Monitor session stopped"));
     _exitMonitorMode();
     return true;
   }
@@ -106,8 +97,9 @@ bool handleMonitorInput(String input) {
 }
 
 void _exitMonitorMode() {
-  _inMonitorMode = false;
+  _currentMonitorSession?.stop();
   _currentMonitorSession = null;
+  _inMonitorMode = false;
 }
 
 bool get isInMonitorMode => _inMonitorMode;

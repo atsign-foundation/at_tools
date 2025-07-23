@@ -6,6 +6,7 @@ import 'package:io/ansi.dart';
 import 'scan.dart';
 import 'get.dart';
 import 'delete.dart';
+import '../constants.dart';
 
 class InspectKeysResult {
   final List<AtKey> atKeys;
@@ -21,37 +22,39 @@ AtClient? _currentAtClient;
 IOSink? _currentOutputStream;
 bool _inInteractiveMode = false;
 
-List<AtKey> _filterSystemKeys(List<AtKey> keys) {
-  const systemKeyPatterns = ['shared_key', 'signing_privatekey', 'signing_publickey', 'publickey'];
-  
-  return keys.where((key) {
-    final keyStr = key.toString().toLowerCase();
-    return !systemKeyPatterns.any((pattern) => keyStr.contains(pattern));
-  }).toList();
-}
 
 void handleInspectKeys(String input, AtClient atClient, IOSink outputStream) async {
   final parts = input.split(' ');
-  String? regex = parts.length > 1 ? parts.sublist(1).join(' ') : null;
+  String? userRegex = parts.length > 1 ? parts.sublist(1).join(' ') : null;
   
-  // If no regex provided, use default filter to exclude system keys
-  if (regex == null || regex.isEmpty) {
-    regex = '.*';
+  // Clean up the regex - remove extra whitespace
+  if (userRegex != null) {
+    userRegex = userRegex.trim();
+    if (userRegex.isEmpty) {
+      userRegex = null;
+    }
   }
   
+  // Use default regex if none provided, otherwise use user regex
+  String actualRegex = userRegex ?? defaultInspectRegex;
+  
   try {
-    outputStream.writeln(cyan.wrap("Inspecting keys${regex != '.*' ? ' with regex: $regex' : ''}..."));
-    final allKeys = await getAtKeys(atClient, regex: regex);
+    if (userRegex != null) {
+      outputStream.writeln(cyan.wrap("Inspecting keys with regex: '$userRegex'..."));
+    } else {
+      outputStream.writeln(cyan.wrap("Inspecting keys with regex: '$defaultInspectRegex'..."));
+    }
     
-    // Filter out system keys if using default regex
-    final keys = regex == '.*' ? _filterSystemKeys(allKeys) : allKeys;
+    // Get total count of all keys for comparison
+    final totalKeys = await getAtKeys(atClient, regex: '.*', showHiddenKeys: true);
+    final keys = await getAtKeys(atClient, regex: actualRegex, showHiddenKeys: true);
     
     if (keys.isEmpty) {
-      outputStream.writeln(lightYellow.wrap("No keys found"));
+      outputStream.writeln(lightYellow.wrap("No keys found (0 of ${totalKeys.length} total keys)"));
       return;
     }
     
-    outputStream.writeln(green.wrap("\nFound ${keys.length} key(s):"));
+    outputStream.writeln(green.wrap("\nShowing ${keys.length} of ${totalKeys.length} key(s):"));
     outputStream.writeln("${'#'.padRight(5)} | Key");
     outputStream.writeln("${'─' * 5}─┼─${'─' * 50}");
     
