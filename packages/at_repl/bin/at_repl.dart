@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:at_repl/repl.dart';
 import 'package:at_utils/at_utils.dart';
 import 'package:io/ansi.dart';
@@ -31,7 +30,7 @@ Future<void> main(List<String> args) async {
 
   REPL repl = REPL();
   repl.outputStream.writeln(blue.wrap("Starting at_repl with atSign: $atSign ($rootDomain:$rootPort) ..."));
-  bool success = await repl.authenticate(rootDomain: rootDomain, rootPort: rootPort, atSign: atSign, keysFile: keysFile);
+  await repl.authenticate(rootDomain: rootDomain, rootPort: rootPort, atSign: atSign, keysFile: keysFile);
   repl.start();
 }
 
