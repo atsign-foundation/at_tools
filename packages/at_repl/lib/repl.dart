@@ -76,7 +76,7 @@ class REPL {
     } else {
       outputStream.write("$atSign: ");
     }
-    
+
     if (outputStream == stdout) {
       stdout.flush();
     }
@@ -165,33 +165,24 @@ class REPL {
   void _handleInspectKeys(String input) async {
     final parts = input.split(' ');
     String? userRegex = parts.length > 1 ? parts.sublist(1).join(' ') : null;
-    
     if (userRegex != null) {
       userRegex = userRegex.trim();
       if (userRegex.isEmpty) {
         userRegex = null;
       }
     }
-    
     String actualRegex = userRegex ?? defaultInspectRegex;
-    
     try {
       outputStream.writeln(cyan.wrap("Inspecting keys with regex: '$actualRegex' ..."));
-      
       final totalKeys = await getAtKeys(atClient, regex: '.*', showHiddenKeys: true);
       final keys = await getAtKeys(atClient, regex: actualRegex, showHiddenKeys: true);
-      
       if (keys.isEmpty) {
         outputStream.writeln(lightYellow.wrap("No keys found (0 of ${totalKeys.length} total keys)"));
         return;
       }
-      
       outputStream.writeln(green.wrap("\nShowing ${keys.length} of ${totalKeys.length} key(s):"));
-      
-      // Create and set the new session
       currentSession = InspectKeysSession(keys, atClient, outputStream);
       currentMode = ReplMode.inspectKeys;
-      
     } catch (e) {
       outputStream.writeln(red.wrap("Error inspecting keys: $e"));
     }
@@ -200,7 +191,7 @@ class REPL {
   void _handleInspectNotifications(String input) async {
     try {
       outputStream.writeln(cyan.wrap("Fetching notifications..."));
-      
+
       final response = await _executeCommand("notify:list\n");
       // remove data: prefix if present
       final cleanedResponse = response.replaceAll(RegExp(r'^data:\s*'), '');
@@ -214,12 +205,12 @@ class REPL {
         outputStream.writeln(lightYellow.wrap("No notifications found"));
         return;
       }
-      
+
       outputStream.writeln(green.wrap("\nFound ${notifications.length} notification(s):"));
-      
+
       currentSession = InspectNotificationsSession(notifications, outputStream, _executeCommand);
       currentMode = ReplMode.inspectNotifications;
-      
+
     } catch (e) {
       outputStream.writeln(red.wrap("Error inspecting notifications: $e"));
     }
