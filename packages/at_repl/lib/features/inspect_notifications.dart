@@ -1,7 +1,5 @@
-
 import 'dart:io';
 import 'dart:convert';
-import 'package:at_client/at_client.dart';
 import 'package:io/ansi.dart';
 import '../interactive_session.dart';
 
