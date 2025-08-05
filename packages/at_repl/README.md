@@ -6,13 +6,13 @@
 [![pub points](https://img.shields.io/badge/dynamic/json?url=https://pub.dev/api/packages/at_repl/score&label=pub%20score&query=grantedPoints)](https://pub.dev/packages/at_repl/score)
 [![gitHub license](https://img.shields.io/badge/license-BSD3-blue.svg)](./LICENSE)
 
-A CLI application that talks directly to the atPlatform.
+A CLI tool for interacting with an atServer using the atProtocol.
 
-## Getting Started
+### Getting Started
 
 Ensure you have your atSign keys. Keys are usually located in `$HOME/.atsign/keys`.
 
-If you don't have an atSign, visit here https://my.atsign.com/login.
+If you don't have an atSign, visit here <https://my.atsign.com/login>.
 
 If the CLI application is available on [pub](https://pub.dev), activate globally via:
 
@@ -27,24 +27,21 @@ cd packages/at_repl
 dart pub global activate . -s path
 ```
 
-## Usage
-
--a, user's atsign (REQUIRED)
--r, root URL (defaults to root.atsign.org:64)
--v, verbose
--n, enforce namespaces (defaults to true)
+### Usage
 
 ```sh
-#example of full REPL command
-$ at_repl -a @xavierlin -r root.atsign.org:64 -v -n
+➜ dart run bin/at_repl.dart --help
+Usage: at_repl [options]
 
-#example of shortened REPL command
-$ at_repl -a @xavierlin
-
+Options:
+-a, --atSign          The atSign to use
+    --rootUrl         The root URL to connect to
+                      (defaults to "root.atsign.org:64")
+-k, --keys-file       Path to the atKeys file
+-v, --[no-]verbose    Enable verbose output
+-h, --[no-]help       Show this help message
 ```
 
-Use /help or help for instructions/usage.
+### Example Execution
 
-```sh
-@chess69 /help
-```
+![screenshot of usage](./example/image.png)
