@@ -1,5 +1,6 @@
 ## 2.0.0
 
+- feat: `/inspect` command
 - feat: `/monitor [regex]` command
 - feat `/inspect_notify` command
 
@@ -16,5 +17,3 @@
 ## 1.0.0
 
 - feat: initial version.
-
-
