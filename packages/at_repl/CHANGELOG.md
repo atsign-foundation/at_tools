@@ -1,3 +1,8 @@
+## 2.0.0
+
+- feat: `/monitor [regex]` command
+- feat `/inspect_notify` command
+
 ## 1.0.2
 
 - feat: added tests

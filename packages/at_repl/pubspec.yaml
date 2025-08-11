@@ -17,9 +17,9 @@ dependencies:
   build_runner: ^2.4.5
   pub_updater: ^0.3.0
   at_cli_commons: ^1.2.1
+  io: ^1.0.5
   # path: ^1.8.0
 
 dev_dependencies:
   lints: ^2.0.0
   test: ^1.21.0
-
