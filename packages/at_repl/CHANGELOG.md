@@ -1,3 +1,6 @@
+## 2.0.1
+- feat: `--keys|-k option to specify key file`
+
 ## 2.0.0
 
 - feat: `/inspect` command
