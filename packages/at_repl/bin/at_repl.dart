@@ -103,7 +103,7 @@ void _printUsage(ArgParser parser) {
 
 void _printVersion() {
   final version = _readVersion() ?? 'unknown';
-  print('at_repl version: $version');
+  print(version);
 }
 
 String? _readVersion() {
