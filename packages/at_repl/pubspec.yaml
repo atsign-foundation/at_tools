@@ -9,7 +9,7 @@ executables:
   at_repl: at_repl
 
 dependencies:
-  at_client: ^3.0.61
+  at_client: ^3.8.0
   at_commons: ^5.0.2
   at_onboarding_cli: ^1.11.0
   at_utils: ^3.0.12
