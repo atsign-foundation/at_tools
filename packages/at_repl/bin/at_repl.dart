@@ -99,8 +99,6 @@ void _printUsage(ArgParser parser) {
   print('');
   print('Options:');
   print(parser.usage);
-  print('');
-  print('Use --version or -V to print the current version.');
 }
 
 void _printVersion() {
