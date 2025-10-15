@@ -1,5 +1,6 @@
-## 2.0.1
-- feat: `--keys|-k option to specify key file`
+## 2.1.0
+- feat: `--key-file|-k option to specify key file`
+- feat: `--version` to print at_repl version
 
 ## 2.0.0
 
