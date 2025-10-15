@@ -9,14 +9,15 @@ Future<String?> get(AtClient atClient, {required String atKeyStr}) async {
   return atValue.value;
 }
 
-void handleGet(String input, AtClient atClient, IOSink outputStream) async {
+Future<void> handleGet(
+    String input, AtClient atClient, IOSink outputStream) async {
   final parts = input.split(' ');
   if (parts.length < 2) {
     outputStream.writeln(red.wrap("Usage: /get <atKey>"));
     return;
   }
   final atKeyStr = parts.sublist(1).join(' ');
-  
+
   try {
     final value = await get(atClient, atKeyStr: atKeyStr);
     if (value != null) {

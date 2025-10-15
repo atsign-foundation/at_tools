@@ -8,14 +8,15 @@ Future<bool> delete(AtClient atClient, {required String atKeyStr}) async {
       deleteRequestOptions: DeleteRequestOptions()..useRemoteAtServer = true);
 }
 
-void handleDelete(String input, AtClient atClient, IOSink outputStream) async {
+Future<void> handleDelete(
+    String input, AtClient atClient, IOSink outputStream) async {
   final parts = input.split(' ');
   if (parts.length < 2) {
     outputStream.writeln(red.wrap("Usage: /delete <atKey>"));
     return;
   }
   final atKeyStr = parts.sublist(1).join(' ');
-  
+
   try {
     final success = await delete(atClient, atKeyStr: atKeyStr);
     if (success) {

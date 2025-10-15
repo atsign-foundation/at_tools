@@ -1,15 +1,18 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:at_repl/repl.dart';
 import 'package:at_utils/at_utils.dart';
 import 'package:io/ansi.dart';
 import 'package:args/args.dart';
 
 Future<void> main(List<String> args) async {
-  // ArgParser, look for -a <atSign>, and --rootUrl <rootUrl> defaults to root.atsign.org:64, and --verbose or -v for verbose output
+  // ArgParser, look for -a <atSign>, and --root-domain (<host>[:port]) defaults to root.atsign.org:64, and --verbose or -v for verbose output
   final parser = ArgParser()
-    ..addOption('atSign', abbr: 'a', help: 'The atSign to use')
-    ..addOption('rootUrl',
-        defaultsTo: 'root.atsign.org:64', help: 'The root URL to connect to')
+    ..addOption('atSign',
+        abbr: 'a', help: 'The atSign to use', mandatory: true)
+    ..addOption('root-domain',
+        defaultsTo: 'root.atsign.org:64',
+        help: 'The root domain (optionally host:port) to connect to')
     ..addOption('keys',
         abbr: 'k',
         help: 'Directory that contains the .atKeys file',
@@ -19,7 +22,19 @@ Future<void> main(List<String> args) async {
     ..addFlag('verbose',
         abbr: 'v', defaultsTo: false, help: 'Enable verbose output')
     ..addFlag('help',
-        abbr: 'h', defaultsTo: false, help: 'Show this help message');
+        abbr: 'h', defaultsTo: false, help: 'Show this help message')
+    ..addFlag('version',
+        abbr: 'V', defaultsTo: false, help: 'Show at_repl version');
+
+  if (args.contains('--version') || args.contains('-V')) {
+    _printVersion();
+    return;
+  }
+
+  if (args.contains('-h') || args.contains('--help')) {
+    _printUsage(parser);
+    return;
+  }
 
   late ArgResults results;
   try {
@@ -27,19 +42,7 @@ Future<void> main(List<String> args) async {
   } catch (e) {
     print('Error: $e');
     print('');
-    print('Usage: at_repl [options]');
-    print('');
-    print('Options:');
-    print(parser.usage);
-    return;
-  }
-
-  // Check if help flag is set
-  if (results['help'] as bool) {
-    print('Usage: at_repl [options]');
-    print('');
-    print('Options:');
-    print(parser.usage);
+    _printUsage(parser);
     return;
   }
 
@@ -48,10 +51,7 @@ Future<void> main(List<String> args) async {
   if (atSignArg == null || atSignArg.trim().isEmpty) {
     print('Error: atSign is required');
     print('');
-    print('Usage: at_repl [options]');
-    print('');
-    print('Options:');
-    print(parser.usage);
+    _printUsage(parser);
     return;
   }
   late final String atSign;
@@ -60,13 +60,10 @@ Future<void> main(List<String> args) async {
   } catch (e) {
     print('Error: $e');
     print('');
-    print('Usage: at_repl [options]');
-    print('');
-    print('Options:');
-    print(parser.usage);
+    _printUsage(parser);
     return;
   }
-  String rootUrl = results['rootUrl'] as String;
+  String rootUrl = results['root-domain'] as String;
   final String? keysPath = results.wasParsed('keys')
       ? results['keys'] as String?
       : results['keys-file'] as String?;
@@ -90,4 +87,39 @@ Future<void> main(List<String> args) async {
       atSign: atSign,
       keysPath: keysPath);
   repl.start();
+}
+
+void _printUsage(ArgParser parser) {
+  print('Usage: at_repl [options]');
+  print('');
+  print('Options:');
+  print(parser.usage);
+  print('');
+  print('Use --version or -V to print the current version.');
+}
+
+void _printVersion() {
+  final version = _readVersion() ?? 'unknown';
+  print('at_repl version: $version');
+}
+
+String? _readVersion() {
+  try {
+    final pubspec = File('pubspec.yaml');
+    if (!pubspec.existsSync()) {
+      return null;
+    }
+    for (final line in pubspec.readAsLinesSync()) {
+      final trimmed = line.trim();
+      if (trimmed.startsWith('version:')) {
+        final parts = trimmed.split(':');
+        if (parts.length >= 2) {
+          return parts.sublist(1).join(':').trim();
+        }
+      }
+    }
+  } catch (_) {
+    // Ignore errors and fallback to null
+  }
+  return null;
 }

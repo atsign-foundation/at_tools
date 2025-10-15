@@ -48,33 +48,46 @@ class REPL {
         "${green.wrap("at_repl started") ?? "at_repl started"}. ${cyan.wrap("Type /help for available commands or /quit to quit.") ?? "Type /help for available commands or /quit to quit."}");
     _showPrompt();
 
-    inputStream.listen((String input) {
-      input = input.trim();
-
-      if (input.isEmpty) {
+    final subscription = inputStream.listen(null);
+    subscription.onData((String input) {
+      subscription.pause();
+      _processInput(input).catchError((error, stackTrace) {
+        outputStream.writeln(red.wrap("Error: $error"));
+      }).whenComplete(() {
         _showPrompt();
-        return;
-      }
+        subscription.resume();
+      });
+    });
+    subscription.onError((Object error, StackTrace stackTrace) {
+      outputStream.writeln(red.wrap("Stream error: $error"));
+    });
+  }
 
-      // Check if we're in interactive mode
+  Future<void> _processInput(String rawInput) async {
+    final input = rawInput.trim();
+
+    if (input.isEmpty) {
+      return;
+    }
+
+    try {
       if (currentSession != null && currentSession!.isActive) {
         final continueSession = currentSession!.handleInput(input);
         if (!continueSession || !currentSession!.isActive) {
           currentSession = null;
           currentMode = ReplMode.main;
         }
-        _showPrompt();
         return;
       }
 
       if (input.startsWith('/')) {
-        _handleCommand(input);
+        await _handleCommand(input);
       } else {
-        _handleRawProtocolCommand(input);
+        await _handleRawProtocolCommand(input);
       }
-
-      _showPrompt();
-    });
+    } catch (e) {
+      outputStream.writeln(red.wrap("Error: $e"));
+    }
   }
 
   void _showPrompt() {
@@ -158,16 +171,17 @@ class REPL {
     return path.replaceFirst('~', homeDirectory);
   }
 
-  void _handleRawProtocolCommand(String input) {
+  Future<void> _handleRawProtocolCommand(String input) async {
     if (!input.endsWith('\n')) {
       input += '\n';
     }
-    outputStream.writeln("Executing raw command: ${input.trim()}");
-    _executeCommand(input).then((response) {
+    try {
+      outputStream.writeln("Executing raw command: ${input.trim()}");
+      final response = await _executeCommand(input);
       outputStream.writeln("Response: $response");
-    }).catchError((error) {
+    } catch (error) {
       outputStream.writeln(red.wrap("Error executing command: $error"));
-    });
+    }
   }
 
   /// This function is for executing protocol verbs
@@ -182,7 +196,7 @@ class REPL {
     return response;
   }
 
-  void _handleCommand(String input) {
+  Future<void> _handleCommand(String input) async {
     try {
       if (input == '/q' || input == '/quit') {
         outputStream.writeln(green.wrap("Goodbye!"));
@@ -190,19 +204,19 @@ class REPL {
       } else if (input == '/help') {
         printUsage(outputStream);
       } else if (input.startsWith('/get ')) {
-        handleGet(input, atClient, outputStream);
+        await handleGet(input, atClient, outputStream);
       } else if (input.startsWith('/put ')) {
-        handlePut(input, atClient, outputStream);
+        await handlePut(input, atClient, outputStream);
       } else if (input.startsWith('/delete ')) {
-        handleDelete(input, atClient, outputStream);
+        await handleDelete(input, atClient, outputStream);
       } else if (input.startsWith('/scan')) {
-        handleScan(input, atClient, outputStream);
+        await handleScan(input, atClient, outputStream);
       } else if (input.startsWith('/inspect_notify')) {
-        _handleInspectNotifications(input);
+        await _handleInspectNotifications(input);
       } else if (input.startsWith('/inspect')) {
-        _handleInspectKeys(input);
+        await _handleInspectKeys(input);
       } else if (input.startsWith('/monitor')) {
-        _handleMonitor(input);
+        await _handleMonitor(input);
       } else {
         outputStream.writeln(red.wrap("Unknown command: $input"));
       }
@@ -211,7 +225,7 @@ class REPL {
     }
   }
 
-  void _handleInspectKeys(String input) async {
+  Future<void> _handleInspectKeys(String input) async {
     final parts = input.split(' ');
     String? userRegex = parts.length > 1 ? parts.sublist(1).join(' ') : null;
     if (userRegex != null) {
@@ -224,10 +238,19 @@ class REPL {
     try {
       outputStream
           .writeln(cyan.wrap("Inspecting keys with regex: '$actualRegex' ..."));
-      final totalKeys =
-          await getAtKeys(atClient, regex: '.*', showHiddenKeys: true);
-      final keys =
-          await getAtKeys(atClient, regex: actualRegex, showHiddenKeys: true);
+      final totalKeys = await getAtKeys(atClient, showHiddenKeys: true);
+      RegExp compiledRegex;
+      try {
+        compiledRegex = RegExp(actualRegex);
+      } on FormatException catch (e) {
+        outputStream.writeln(red
+            .wrap("Invalid regular expression '$actualRegex': ${e.message}"));
+        return;
+      }
+
+      final keys = totalKeys
+          .where((key) => compiledRegex.hasMatch(key.toString()))
+          .toList();
       if (keys.isEmpty) {
         outputStream.writeln(lightYellow
             .wrap("No keys found (0 of ${totalKeys.length} total keys)"));
@@ -242,7 +265,7 @@ class REPL {
     }
   }
 
-  void _handleInspectNotifications(String input) async {
+  Future<void> _handleInspectNotifications(String input) async {
     try {
       outputStream.writeln(cyan.wrap("Fetching notifications..."));
 
@@ -271,7 +294,7 @@ class REPL {
     }
   }
 
-  void _handleMonitor(String input) {
+  Future<void> _handleMonitor(String input) async {
     final parts = input.split(' ');
     String? regex = parts.length > 1 ? parts.sublist(1).join(' ') : null;
 

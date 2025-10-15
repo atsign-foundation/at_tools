@@ -30,16 +30,19 @@ dart pub global activate . -s path
 ### Usage
 
 ```sh
-➜ dart run bin/at_repl.dart --help
+$ dart run bin/at_repl.dart --help
 Usage: at_repl [options]
 
 Options:
--a, --atSign          The atSign to use
-    --rootUrl         The root URL to connect to
-                      (defaults to "root.atsign.org:64")
--k, --keys-file       Path to the atKeys file
--v, --[no-]verbose    Enable verbose output
--h, --[no-]help       Show this help message
+-a, --atSign (mandatory)    The atSign to use
+    --root-domain           The root domain (optionally host:port) to connect to
+                            (defaults to "root.atsign.org:64")
+-k, --keys=<path>           Directory that contains the .atKeys file
+-v, --[no-]verbose          Enable verbose output
+-h, --[no-]help             Show this help message
+-V, --[no-]version          Show at_repl version
+
+Use --version or -V to print the current version.
 ```
 
 ### Example Execution
