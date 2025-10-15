@@ -9,22 +9,26 @@ Future<void> main(List<String> args) async {
   // ArgParser, look for -a <atSign>, and --root-domain (<host>[:port]) defaults to root.atsign.org:64, and --verbose or -v for verbose output
   final parser = ArgParser()
     ..addOption('atSign',
-        abbr: 'a', help: 'The atSign to use', mandatory: true)
+      abbr: 'a',
+      help: 'The atSign to use',
+      mandatory: true)
     ..addOption('root-domain',
-        defaultsTo: 'root.atsign.org:64',
-        help: 'The root domain (optionally host:port) to connect to')
-    ..addOption('keys',
-        abbr: 'k',
-        help: 'Directory that contains the .atKeys file',
-        valueHelp: 'path')
+      defaultsTo: 'root.atsign.org:64',
+      help: 'The root domain (optionally host:port) to connect to',
+      aliases: ['rootUrl'])
     ..addOption('keys-file',
-        help: 'Path to the .atKeys file (deprecated, use --keys)', hide: true)
+      help: 'Path to the .atKeys file')
     ..addFlag('verbose',
-        abbr: 'v', defaultsTo: false, help: 'Enable verbose output')
+      abbr: 'v',
+      defaultsTo: false,
+      help: 'Enable verbose output')
     ..addFlag('help',
-        abbr: 'h', defaultsTo: false, help: 'Show this help message')
+      abbr: 'h',
+      defaultsTo: false,
+      help: 'Show this help message')
     ..addFlag('version',
-        abbr: 'V', defaultsTo: false, help: 'Show at_repl version');
+      defaultsTo: false,
+      help: 'Show at_repl version');
 
   if (args.contains('--version') || args.contains('-V')) {
     _printVersion();
