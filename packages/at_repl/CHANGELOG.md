@@ -1,6 +1,7 @@
 ## 2.1.0
 - feat: `--key-file|-k option to specify key file`
 - feat: `--version` to print at_repl version
+- chore: Renamed `--rootUrl` to `--rootDomain` but kept `--rootUrl` as an alias
 
 ## 2.0.0
 
