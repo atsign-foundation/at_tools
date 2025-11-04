@@ -69,9 +69,7 @@ Future<void> main(List<String> args) async {
     return;
   }
   String rootUrl = results['root-domain'] as String;
-  final String? keysPath = results.wasParsed('keys')
-      ? results['keys'] as String?
-      : results['keys-file'] as String?;
+  final String? keysPath = results['key-file'] as String?;
   final bool verbose = results['verbose'] as bool;
 
   if (!rootUrl.contains(':')) {
