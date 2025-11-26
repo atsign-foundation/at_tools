@@ -33,3 +33,6 @@ doc/api/
 .vscode
 
 pubspec_overrides.yaml #melos
+
+.DS_Store
+
