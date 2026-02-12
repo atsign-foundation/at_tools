@@ -17,6 +17,7 @@ Future<void> main(List<String> args) async {
       help: 'The root domain (optionally host:port) to connect to',
       aliases: ['rootUrl'])
     ..addOption('key-file',
+      aliases: ['keys', 'keys-file'],
       help: 'Path to the .atKeys file',
       abbr: 'k')
     ..addFlag('verbose',
