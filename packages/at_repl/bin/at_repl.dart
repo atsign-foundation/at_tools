@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:at_commons/at_commons.dart';
 import 'package:at_repl/repl.dart';
 import 'package:at_utils/at_utils.dart';
 import 'package:io/ansi.dart';
@@ -14,7 +15,7 @@ Future<void> main(List<String> args) async {
       mandatory: true)
     ..addOption('root-domain',
       defaultsTo: 'root.atsign.org:64',
-      help: 'The root domain (optionally host:port) to connect to',
+      help: 'The root domain to connect to. Formats: host, host:port, proxy:host:port',
       aliases: ['rootUrl'])
     ..addOption('key-file',
       aliases: ['keys', 'keys-file'],
@@ -69,25 +70,27 @@ Future<void> main(List<String> args) async {
     _printUsage(parser);
     return;
   }
-  String rootUrl = results['root-domain'] as String;
+  final String rootUrl = results['root-domain'] as String;
   final String? keysPath = results['key-file'] as String?;
   final bool verbose = results['verbose'] as bool;
 
-  if (!rootUrl.contains(':')) {
-    rootUrl = '$rootUrl:64';
+  late final AtRootDomain rootDomain;
+  try {
+    rootDomain = AtRootDomain.parse(rootUrl);
+  } catch (e) {
+    print('Error: invalid root domain "$rootUrl": $e');
+    print('');
+    _printUsage(parser);
+    return;
   }
-
-  String rootDomain = rootUrl.split(':')[0];
-  int rootPort = int.parse(rootUrl.split(':')[1]);
 
   AtSignLogger.root_level = verbose ? 'info' : 'shout';
 
   REPL repl = REPL();
   repl.outputStream.writeln(blue.wrap(
-      "Starting at_repl with atSign: $atSign ($rootDomain:$rootPort) ..."));
+      "Starting at_repl with atSign: $atSign (${rootDomain.rootDomain}:${rootDomain.rootPort}) ..."));
   await repl.authenticate(
       rootDomain: rootDomain,
-      rootPort: rootPort,
       atSign: atSign,
       keysPath: keysPath);
   repl.start();

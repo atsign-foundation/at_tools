@@ -35,12 +35,11 @@ class REPL {
   }
 
   Future<bool> authenticate({
-    required String rootDomain,
-    required int rootPort,
+    required AtRootDomain rootDomain,
     required String atSign,
     String? keysPath,
   }) async {
-    return await _pkamAuth(rootDomain, rootPort, atSign, keysPath);
+    return await _pkamAuth(rootDomain, atSign, keysPath);
   }
 
   void start() {
@@ -111,12 +110,12 @@ class REPL {
     }
   }
 
-  Future<bool> _pkamAuth(final String rootDomain, final int rootPort,
+  Future<bool> _pkamAuth(final AtRootDomain rootDomain,
       final String atSign, final String? keysPath) async {
     AtOnboardingPreference pref = AtOnboardingPreference()
       ..namespace = 'at_repl'
-      ..rootDomain = rootDomain
-      ..rootPort = rootPort;
+      ..rootDomain = rootDomain.rootDomain
+      ..rootPort = rootDomain.rootPort;
 
     final String? resolvedKeysPath = _resolveKeysFilePath(keysPath, atSign);
     if (resolvedKeysPath != null) {
