@@ -53,23 +53,7 @@ Future<void> main(List<String> args) async {
     return;
   }
 
-  // Check if required atSign is provided
-  final String? atSignArg = results['atSign'] as String?;
-  if (atSignArg == null || atSignArg.trim().isEmpty) {
-    print('Error: atSign is required');
-    print('');
-    _printUsage(parser);
-    return;
-  }
-  late final String atSign;
-  try {
-    atSign = AtUtils.fixAtSign(atSignArg);
-  } catch (e) {
-    print('Error: $e');
-    print('');
-    _printUsage(parser);
-    return;
-  }
+  final Atsign atSign = (results['atsign'] as Atsign).toAtsign();
   final String rootUrl = results['root-domain'] as String;
   final String? keysPath = results['key-file'] as String?;
   final bool verbose = results['verbose'] as bool;
@@ -88,7 +72,7 @@ Future<void> main(List<String> args) async {
 
   REPL repl = REPL();
   repl.outputStream.writeln(blue.wrap(
-      "Starting at_repl with atSign: $atSign (${rootDomain.rootDomain}:${rootDomain.rootPort}) ..."));
+      "Starting at_repl with Atsign: $atSign (${rootDomain.rootDomain}:${rootDomain.rootPort}) ..."));
   await repl.authenticate(
       rootDomain: rootDomain,
       atSign: atSign,
