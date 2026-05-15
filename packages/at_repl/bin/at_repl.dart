@@ -53,7 +53,7 @@ Future<void> main(List<String> args) async {
     return;
   }
 
-  final Atsign atSign = (results['atsign'] as Atsign).toAtsign();
+  final Atsign atSign = (results['atSign'] as Atsign).toAtsign();
   final String rootUrl = results['root-domain'] as String;
   final String? keysPath = results['key-file'] as String?;
   final bool verbose = results['verbose'] as bool;
