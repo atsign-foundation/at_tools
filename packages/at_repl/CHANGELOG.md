@@ -1,7 +1,9 @@
 ## 2.1.0
 - feat: `--key-file|-k option to specify key file`
 - feat: `--version` to print at_repl version
-- chore: Renamed `--rootUrl` to `--rootDomain` but kept `--rootUrl` as an alias
+- chore: Renamed `--rootUrl` to `--rootDomain` but kept `--rootUrl` as an
+  alias. `--root-domain` is also supported.
+- feat: support proxy servers in root domain
 
 ## 2.0.0
 
