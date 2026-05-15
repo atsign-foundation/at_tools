@@ -16,7 +16,7 @@ Future<void> main(List<String> args) async {
     ..addOption('root-domain',
       defaultsTo: 'root.atsign.org:64',
       help: 'The root domain to connect to. Formats: host, host:port, proxy:host:port',
-      aliases: ['rootUrl'])
+      aliases: ['rootUrl', 'rootDomain', 'root-url'])
     ..addOption('key-file',
       aliases: ['keys', 'keys-file'],
       help: 'Path to the .atKeys file',
