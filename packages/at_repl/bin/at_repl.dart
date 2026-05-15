@@ -14,13 +14,14 @@ Future<void> main(List<String> args) async {
       help: 'The atSign to use',
       mandatory: true)
     ..addOption('root-domain',
+      abbr: 'r',
       defaultsTo: 'root.atsign.org:64',
       help: 'The root domain to connect to. Formats: host, host:port, proxy:host:port',
       aliases: ['rootUrl', 'rootDomain', 'root-url'])
     ..addOption('key-file',
+      abbr: 'k',
       aliases: ['keys', 'keys-file'],
-      help: 'Path to the .atKeys file',
-      abbr: 'k')
+      help: 'Path to the .atKeys file')
     ..addFlag('verbose',
       abbr: 'v',
       defaultsTo: false,
