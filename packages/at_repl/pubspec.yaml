@@ -1,6 +1,6 @@
 name: at_repl
 description: A command line tool that interacts with the at_platform. Uses some custom functions as well as protocol verbs.
-version: 2.0.0+1
+version: 2.1.0
 repository: https://github.com/atsign-foundation/at_tools
 environment:
   sdk: ^3.0.0
@@ -9,7 +9,7 @@ executables:
   at_repl: at_repl
 
 dependencies:
-  at_client: ^3.0.61
+  at_client: ^3.8.0
   at_commons: ^5.0.2
   at_onboarding_cli: ^1.11.0
   at_utils: ^3.0.12

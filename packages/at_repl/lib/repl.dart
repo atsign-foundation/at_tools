@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:at_client/at_client.dart';
 import 'package:at_onboarding_cli/at_onboarding_cli.dart';
+import 'package:at_utils/at_utils.dart';
 import 'package:at_repl/repl_exception.dart';
 import 'package:io/ansi.dart';
 import 'interactive_session.dart';
@@ -28,45 +29,64 @@ class REPL {
     Stream<String>? inputStream,
     IOSink? outputStream,
   }) {
-    this.inputStream = inputStream ?? stdin.transform(utf8.decoder).transform(const LineSplitter());
+    this.inputStream = inputStream ??
+        stdin.transform(utf8.decoder).transform(const LineSplitter());
     this.outputStream = outputStream ?? stdout;
   }
 
-  Future<bool> authenticate({required String rootDomain, required int rootPort, required String atSign, String? keysFile}) async {
-    return await _pkamAuth(rootDomain, rootPort, atSign, keysFile);
+  Future<bool> authenticate({
+    required AtRootDomain rootDomain,
+    required String atSign,
+    String? keysPath,
+  }) async {
+    return await _pkamAuth(rootDomain, atSign, keysPath);
   }
 
   void start() {
-    outputStream.writeln("${green.wrap("at_repl started") ?? "at_repl started"}. ${cyan.wrap("Type /help for available commands or /quit to quit.") ?? "Type /help for available commands or /quit to quit."}");
+    outputStream.writeln(
+        "${green.wrap("at_repl started") ?? "at_repl started"}. ${cyan.wrap("Type /help for available commands or /quit to quit.") ?? "Type /help for available commands or /quit to quit."}");
     _showPrompt();
 
-    inputStream.listen((String input) {
-      input = input.trim();
-
-      if (input.isEmpty) {
+    final subscription = inputStream.listen(null);
+    subscription.onData((String input) {
+      subscription.pause();
+      _processInput(input).catchError((error, stackTrace) {
+        outputStream.writeln(red.wrap("Error: $error"));
+      }).whenComplete(() {
         _showPrompt();
-        return;
-      }
+        subscription.resume();
+      });
+    });
+    subscription.onError((Object error, StackTrace stackTrace) {
+      outputStream.writeln(red.wrap("Stream error: $error"));
+    });
+  }
 
-      // Check if we're in interactive mode
+  Future<void> _processInput(String rawInput) async {
+    final input = rawInput.trim();
+
+    if (input.isEmpty) {
+      return;
+    }
+
+    try {
       if (currentSession != null && currentSession!.isActive) {
         final continueSession = currentSession!.handleInput(input);
         if (!continueSession || !currentSession!.isActive) {
           currentSession = null;
           currentMode = ReplMode.main;
         }
-        _showPrompt();
         return;
       }
 
       if (input.startsWith('/')) {
-        _handleCommand(input);
+        await _handleCommand(input);
       } else {
-        _handleRawProtocolCommand(input);
+        await _handleRawProtocolCommand(input);
       }
-      
-      _showPrompt();
-    });
+    } catch (e) {
+      outputStream.writeln(red.wrap("Error: $e"));
+    }
   }
 
   void _showPrompt() {
@@ -90,35 +110,77 @@ class REPL {
     }
   }
 
-  Future<bool> _pkamAuth(final String rootDomain, final int rootPort, final String atSign, final String? keysFile) async {
+  Future<bool> _pkamAuth(final AtRootDomain rootDomain,
+      final String atSign, final String? keysPath) async {
     AtOnboardingPreference pref = AtOnboardingPreference()
       ..namespace = 'at_repl'
-      ..rootDomain = rootDomain
-      ..rootPort = rootPort;
-    
-    if (keysFile != null) {
-      pref.atKeysFilePath = keysFile;
+      ..rootDomain = rootDomain.rootDomain
+      ..rootPort = rootDomain.rootPort;
+
+    final String? resolvedKeysPath = _resolveKeysFilePath(keysPath, atSign);
+    if (resolvedKeysPath != null) {
+      pref.atKeysFilePath = resolvedKeysPath;
     }
-    
+
     AtOnboardingService service = AtOnboardingServiceImpl(atSign, pref);
     bool success = await service.authenticate();
-    if(success) {
+    if (success) {
       atClient = service.atClient!;
       return true;
     }
     return success;
   }
-  
-  void _handleRawProtocolCommand(String input) {
+
+  String? _resolveKeysFilePath(String? keysPath, String atSign) {
+    if (keysPath == null) {
+      return null;
+    }
+
+    final String trimmed = keysPath.trim();
+    if (trimmed.isEmpty) {
+      return null;
+    }
+
+    final String expanded = _expandHomeDirectory(trimmed);
+    if (expanded.toLowerCase().endsWith('.atkeys')) {
+      return expanded;
+    }
+
+    final String normalizedAtSign = AtUtils.fixAtSign(atSign);
+    final bool hasTrailingSeparator =
+        expanded.endsWith('/') || expanded.endsWith('\\');
+    final String dir =
+        hasTrailingSeparator ? expanded : '$expanded${Platform.pathSeparator}';
+    return '$dir${normalizedAtSign}_key.atKeys';
+  }
+
+  String _expandHomeDirectory(String path) {
+    if (!path.startsWith('~')) {
+      return path;
+    }
+
+    final String? homeDirectory =
+        Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'];
+    if (homeDirectory == null || homeDirectory.isEmpty) {
+      return path;
+    }
+    if (path == '~') {
+      return homeDirectory;
+    }
+    return path.replaceFirst('~', homeDirectory);
+  }
+
+  Future<void> _handleRawProtocolCommand(String input) async {
     if (!input.endsWith('\n')) {
       input += '\n';
     }
-    outputStream.writeln("Executing raw command: ${input.trim()}");
-    _executeCommand(input).then((response) {
+    try {
+      outputStream.writeln("Executing raw command: ${input.trim()}");
+      final response = await _executeCommand(input);
       outputStream.writeln("Response: $response");
-    }).catchError((error) {
+    } catch (error) {
       outputStream.writeln(red.wrap("Error executing command: $error"));
-    });
+    }
   }
 
   /// This function is for executing protocol verbs
@@ -133,7 +195,7 @@ class REPL {
     return response;
   }
 
-  void _handleCommand(String input) {
+  Future<void> _handleCommand(String input) async {
     try {
       if (input == '/q' || input == '/quit') {
         outputStream.writeln(green.wrap("Goodbye!"));
@@ -141,19 +203,19 @@ class REPL {
       } else if (input == '/help') {
         printUsage(outputStream);
       } else if (input.startsWith('/get ')) {
-        handleGet(input, atClient, outputStream);
+        await handleGet(input, atClient, outputStream);
       } else if (input.startsWith('/put ')) {
-        handlePut(input, atClient, outputStream);
+        await handlePut(input, atClient, outputStream);
       } else if (input.startsWith('/delete ')) {
-        handleDelete(input, atClient, outputStream);
+        await handleDelete(input, atClient, outputStream);
       } else if (input.startsWith('/scan')) {
-        handleScan(input, atClient, outputStream);
+        await handleScan(input, atClient, outputStream);
       } else if (input.startsWith('/inspect_notify')) {
-        _handleInspectNotifications(input);
+        await _handleInspectNotifications(input);
       } else if (input.startsWith('/inspect')) {
-        _handleInspectKeys(input);  
+        await _handleInspectKeys(input);
       } else if (input.startsWith('/monitor')) {
-        _handleMonitor(input);
+        await _handleMonitor(input);
       } else {
         outputStream.writeln(red.wrap("Unknown command: $input"));
       }
@@ -162,7 +224,7 @@ class REPL {
     }
   }
 
-  void _handleInspectKeys(String input) async {
+  Future<void> _handleInspectKeys(String input) async {
     final parts = input.split(' ');
     String? userRegex = parts.length > 1 ? parts.sublist(1).join(' ') : null;
     if (userRegex != null) {
@@ -173,14 +235,28 @@ class REPL {
     }
     String actualRegex = userRegex ?? defaultInspectRegex;
     try {
-      outputStream.writeln(cyan.wrap("Inspecting keys with regex: '$actualRegex' ..."));
-      final totalKeys = await getAtKeys(atClient, regex: '.*', showHiddenKeys: true);
-      final keys = await getAtKeys(atClient, regex: actualRegex, showHiddenKeys: true);
-      if (keys.isEmpty) {
-        outputStream.writeln(lightYellow.wrap("No keys found (0 of ${totalKeys.length} total keys)"));
+      outputStream
+          .writeln(cyan.wrap("Inspecting keys with regex: '$actualRegex' ..."));
+      final totalKeys = await getAtKeys(atClient, showHiddenKeys: true);
+      RegExp compiledRegex;
+      try {
+        compiledRegex = RegExp(actualRegex);
+      } on FormatException catch (e) {
+        outputStream.writeln(red
+            .wrap("Invalid regular expression '$actualRegex': ${e.message}"));
         return;
       }
-      outputStream.writeln(green.wrap("\nShowing ${keys.length} of ${totalKeys.length} key(s):"));
+
+      final keys = totalKeys
+          .where((key) => compiledRegex.hasMatch(key.toString()))
+          .toList();
+      if (keys.isEmpty) {
+        outputStream.writeln(lightYellow
+            .wrap("No keys found (0 of ${totalKeys.length} total keys)"));
+        return;
+      }
+      outputStream.writeln(green
+          .wrap("\nShowing ${keys.length} of ${totalKeys.length} key(s):"));
       currentSession = InspectKeysSession(keys, atClient, outputStream);
       currentMode = ReplMode.inspectKeys;
     } catch (e) {
@@ -188,7 +264,7 @@ class REPL {
     }
   }
 
-  void _handleInspectNotifications(String input) async {
+  Future<void> _handleInspectNotifications(String input) async {
     try {
       outputStream.writeln(cyan.wrap("Fetching notifications..."));
 
@@ -206,17 +282,18 @@ class REPL {
         return;
       }
 
-      outputStream.writeln(green.wrap("\nFound ${notifications.length} notification(s):"));
+      outputStream.writeln(
+          green.wrap("\nFound ${notifications.length} notification(s):"));
 
-      currentSession = InspectNotificationsSession(notifications, outputStream, _executeCommand);
+      currentSession = InspectNotificationsSession(
+          notifications, outputStream, _executeCommand);
       currentMode = ReplMode.inspectNotifications;
-
     } catch (e) {
       outputStream.writeln(red.wrap("Error inspecting notifications: $e"));
     }
   }
 
-  void _handleMonitor(String input) {
+  Future<void> _handleMonitor(String input) async {
     final parts = input.split(' ');
     String? regex = parts.length > 1 ? parts.sublist(1).join(' ') : null;
 
@@ -225,12 +302,11 @@ class REPL {
     }
 
     try {
-      currentSession = MonitorSession(atClient, regex: regex, output: outputStream);
+      currentSession =
+          MonitorSession(atClient, regex: regex, output: outputStream);
       currentMode = ReplMode.monitor;
-      
     } catch (e) {
       outputStream.writeln(red.wrap("Error starting monitor: $e"));
     }
   }
-
 }
