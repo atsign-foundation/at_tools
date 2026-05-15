@@ -33,7 +33,7 @@ Future<void> main(List<String> args) async {
       defaultsTo: false,
       help: 'Show at_repl version');
 
-  if (args.contains('--version') || args.contains('-V')) {
+  if (args.contains('--version')) {
     _printVersion();
     return;
   }
