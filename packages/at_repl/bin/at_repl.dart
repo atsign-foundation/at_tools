@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_repl/repl.dart';
+import 'package:at_repl/src/version.dart';
 import 'package:at_utils/at_utils.dart';
 import 'package:io/ansi.dart';
 import 'package:args/args.dart';
@@ -88,27 +88,5 @@ void _printUsage(ArgParser parser) {
 }
 
 void _printVersion() {
-  final version = _readVersion() ?? 'unknown';
-  print(version);
-}
-
-String? _readVersion() {
-  try {
-    final pubspec = File('pubspec.yaml');
-    if (!pubspec.existsSync()) {
-      return null;
-    }
-    for (final line in pubspec.readAsLinesSync()) {
-      final trimmed = line.trim();
-      if (trimmed.startsWith('version:')) {
-        final parts = trimmed.split(':');
-        if (parts.length >= 2) {
-          return parts.sublist(1).join(':').trim();
-        }
-      }
-    }
-  } catch (_) {
-    // Ignore errors and fallback to null
-  }
-  return null;
+  print(packageVersion);
 }
