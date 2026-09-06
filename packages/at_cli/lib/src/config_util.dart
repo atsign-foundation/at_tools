@@ -79,5 +79,9 @@ String defaultConfigYaml = YAMLWriter().write(
       'key_file_location': '~/.atsign/keys/@alice.atKeys',
       'at_sign': '@alice',
     },
+    'cache': {
+      'enabled': false,
+      'directory': '~/.atsign/at_cli/storage/@alice',
+    }
   },
 );

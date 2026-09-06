@@ -73,5 +73,12 @@ Future<AtCliPreference> _getAtCliPreference(ArgResults? parsedArgs) async {
       ? parsedArgs['authKeyFile']
       : ConfigUtil.getYaml()!['auth']['key_file_location']);
 
+  if (preferences.authRequired) {
+    preferences.cache =
+        parsedArgs['cache'] ?? ConfigUtil.getYaml()!['cache']['enabled'];
+
+    preferences.cacheDir =
+        parsedArgs['cache-dir'] ?? ConfigUtil.getYaml()!['cache']['directory'];
+  }
   return preferences;
 }
