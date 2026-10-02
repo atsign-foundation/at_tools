@@ -5,4 +5,6 @@ class AtCliPreference {
   late String authMode;
   late String authKeyFile;
   String namespace = '';
+  bool cache = false;
+  String? cacheDir;
 }
