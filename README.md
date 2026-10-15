@@ -12,8 +12,6 @@ methods:
 
 ### standalone tools
 
-[at_cli](./packages/at_cli) A command line tool to execute verbs on the atPlatform.
-
 [at_cram](./packages/at_cram) The challenge–response authentication mechanism of the
 atProtocol.
 
@@ -23,13 +21,16 @@ atProtocol.
 [at_pkam](./packages/at_pkam) The public key authentication mechanism of the
 atProtocol.
 
+[at_repl](./packages/at_repl) A command line tool for interacting with an
+atServer: run any protocol command, or get, put, scan and delete keys.
+
 [at_ve_doctor](./packages/at_ve_doctor) A very simple way to test the status of the
 secondaries running in the Virtual Environment. Using the
 [at_server_status](https://pub.dev/packages/at_server_status) package.
 
 ### Quickly build tools
 
-Using melos, we can quickly build at_pkam, at_cram, at_cli, and at_repl via the
+Using melos, we can quickly build at_pkam, at_cram and at_repl via the
 following commands:
 
 ```bash
