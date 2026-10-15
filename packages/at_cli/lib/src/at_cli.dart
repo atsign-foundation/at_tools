@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:async';
 import 'dart:typed_data';
 import 'package:args/args.dart';
 import 'package:at_cli/src/command_line_parser.dart';
@@ -72,9 +73,15 @@ class AtCli {
                 'Invalid command \n ${CommandLineParser.getUsage()}');
           }
           var command = builder.buildCommand();
-          result = await _atClientImpl!
-              .getRemoteSecondary()!
-              .executeCommand(command, auth: true);
+          if (atCliPreference.authRequired && atCliPreference.cache) {
+            result = await _atClientImpl!
+                .getLocalSecondary()!
+                .executeVerb(builder, sync: true);
+          } else {
+            result = await _atClientImpl!
+                .getRemoteSecondary()!
+                .executeCommand(command, auth: auth);
+          }
           break;
         case 'llookup':
           var builder = LLookupVerbBuilder();
@@ -90,9 +97,15 @@ class AtCli {
                 'Invalid command \n ${CommandLineParser.getUsage()}');
           }
           var command = builder.buildCommand();
-          result = await _atClientImpl!
-              .getRemoteSecondary()!
-              .executeCommand(command, auth: true);
+          if (atCliPreference.authRequired && atCliPreference.cache) {
+            result = await _atClientImpl!
+                .getLocalSecondary()!
+                .executeVerb(builder, sync: true);
+          } else {
+            result = await _atClientImpl!
+                .getRemoteSecondary()!
+                .executeCommand(command, auth: auth);
+          }
           break;
         case 'lookup':
           var builder = LookupVerbBuilder();
@@ -105,9 +118,15 @@ class AtCli {
                 'Invalid command \n ${CommandLineParser.getUsage()}');
           }
           var command = builder.buildCommand();
-          result = await _atClientImpl!
-              .getRemoteSecondary()!
-              .executeCommand(command, auth: true);
+          if (atCliPreference.authRequired && atCliPreference.cache) {
+            result = await _atClientImpl!
+                .getLocalSecondary()!
+                .executeVerb(builder, sync: true);
+          } else {
+            result = await _atClientImpl!
+                .getRemoteSecondary()!
+                .executeCommand(command, auth: auth);
+          }
           break;
         case 'plookup':
           var builder = PLookupVerbBuilder();
@@ -120,9 +139,15 @@ class AtCli {
                 'Invalid command \n ${CommandLineParser.getUsage()}');
           }
           var command = builder.buildCommand();
-          result = await _atClientImpl!
-              .getRemoteSecondary()!
-              .executeCommand(command, auth: true);
+          if (atCliPreference.authRequired && atCliPreference.cache) {
+            result = await _atClientImpl!
+                .getLocalSecondary()!
+                .executeVerb(builder, sync: true);
+          } else {
+            result = await _atClientImpl!
+                .getRemoteSecondary()!
+                .executeCommand(command, auth: auth);
+          }
           break;
         case 'delete':
           var builder = DeleteVerbBuilder();
@@ -137,9 +162,15 @@ class AtCli {
                 'Invalid command \n ${CommandLineParser.getUsage()}');
           }
           var command = builder.buildCommand();
-          result = await _atClientImpl!
-              .getRemoteSecondary()!
-              .executeCommand(command, auth: true);
+          if (atCliPreference.authRequired && atCliPreference.cache) {
+            result = await _atClientImpl!
+                .getLocalSecondary()!
+                .executeVerb(builder, sync: true);
+          } else {
+            result = await _atClientImpl!
+                .getRemoteSecondary()!
+                .executeCommand(command, auth: auth);
+          }
           break;
         case 'scan':
           var builder = ScanVerbBuilder();
@@ -150,9 +181,27 @@ class AtCli {
             throw Exception(
                 'Invalid command \n ${CommandLineParser.getUsage()}');
           }
-          result = await _atClientImpl!
-              .getRemoteSecondary()!
-              .executeCommand(command, auth: auth);
+          if (atCliPreference.authRequired && atCliPreference.cache) {
+            result = await _atClientImpl!
+                .getLocalSecondary()!
+                .executeVerb(builder, sync: true);
+          } else {
+            result = await _atClientImpl!
+                .getRemoteSecondary()!
+                .executeCommand(command, auth: auth);
+          }
+          break;
+        case 'sync':
+          if (atCliPreference.authRequired && atCliPreference.cache) {
+            Completer<bool> completer = Completer();
+            var prefs = _atClientImpl!.getPreferences() ?? AtClientPreference();
+            prefs.namespace = arguments['regex'];
+            _atClientImpl!.setPreferences(prefs);
+            _atClientImpl!.syncService
+                .addProgressListener(ProgressListener(completer));
+            _atClientImpl!.syncService.sync();
+            result = (await completer.future).toString();
+          }
           break;
       }
       return result;
@@ -170,14 +219,9 @@ class AtCli {
     dynamic result;
     try {
       command = command + '\n';
-      if (isAuth) {
-        result = await _atClientImpl!
-            .getRemoteSecondary()!
-            .executeCommand(command, auth: true);
-      } else {
-        result =
-            await _atClientImpl!.getRemoteSecondary()!.executeCommand(command);
-      }
+      result = await _atClientImpl!
+          .getRemoteSecondary()!
+          .executeCommand(command, auth: isAuth);
     } on Exception {
       rethrow;
     }
@@ -214,10 +258,28 @@ class AtCli {
   AtClientPreference _getAtClientPreference(
       String privateKey, AtCliPreference atCliPreference) {
     var preference = AtClientPreference();
-    preference.isLocalStoreRequired = false;
+    preference.isLocalStoreRequired = atCliPreference.cache;
+    if (atCliPreference.cache) {
+      preference.hiveStoragePath = atCliPreference.cacheDir;
+      preference.commitLogPath = atCliPreference.cacheDir;
+    }
+
     preference.privateKey = preference.rootDomain = atCliPreference.rootDomain;
     preference.outboundConnectionTimeout = 60000;
     preference.privateKey = privateKey;
     return preference;
+  }
+}
+
+class ProgressListener extends SyncProgressListener {
+  final Completer<bool> completer;
+  ProgressListener(this.completer);
+
+  @override
+  void onSyncProgressEvent(SyncProgress syncProgress) {
+    if (syncProgress.syncStatus == SyncStatus.success ||
+        syncProgress.syncStatus == SyncStatus.failure) {
+      completer.complete(syncProgress.syncStatus == SyncStatus.success);
+    }
   }
 }

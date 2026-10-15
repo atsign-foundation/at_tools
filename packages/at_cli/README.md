@@ -158,3 +158,13 @@ The "plookup" verb, provides a proxied public lookups for a resolver that perhap
 # Sample output
  india
 ```
+
+__sync__
+
+Sync is not actually a verb, but allows you to pull a namespace to the
+local cache to increase performance of batched requests.
+
+```
+# Requires both cache and authentication to be enabled
+dart run bin/main.dart -v scan -r <namespace>
+```

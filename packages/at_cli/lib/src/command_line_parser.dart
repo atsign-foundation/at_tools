@@ -36,6 +36,8 @@ class CommandLineParser {
         abbr: 'w', help: 'atsign to whom key is shared');
     parser.addOption('shared_by', abbr: 'b', help: 'atsign who shared the key');
     parser.addOption('regex', abbr: 'r', help: 'regex for scan');
+    parser.addFlag('cache', help: 'enable storage cache');
+    parser.addOption('cache-dir', help: 'directory to store cache');
 
     try {
       if (arguments.isNotEmpty) {
